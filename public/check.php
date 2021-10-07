@@ -3,12 +3,11 @@ $login = $_POST['login'];
 $email = $_POST['email'];
 $pass = $_POST['pass'];
 $desc = $_POST['desc'];
+$conf = $_POST['conf'];
 $file = 'db.txt';
 
-$u = array('name' => $login, 'email' => $email, 'desc' => $desc);
-
-
 try {
+    $u = array('name' => $login, 'email' => $email, 'desc' => $desc);
     $db = fopen($file, 'a+');
     $str = serialize($u);
     $write = fwrite($db, $str);
@@ -23,8 +22,9 @@ try {
                 </div>
             </div>
         </div>');
+    fclose($db);
+
 } catch (Exception $e) {
     echo($e->getMessage());
 }
-fclose($db);
 ?>

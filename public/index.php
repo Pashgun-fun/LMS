@@ -46,22 +46,22 @@ session_start();
         <form class="add__form">
             <label class="add__login _field">
                 Логин <br>
-                <input type="text" placeholder="Введите логин" name="login" class="login"><br>
+                <input type="text" placeholder="Введите логин" name="login" class="login _check"><br>
                 <span class="_error error-login"></span>
             </label>
             <label class="add__email _field">
                 Email<br>
-                <input type="text" placeholder="Введите email" name="email" class="email"><br>
+                <input type="text" placeholder="Введите email" name="email" class="email _check"><br>
                 <span class="_error error-email"></span>
             </label>
             <label class="add__password _field">
                 Пароль<br>
-                <input type="password" placeholder="Введите пароль" name="pass" class="pass"><br>
+                <input type="password" placeholder="Введите пароль" name="pass" class="pass _check"><br>
                 <span class="_error error-pass"></span>
             </label>
             <label class="add__passConf _field">
                 Подтверждение пароля<br>
-                <input type="password" placeholder="Подтвердите пароль" name="confirm" class="confirm">
+                <input type="password" placeholder="Подтвердите пароль" name="confirm" class="confirm _check">
             </label>
             <label class="add__desc _field">
                 Описание<br>
@@ -105,7 +105,9 @@ session_start();
     </div>
 </div>
 
+
 <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="./js/just-validate.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>
