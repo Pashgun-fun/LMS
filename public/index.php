@@ -32,11 +32,11 @@ session_start();
             <div class="users__addUser _button"></div>
         </div>
         <?php
-        $_SESSION['length'] = null;
+        $_SESSION['arr'] = null;
         $file = 'db.txt';
         if (filesize($file) != 0) {
             $db = fopen($file, 'a+');
-            $read = trim(fread($db, filesize($file)),"\n");
+            $read = trim(fread($db, filesize($file)), "\n");
             $arr = explode("\n", $read);
             for ($i = 0; $i < count($arr); $i++) {
                 $el = json_decode($arr[$i], true);
@@ -50,7 +50,7 @@ session_start();
             </div>
         </div>');
             }
-            $_SESSION['length'] = $arr;
+            $_SESSION['arr'] = $arr;
         }
 
         ?>
@@ -97,35 +97,7 @@ session_start();
 </div>
 
 <div class="edit">
-    <div class="edit__wrapper">
-        <div class="edit__logo"></div>
-        <form class="edit__form">
-            <label class="edit__login _field">
-                Логин <br>
-                <input type="text" placeholder="Введите логин" name="login" class="edit-login"><br>
-                <span class="_error error-login-edit"></span>
-            </label>
-            <label class="add__email _field">
-                Email<br>
-                <input type="text" placeholder="Введите email" name="email" class="edit-email"><br>
-                <span class="_error error-email-edit"></span>
-            </label>
-            <label class="add__password _field">
-                Пароль<br>
-                <input type="password" placeholder="Введите пароль" name="pass" class="edit-pass"><br>
-                <span class="_error error-pass-edit"></span>
-            </label>
-            <label class="add__passConf _field">
-                Подтверждение пароля<br>
-                <input type="password" placeholder="Подтвердите пароль" name="confirm" class="edit-confirm">
-            </label>
-            <label class="add__desc _field">
-                Описание<br>
-                <textarea placeholder="Краткое описание" name="desc" class="edit-desc"></textarea>
-            </label>
-            <button type="button" class="edit__button">Изменить</button>
-        </form>
-    </div>
+
 </div>
 
 

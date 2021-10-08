@@ -9,6 +9,7 @@ body {
   width: 90%;
   margin: 0 auto;
 }
+
 ._button {
   display: block;
   background: #000;
@@ -30,7 +31,7 @@ body {
 ._field {
   font-size: 1rem;
   text-transform: uppercase;
-  color: #000;
+  color: #fff;
   display: block;
 
   & input, textarea {
@@ -274,7 +275,7 @@ body {
     margin-bottom: 15px;
   }
 
-  &__button{
+  &__button {
     font-size: 1rem;
     float: left;
     color: white;
@@ -284,7 +285,7 @@ body {
     text-align: center;
     text-transform: uppercase;
     outline: none;
-    background: #000;
+    background: red;
     border: none;
 
     &:focus {
@@ -318,7 +319,7 @@ body {
 }
 
 /*------------EDIT-----------------*/
-.edit{
+.edit {
   position: absolute;
   border-radius: 2px 0 0 2px;
   z-index: 500;
@@ -327,7 +328,8 @@ body {
   max-width: 20%;
   height: max-content;
   top: 50%;
-  &__wrapper{
+
+  &__wrapper {
     width: 90%;
     margin: 0 auto;
   }

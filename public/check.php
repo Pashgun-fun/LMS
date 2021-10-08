@@ -6,7 +6,7 @@ $file = 'db.txt';
 try {
     $u = array('name' => $login, 'email' => $email, 'desc' => $desc);
     $db = fopen($file, 'a+');
-    $str = json_encode($u). "\n";
+    $str = json_encode($u) . "\n";
     $write = fwrite($db, $str);
     $read = fread($db, filesize($file));
     $user = json_decode($read, true);

@@ -1,9 +1,10 @@
 var indexDel = 0;
+var indexEdit = 0;
 
 $(() => {
     $('.add').hide();
     $('.edit').hide();
-    deleteItem()
+    deleteItem();
 })
 
 $('.users__addUser').on('click', () => {
@@ -15,19 +16,19 @@ $('.add__close').on('click', () => {
 })
 
 function deleteItem() {
-    document.querySelectorAll('.user').forEach((item,index) => {
+    document.querySelectorAll('.user').forEach((item, index) => {
         item.addEventListener('click', e => {
             if (e.target.classList.contains('user__del')) {
                 indexDel = index;
                 $.ajax({
-                    url:'./del.php',
+                    url: './del.php',
                     type: 'POST',
                     cache: false,
                     data: {
-                        'indexDel':indexDel,
+                        'indexDel': indexDel,
                     },
-                    success(){
-                      location.reload();
+                    success() {
+                        location.reload();
                     }
                 })
             }
@@ -40,11 +41,11 @@ deleteItem()
 try {
     $(() => {
         $('.add__button').on('click', (e) => {
-            var login = $('.login').val().trim();
-            var email = $('.email').val().trim();
-            var pass = $('.pass').val().trim();
-            var confirm = $('.confirm').val().trim();
-            var desc = $('.desc').val().trim();
+            let login = $('.login').val().trim();
+            let email = $('.email').val().trim();
+            let pass = $('.pass').val().trim();
+            let confirm = $('.confirm').val().trim();
+            let desc = $('.desc').val().trim();
 
             var err = 0;
             document.querySelectorAll('._check').forEach(item => {
@@ -55,7 +56,7 @@ try {
                     err++;
                     $('.error-login').html("Логин должен начинаться с буквы");
                 } else {
-                    $('.error-login').html('')
+                    $('.error-login').html('');
                 }
                 if (/^[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}$/.test(email) == false) {
                     err++;
@@ -71,7 +72,7 @@ try {
                 } else {
                     $('.error-pass').html("");
                 }
-                if (pass != confirm) {
+                if (pass !== confirm && pass.length < 8) {
                     err++;
                     $('.error-pass').html("Пароли не совпадают");
                 } else {
@@ -79,7 +80,9 @@ try {
                 }
             })
 
-            if (err != 0) return
+            if (err !== 0) {
+                return;
+            }
 
             $.ajax({
                 url: './check.php',
@@ -109,3 +112,75 @@ try {
 } catch (e) {
     console.error(e.name, e.message)
 }
+
+$(() => {
+    document.querySelectorAll('.user__edit').forEach((item, index) => {
+        item.addEventListener('click', () => {
+            $('.edit').show();
+            indexEdit = index;
+            $.ajax({
+                url: './OpenEdit.php',
+                type: 'POST',
+                cache: false,
+                data: {
+                    'indexDel': indexEdit,
+                },
+                success(response) {
+                    let el = JSON.parse(response);
+                    $('.edit').html(`<div class="edit__wrapper">
+                                        <div class="edit__logo"></div>
+                                        <form class="edit__form">
+                                            <label class="edit__login _field">
+                                                Логин <br>
+                                                <input type="text" placeholder="Введите логин" name="edit-login" class="edit-login" value="${el.name}"><br>
+                                                <span class="_error error-login-edit"></span>
+                                            </label>
+                                            <label class="add__email _field">
+                                                Email<br>
+                                                <input type="text" placeholder="Введите email" name="edit-email" class="edit-email" value="${el.email}"><br>
+                                                <span class=" _error error-email-edit"></span>
+                                            </label>
+                                            <label class="add__password _field">
+                                                Пароль<br>
+                                                <input type="password" placeholder="Введите пароль" name="pass" class="edit-pass"><br>
+                                                <span class="_error error-pass-edit"></span>
+                                            </label>
+                                            <label class="add__passConf _field">
+                                                Подтверждение пароля<br>
+                                                <input type="password" placeholder="Подтвердите пароль" name="confirm" class="edit-confirm">
+                                            </label>
+                                            <label class="add__desc _field">
+                                                Описание<br>
+                                                <textarea placeholder="Краткое описание" name="edit-desc" class="edit-desc"></textarea>
+                                            </label>
+                                            <div class="edit__button">Изменить</div>
+                                        </form>
+                                   </div>`);
+                    $('.edit__button').on('click', e => {
+                        e.preventDefault();
+                        let login = $('.edit-login').val().trim();
+                        let email = $('.edit-email').val().trim();
+                        let pass = $('.edit-pass').val().trim();
+                        let confirm = $('.edit-confirm').val().trim();
+                        let desc = $('.edit-desc').val().trim();
+                        $.ajax({
+                            url: './edit.php',
+                            type: 'POST',
+                            cache: false,
+                            data: {
+                                'index': indexEdit,
+                                'login': login,
+                                'email': email,
+                                'desc': desc,
+                            },
+                            success: function (){
+                                location.reload();
+                            }
+                        })
+                        $('.edit').hide();
+                    })
+                }
+            })
+        })
+    })
+})

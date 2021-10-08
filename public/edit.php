@@ -1,2 +1,1 @@
-<?php
-?>
+<?phpsession_start();$index = $_POST['index'];$login = $_POST['login'];$email = $_POST['email'];$desc = $_POST['desc'];$file = 'db.txt';$db = fopen($file, 'a+');file_put_contents($file, '');$arr = $_SESSION['arr'];$line = json_decode($arr[$index],true);$line['name'] = $login;$arr[$index] = json_encode($line);foreach ($arr as $val){    fwrite($db, $val."\n");}?>

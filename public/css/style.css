@@ -30,7 +30,7 @@ body {
 ._field {
   font-size: 1rem;
   text-transform: uppercase;
-  color: #000;
+  color: #fff;
   display: block;
 }
 ._field input, ._field textarea {
@@ -330,7 +330,7 @@ body {
   text-align: center;
   text-transform: uppercase;
   outline: none;
-  background: #000;
+  background: red;
   border: none;
 }
 .add__button:focus, .edit__button:focus {
