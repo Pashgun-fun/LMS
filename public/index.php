@@ -31,6 +31,29 @@ session_start();
             <div class="users__addTitle">Добавить нового пользователя</div>
             <div class="users__addUser _button"></div>
         </div>
+        <?php
+        $_SESSION['length'] = null;
+        $file = 'db.txt';
+        if (filesize($file) != 0) {
+            $db = fopen($file, 'a+');
+            $read = trim(fread($db, filesize($file)),"\n");
+            $arr = explode("\n", $read);
+            for ($i = 0; $i < count($arr); $i++) {
+                $el = json_decode($arr[$i], true);
+                echo('<div class="user">
+            <div class="user__wrapper">
+                <div class="user__name">' . $el['name'] . '</div>
+                <div class="user__buttons">
+                    <div class="user__edit _button"></div>
+                    <div class="user__del _button"></div>
+                </div>
+            </div>
+        </div>');
+            }
+            $_SESSION['length'] = $arr;
+        }
+
+        ?>
     </div>
 </section>
 
@@ -107,7 +130,6 @@ session_start();
 
 
 <script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="./js/just-validate.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-var arrUsres = [];
+var indexDel = 0;
 
 $(() => {
     $('.add').hide();
@@ -15,11 +15,21 @@ $('.add__close').on('click', () => {
 })
 
 function deleteItem() {
-    document.querySelectorAll('.user').forEach(item => {
+    document.querySelectorAll('.user').forEach((item,index) => {
         item.addEventListener('click', e => {
-            if (e.target.className == "user__del _button") {
-                item.style.display = "none";
-                item.classList.add("delete");
+            if (e.target.classList.contains('user__del')) {
+                indexDel = index;
+                $.ajax({
+                    url:'./del.php',
+                    type: 'POST',
+                    cache: false,
+                    data: {
+                        'indexDel':indexDel,
+                    },
+                    success(){
+                      location.reload();
+                    }
+                })
             }
         })
     })
@@ -35,12 +45,6 @@ try {
             var pass = $('.pass').val().trim();
             var confirm = $('.confirm').val().trim();
             var desc = $('.desc').val().trim();
-
-            arrUsres.push({
-                'name': login,
-                'email': email,
-                'desc': desc,
-            });
 
             var err = 0;
             document.querySelectorAll('._check').forEach(item => {
@@ -86,7 +90,6 @@ try {
                     'email': email,
                     'pass': pass,
                     'desc': desc,
-                    'conf': confirm,
                 },
                 dataType: 'html',
                 beforeSend: function () {
@@ -97,52 +100,12 @@ try {
                     $('.add__form').trigger("reset");
                     $('.add').hide();
                     $('.add__button').prop("disabled", false);
+                    location.reload();
                     deleteItem();
-                    edit();
                 },
             })
         })
     })
 } catch (e) {
     console.error(e.name, e.message)
-}
-
-let edit = () => {
-    $(() => {
-        document.querySelectorAll('.user__edit').forEach((item, index) => {
-            item.addEventListener('click', () => {
-                $('.edit').show();
-                $('.edit-login').val(arrUsres[index].name);
-                $('.edit-email').val(arrUsres[index].email);
-                $('.edit-desc').val(arrUsres[index].desc);
-                $('.edit__button').on('click', (e) => {
-                    e.preventDefault();
-                    let login = $('.edit-login').val().trim();
-                    let email = $('.edit-email').val().trim();
-                    let pass = $('.edit-pass').val().trim();
-                    let confirm = $('.edit-confirm').val().trim();
-                    let desc = $('.edit-desc').val().trim();
-
-                    if (login.length < 3) {
-                        $('.error-login').text("Не менее 3 символов");
-                        return false;
-                    } else if (email.length < 3) {
-                        $('.error-email').text("Введите email");
-                        return false;
-                    } else if (pass != confirm) {
-                        $('.error-pass').text("Пароли должны совпадать");
-                        return false;
-                    }
-
-                    $('._error').text("");
-
-                    arrUsres[index].name = $('.edit-login').val();
-                    arrUsres[index].email = $('.edit-email').val();
-                    arrUsres[index].desc = $('.edit-desc').val();
-                    $('.user__name').html($('.edit-login').val());
-                    $('.edit').hide();
-                })
-            })
-        })
-    })
 }

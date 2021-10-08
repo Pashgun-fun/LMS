@@ -1,18 +1,15 @@
 <?php
 $login = $_POST['login'];
 $email = $_POST['email'];
-$pass = $_POST['pass'];
 $desc = $_POST['desc'];
-$conf = $_POST['conf'];
 $file = 'db.txt';
-
 try {
     $u = array('name' => $login, 'email' => $email, 'desc' => $desc);
     $db = fopen($file, 'a+');
-    $str = serialize($u);
+    $str = json_encode($u). "\n";
     $write = fwrite($db, $str);
     $read = fread($db, filesize($file));
-    $user = unserialize($read);
+    $user = json_decode($read, true);
     echo('<div class="user">
             <div class="user__wrapper">
                 <div class="user__name">' . $user['name'] . '</div>
@@ -22,8 +19,6 @@ try {
                 </div>
             </div>
         </div>');
-    fclose($db);
-
 } catch (Exception $e) {
     echo($e->getMessage());
 }
