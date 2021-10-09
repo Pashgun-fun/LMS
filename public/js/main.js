@@ -145,12 +145,6 @@ $(() => {
 
             invisible();
 
-            if (checkLogin(login, '.error-login')) return;
-
-            if (checkEmail(email, '.error-email')) return;
-
-            if (checkPass(pass, '.error-pass', confirm)) return;
-
             indexEdit = index;
             $.ajax({
                 url: './OpenEdit.php',
@@ -172,6 +166,14 @@ $(() => {
                             $('.edit-confirm').val().trim(),
                             $('.edit-desc').val().trim()
                         ];
+
+                        if (checkLogin(login, '.error-login-edit')) return;
+
+                        if (checkEmail(email, '.error-email-edit')) return;
+
+                        if (checkPass(pass, '.error-pass-edit', confirm)) return;
+
+
                         $.ajax({
                             url: './edit.php',
                             type: 'POST',
