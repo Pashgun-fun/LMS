@@ -1,9 +1,80 @@
-var indexDel = 0;
-var indexEdit = 0;
+let indexDel, indexEdit = 0;
 
+let deleteItem = () => {
+    document.querySelectorAll('.user__del').forEach((item, index) => {
+        item.addEventListener('click', e => {
+            e.preventDefault();
+            indexDel = index;
+            $.ajax({
+                url: './del.php',
+                type: 'POST',
+                cache: false,
+                data: {
+                    'indexDel': indexDel,
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert("Удаление прошло безуспешно");
+                }
+
+            })
+        })
+    })
+}
+
+//Validation
+let checkLogin = (login, el) => {
+    if (/^[a-zA-Z][a-zA-Z0-9-_\.]{4,20}$/.test(login) == false) {//с ограничением 2-20 символов, которыми могут быть буквы и цифры, первый символ обязательно буква
+        $(el).html("Должен состоять не менее, чем из 4 символов и только из букви цифр и латиница");
+        return true;
+    }
+    if (/[a-zA-Z]/.test(login[0]) == false) {
+        $(el).html("Логин должен начинаться с буквы");
+        return true;
+    }
+    $(el).html("");
+}
+
+let checkEmail = (email, el) => {
+    if (/^[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}$/.test(email) == false) {
+        $(el).html('Введите email');
+        return true;
+    }
+    $(el).html("");
+}
+
+let checkPass = (pass, el, confirm) => {
+    if (pass.length < 8) {//Строчные и прописные латинские буквы, цифры, спецсимволы. Минимум 8 символов
+        $(el).html("Слишком короткий пароль");
+        return true;
+    }
+    if (pass !== confirm) {
+        $(el).html("Пароли не совпадают");
+        return true;
+    }
+    if (/(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(pass) == false) {
+        $(el).html("Строчные и прописные латинские буквы, цифры, спецсимволы. Минимум 8 символов");
+        return true;
+    }
+    $(el).html("");
+}
+
+//Hide form of edit user
+let invisible = () => {
+    if ($('.edit').hasClass('show')) {
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.user__edit') && !e.target.closest('.edit')) {
+                $('.edit').hide();
+            }
+            return;
+        })
+    }
+}
+
+//Hide and show
 $(() => {
-    $('.add').hide();
-    $('.edit').hide();
     deleteItem();
 })
 
@@ -15,75 +86,24 @@ $('.add__close').on('click', () => {
     $('.add').hide();
 })
 
-function deleteItem() {
-    document.querySelectorAll('.user').forEach((item, index) => {
-        item.addEventListener('click', e => {
-            if (e.target.classList.contains('user__del')) {
-                indexDel = index;
-                $.ajax({
-                    url: './del.php',
-                    type: 'POST',
-                    cache: false,
-                    data: {
-                        'indexDel': indexDel,
-                    },
-                    success() {
-                        location.reload();
-                    }
-                })
-            }
-        })
-    })
-}
+deleteItem();
 
-deleteItem()
+//Check.php
+$(() => {
+    $('.add__button').on('click', (e) => {
+        let [login, email, pass, confirm, desc] = [$('.login').val().trim(),
+            $('.email').val().trim(),
+            $('.pass').val().trim(),
+            $('.confirm').val().trim(),
+            $('.desc').val().trim()];
 
-try {
-    $(() => {
-        $('.add__button').on('click', (e) => {
-            let login = $('.login').val().trim();
-            let email = $('.email').val().trim();
-            let pass = $('.pass').val().trim();
-            let confirm = $('.confirm').val().trim();
-            let desc = $('.desc').val().trim();
+        if (checkLogin(login, '.error-login')) return;
 
-            var err = 0;
-            document.querySelectorAll('._check').forEach(item => {
-                if (/^[a-zA-Z][a-zA-Z0-9-_\.]{4,20}$/.test(login) == false) {//с ограничением 2-20 символов, которыми могут быть буквы и цифры, первый символ обязательно буква
-                    err++;
-                    $('.error-login').html("Должен состоять не менее, чем из 4 символов и только из букви цифр и латиница");
-                } else if (/[a-zA-Z]/.test(login[0]) == false) {
-                    err++;
-                    $('.error-login').html("Логин должен начинаться с буквы");
-                } else {
-                    $('.error-login').html('');
-                }
-                if (/^[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}$/.test(email) == false) {
-                    err++;
-                    $('.error-email').html('Введите email');
-                } else {
-                    $('.error-email').html('');
-                }
-                if (/(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(pass) == false) {//Строчные и прописные латинские буквы, цифры, спецсимволы. Минимум 8 символов
-                    err++;
-                    $('.error-pass').html("Строчные и прописные латинские буквы, цифры, спецсимволы. Минимум 8 символов");
-                } else if (pass.length < 5) {
-                    $('.error-pass').html("Слишком короткий пароль");
-                } else {
-                    $('.error-pass').html("");
-                }
-                if (pass !== confirm && pass.length < 8) {
-                    err++;
-                    $('.error-pass').html("Пароли не совпадают");
-                } else {
-                    $('.error-pass').html("");
-                }
-            })
+        if (checkEmail(email, '.error-email')) return;
 
-            if (err !== 0) {
-                return;
-            }
+        if (checkPass(pass, '.error-pass', confirm)) return;
 
+        try {
             $.ajax({
                 url: './check.php',
                 type: 'POST',
@@ -106,63 +126,52 @@ try {
                     location.reload();
                     deleteItem();
                 },
+                error: function (dataErr) {
+                    alert(dataErr);
+                }
             })
-        })
+        } catch (e) {
+            console.error(e.name, e.message);
+        }
     })
-} catch (e) {
-    console.error(e.name, e.message)
-}
+})
 
+//OpenEdit.php
 $(() => {
     document.querySelectorAll('.user__edit').forEach((item, index) => {
         item.addEventListener('click', () => {
             $('.edit').show();
+            $('.edit').addClass('show');
+
+            invisible();
+
+            if (checkLogin(login, '.error-login')) return;
+
+            if (checkEmail(email, '.error-email')) return;
+
+            if (checkPass(pass, '.error-pass', confirm)) return;
+
             indexEdit = index;
             $.ajax({
                 url: './OpenEdit.php',
                 type: 'POST',
                 cache: false,
+                dataType: 'html',
                 data: {
                     'indexDel': indexEdit,
                 },
                 success(response) {
-                    let el = JSON.parse(response);
-                    $('.edit').html(`<div class="edit__wrapper">
-                                        <div class="edit__logo"></div>
-                                        <form class="edit__form">
-                                            <label class="edit__login _field">
-                                                Логин <br>
-                                                <input type="text" placeholder="Введите логин" name="edit-login" class="edit-login" value="${el.name}"><br>
-                                                <span class="_error error-login-edit"></span>
-                                            </label>
-                                            <label class="add__email _field">
-                                                Email<br>
-                                                <input type="text" placeholder="Введите email" name="edit-email" class="edit-email" value="${el.email}"><br>
-                                                <span class=" _error error-email-edit"></span>
-                                            </label>
-                                            <label class="add__password _field">
-                                                Пароль<br>
-                                                <input type="password" placeholder="Введите пароль" name="pass" class="edit-pass"><br>
-                                                <span class="_error error-pass-edit"></span>
-                                            </label>
-                                            <label class="add__passConf _field">
-                                                Подтверждение пароля<br>
-                                                <input type="password" placeholder="Подтвердите пароль" name="confirm" class="edit-confirm">
-                                            </label>
-                                            <label class="add__desc _field">
-                                                Описание<br>
-                                                <textarea placeholder="Краткое описание" name="edit-desc" class="edit-desc"></textarea>
-                                            </label>
-                                            <div class="edit__button">Изменить</div>
-                                        </form>
-                                   </div>`);
+                    $('.edit').html(response);
+
                     $('.edit__button').on('click', e => {
                         e.preventDefault();
-                        let login = $('.edit-login').val().trim();
-                        let email = $('.edit-email').val().trim();
-                        let pass = $('.edit-pass').val().trim();
-                        let confirm = $('.edit-confirm').val().trim();
-                        let desc = $('.edit-desc').val().trim();
+
+                        let [login, email, pass, confirm, desc] = [$('.edit-login').val().trim(),
+                            $('.edit-email').val().trim(),
+                            $('.edit-pass').val().trim(),
+                            $('.edit-confirm').val().trim(),
+                            $('.edit-desc').val().trim()
+                        ];
                         $.ajax({
                             url: './edit.php',
                             type: 'POST',
@@ -173,12 +182,20 @@ $(() => {
                                 'email': email,
                                 'desc': desc,
                             },
-                            success: function (){
+                            dataType: 'html',
+                            beforeSend: function () {
+                                $('.edit__button').prop("disabled", true);
+                            },
+                            success: function () {
+                                $('.edit__button').prop("disabled", false);
                                 location.reload();
                             }
                         })
                         $('.edit').hide();
                     })
+                },
+                error: function () {
+                    alert("Редактирование не возможно");
                 }
             })
         })

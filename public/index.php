@@ -1,5 +1,6 @@
 <?php
 session_start();
+require "./forms.php";
 ?>
 <!doctype html>
 <html lang="en">
@@ -40,15 +41,7 @@ session_start();
             $arr = explode("\n", $read);
             for ($i = 0; $i < count($arr); $i++) {
                 $el = json_decode($arr[$i], true);
-                echo('<div class="user">
-            <div class="user__wrapper">
-                <div class="user__name">' . $el['name'] . '</div>
-                <div class="user__buttons">
-                    <div class="user__edit _button"></div>
-                    <div class="user__del _button"></div>
-                </div>
-            </div>
-        </div>');
+                echo(user($el['name']));
             }
             $_SESSION['arr'] = $arr;
         }
@@ -64,35 +57,37 @@ session_start();
 </footer>
 
 <div class="add">
-    <div class="add__container">
-        <div class="add__title _title">Добавление нового пользователя</div>
-        <form class="add__form">
-            <label class="add__login _field">
-                Логин <br>
-                <input type="text" placeholder="Введите логин" name="login" class="login _check"><br>
-                <span class="_error error-login"></span>
-            </label>
-            <label class="add__email _field">
-                Email<br>
-                <input type="text" placeholder="Введите email" name="email" class="email _check"><br>
-                <span class="_error error-email"></span>
-            </label>
-            <label class="add__password _field">
-                Пароль<br>
-                <input type="password" placeholder="Введите пароль" name="pass" class="pass _check"><br>
-                <span class="_error error-pass"></span>
-            </label>
-            <label class="add__passConf _field">
-                Подтверждение пароля<br>
-                <input type="password" placeholder="Подтвердите пароль" name="confirm" class="confirm _check">
-            </label>
-            <label class="add__desc _field">
-                Описание<br>
-                <textarea placeholder="Краткое описание" name="desc" class="desc"></textarea>
-            </label>
-            <button type="button" class="add__button">Добавить</button>
-            <div class="add__close">Закрыть</div>
-        </form>
+    <div class="add__wrapper">
+        <div class="add__container">
+            <div class="add__title _title">Добавление нового пользователя</div>
+            <form class="add__form">
+                <label class="add__login _field">
+                    Логин <br>
+                    <input type="text" placeholder="Введите логин" name="login" class="login _check"><br>
+                    <span class="_error error-login"></span>
+                </label>
+                <label class="add__email _field">
+                    Email<br>
+                    <input type="text" placeholder="Введите email" name="email" class="email _check"><br>
+                    <span class="_error error-email"></span>
+                </label>
+                <label class="add__password _field">
+                    Пароль<br>
+                    <input type="password" placeholder="Введите пароль" name="pass" class="pass _check"><br>
+                    <span class="_error error-pass"></span>
+                </label>
+                <label class="add__passConf _field">
+                    Подтверждение пароля<br>
+                    <input type="password" placeholder="Подтвердите пароль" name="confirm" class="confirm _check">
+                </label>
+                <label class="add__desc _field">
+                    Описание<br>
+                    <textarea placeholder="Краткое описание" name="desc" class="desc"></textarea>
+                </label>
+                <button type="button" class="add__button">Добавить</button>
+                <div class="add__close">Закрыть</div>
+            </form>
+        </div>
     </div>
 </div>
 
