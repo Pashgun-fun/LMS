@@ -1,6 +1,15 @@
 <?php
 session_start();
 require "./forms.php";
+
+$dir = "./db/";
+$arr1 = array_values(myscandir($dir));
+
+foreach ($arr1 as $value) {
+    $file = './db/' . $value;
+    unlink($file);
+}
+separate();
 ?>
 <!doctype html>
 <html lang="en">
@@ -46,6 +55,16 @@ require "./forms.php";
             $_SESSION['arr'] = $arr;
         }
 
+        //        $dir = "./db/";
+        //        $arr1 = array_values(myscandir($dir));
+        //
+        //        foreach ($arr1 as $value) {
+        //            $file = './db/' . $value;
+        //            $db = fopen($file, 'a+');
+        //            $read = trim(fread($db, filesize($file)));
+        //            $data = json_decode($read, true);
+        //            echo(user($data['name']));
+        //        }
         ?>
     </div>
 </section>

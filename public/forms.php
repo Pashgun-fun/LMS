@@ -1,5 +1,4 @@
 <?php
-
 function user($name)
 {
     return ('<div class="user">
@@ -49,7 +48,32 @@ function edit($name, $email, $desc)
 
 function check($value)
 {
-    return trim(stripslashes(strip_tags(htmlspecialchars($value))));
+    return stripslashes(strip_tags(htmlspecialchars(trim($value))));
+}
+
+function separate()
+{
+    $file = 'db.txt';
+    $db = fopen($file, 'a+');
+    $read = trim(fread($db, filesize($file)), "\n\r");
+    $arr = explode("\n", $read);
+    for ($i = 0; $i < count($arr); $i++) {
+        $newFile = './db/' . $i . '.txt';
+        $newDB = fopen($newFile, 'a+');
+        file_put_contents($newFile, '');
+        fwrite($newDB, $arr[$i]);
+    }
+}
+
+function myscandir($dir, $sort = 0)
+{
+    $list = scandir($dir, $sort);
+
+    if (!$list) return false;
+
+    if ($sort == 0) unset($list[0], $list[1]);
+    else unset($list[count($list) - 1], $list[count($list) - 1]);
+    return $list;
 }
 
 ?>

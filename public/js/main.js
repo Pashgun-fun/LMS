@@ -1,10 +1,13 @@
 let indexDel, indexEdit = 0;
+let userArr = $('.user');
+
 
 let deleteItem = () => {
     document.querySelectorAll('.user__del').forEach((item, index) => {
         item.addEventListener('click', e => {
             e.preventDefault();
             indexDel = index;
+            userArr[index].remove();
             $.ajax({
                 url: './del.php',
                 type: 'POST',
@@ -13,7 +16,7 @@ let deleteItem = () => {
                     'indexDel': indexDel,
                 },
                 success: function () {
-                    location.reload();
+                    return;
                 },
                 error: function () {
                     alert("Удаление прошло безуспешно");
@@ -91,7 +94,7 @@ deleteItem();
 //Check.php
 $(() => {
     $('.add__button').on('click', (e) => {
-        let [login, email, pass, confirm, desc] = [$('.login').val().trim(),
+        let [login, email, pass, confirm, desc,] = [$('.login').val().trim(),
             $('.email').val().trim(),
             $('.pass').val().trim(),
             $('.confirm').val().trim(),
@@ -102,6 +105,7 @@ $(() => {
         if (checkEmail(email, '.error-email')) return;
 
         if (checkPass(pass, '.error-pass', confirm)) return;
+
 
         try {
             $.ajax({
@@ -123,11 +127,10 @@ $(() => {
                     $('.add__form').trigger("reset");
                     $('.add').hide();
                     $('.add__button').prop("disabled", false);
-                    location.reload();
                     deleteItem();
                 },
-                error: function (dataErr) {
-                    alert(dataErr);
+                error: function () {
+                    console.log("Error");
                 }
             })
         } catch (e) {
@@ -173,7 +176,6 @@ $(() => {
 
                         if (checkPass(pass, '.error-pass-edit', confirm)) return;
 
-
                         $.ajax({
                             url: './edit.php',
                             type: 'POST',
@@ -190,7 +192,7 @@ $(() => {
                             },
                             success: function () {
                                 $('.edit__button').prop("disabled", false);
-                                location.reload();
+                                userArr[index].querySelector('.user__name').innerHTML = login;
                             }
                         })
                         $('.edit').hide();
