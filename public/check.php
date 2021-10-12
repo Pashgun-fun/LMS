@@ -1,13 +1,14 @@
 <?php
 require "./forms.php";
 
-$file = 'db.txt';
+$u = array('name' => check($_POST['login']), 'email' => check($_POST['email']), 'desc' => check($_POST['desc']), 'data' => check($_POST['data']));
 
-$u = array('name' => check($_POST['login']), 'email' => check($_POST['email']), 'desc' => check($_POST['email']));
-$db = fopen($file, 'a+');
-$str = json_encode($u) . "\n";
+$directory = "./dataBase/";
+
+$arrayFiles = array_values(myscandir($directory));
+$newFile = $directory.count($arrayFiles).'.txt';
+$db = fopen($newFile, 'a+');
+$str = json_encode($u);
 $write = fwrite($db, $str);
-$read = fread($db, filesize($file));
-$el = json_decode($read, true);
-echo user($el['name']);
+echo user($u['name']);
 ?>

@@ -1,13 +1,18 @@
 let indexDel, indexEdit = 0;
 let userArr = $('.user');
+let del = document.querySelectorAll('.user__edit');
 
+document.querySelectorAll('a').forEach(item => {
+    item.addEventListener('click', e => {
+        e.preventDefault();
+    })
+})
 
+//Delete User
 let deleteItem = () => {
     document.querySelectorAll('.user__del').forEach((item, index) => {
-        item.addEventListener('click', e => {
-            e.preventDefault();
+        item.onclick = e => {
             indexDel = index;
-            userArr[index].remove();
             $.ajax({
                 url: './del.php',
                 type: 'POST',
@@ -16,14 +21,21 @@ let deleteItem = () => {
                     'indexDel': indexDel,
                 },
                 success: function () {
-                    return;
+                    userArr[indexDel].remove();
+                    $.ajax({
+                        url: './sort.php',
+                        type: 'POST',
+                        success: function () {
+                            return;
+                        }
+                    })
                 },
                 error: function () {
                     alert("Удаление прошло безуспешно");
                 }
 
             })
-        })
+        }
     })
 }
 
@@ -64,6 +76,27 @@ let checkPass = (pass, el, confirm) => {
     $(el).html("");
 }
 
+let checkDateTime = (newDate, el) => {
+    if (/^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/.test(newDate) == false) {
+        $(el).html("Введите корректную дату");
+        return true;
+    }
+    let parseDate = newDate.split('.');
+    for (let i = 0; i < parseDate.length; i++) {
+        if (i == 1) {
+            parseDate[i] = +parseDate[i] - 1;
+        }
+        parseDate[i] = +parseDate[i];
+    }
+    parseDate.reverse();
+    let d = new Date(...parseDate);
+    let today = new Date();
+    if (today.getTime() - d.getTime() < 567648000000) {
+        $(el).html("Вам меньше 18, попробуйте позже");
+        return true;
+    }
+}
+
 //Hide form of edit user
 let invisible = () => {
     if ($('.edit').hasClass('show')) {
@@ -79,14 +112,17 @@ let invisible = () => {
 //Hide and show
 $(() => {
     deleteItem();
+    editItem();
 })
 
 $('.users__addUser').on('click', () => {
     $('.add').show();
+    history.pushState(null, null, '/new');
 })
 
 $('.add__close').on('click', () => {
     $('.add').hide();
+    window.history.go(-1);
 })
 
 deleteItem();
@@ -94,11 +130,12 @@ deleteItem();
 //Check.php
 $(() => {
     $('.add__button').on('click', (e) => {
-        let [login, email, pass, confirm, desc,] = [$('.login').val().trim(),
+        let [login, email, pass, confirm, desc, data] = [$('.login').val().trim(),
             $('.email').val().trim(),
             $('.pass').val().trim(),
             $('.confirm').val().trim(),
-            $('.desc').val().trim()];
+            $('.desc').val().trim(),
+            $('.date').val().trim()];
 
         if (checkLogin(login, '.error-login')) return;
 
@@ -106,6 +143,7 @@ $(() => {
 
         if (checkPass(pass, '.error-pass', confirm)) return;
 
+        if (checkDateTime(data, '.error-dateTime')) return;
 
         try {
             $.ajax({
@@ -117,6 +155,7 @@ $(() => {
                     'email': email,
                     'pass': pass,
                     'desc': desc,
+                    'data': data,
                 },
                 dataType: 'html',
                 beforeSend: function () {
@@ -127,6 +166,9 @@ $(() => {
                     $('.add__form').trigger("reset");
                     $('.add').hide();
                     $('.add__button').prop("disabled", false);
+                    userArr = $('.user');
+                    del = document.querySelectorAll('.user__edit');
+                    editItem();
                     deleteItem();
                 },
                 error: function () {
@@ -140,8 +182,8 @@ $(() => {
 })
 
 //OpenEdit.php
-$(() => {
-    document.querySelectorAll('.user__edit').forEach((item, index) => {
+let editItem = () => {
+    del.forEach((item, index) => {
         item.addEventListener('click', () => {
             $('.edit').show();
             $('.edit').addClass('show');
@@ -155,7 +197,7 @@ $(() => {
                 cache: false,
                 dataType: 'html',
                 data: {
-                    'indexDel': indexEdit,
+                    'indexEdit': indexEdit,
                 },
                 success(response) {
                     $('.edit').html(response);
@@ -204,4 +246,46 @@ $(() => {
             })
         })
     })
+}
+
+//Register
+$('.header__register').on('click', e => {
+    $('.add').show();
+    history.pushState(null, null, '/registration');
+})
+
+//Login
+let login = () => {
+    $.ajax({
+        url: "./login.php",
+        method: "GET",
+        success(response) {
+            document.querySelector('.app').innerHTML = response;
+        }
+    })
+}
+$('.header__login').on('click', () => {
+    login();
+    history.pushState(null, null, '/login');
+})
+
+//Router
+let locationResolver = (pathname) => {
+    switch (pathname) {
+        case "/new":
+            $('.add').show();
+            break;
+        case "/registration":
+            $('.add').show();
+            break;
+        case "/login":
+            document.querySelector('.app').innerHTML = "";
+            login();
+            break;
+    }
+}
+
+window.addEventListener('load', () => {
+    let path = window.location.pathname;
+    if (path) locationResolver(path);
 })

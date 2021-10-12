@@ -3,13 +3,11 @@ session_start();
 
 require "./forms.php";
 
-$file = 'db.txt';
-$db = fopen($file, 'a+');
-$read = trim(fread($db, filesize($file)), "\n\r");
-$arr = explode("\n", $read);
-$el = json_decode($arr[$_POST['indexDel']], true);
+$directory = './dataBase/';
+$db = fopen($directory.$_POST['indexEdit'].'.txt', 'a+');
+$read = trim(fread($db, filesize($directory.$_POST['indexEdit'].'.txt')));
+$el = json_decode($read, true);
 
-print_r($el['desc']);
 echo(edit($el['name'], $el['email'], $el['desc']));
 
 ?>

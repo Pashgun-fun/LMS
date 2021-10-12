@@ -77,7 +77,7 @@ body {
   top: 0;
   left: 0;
   z-index: 200;
-  box-shadow: 0px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  box-shadow: 0 4px 8px 0 rgba(34, 60, 80, 0.2);
   background: white;
   display: flex;
   align-items: center;
@@ -293,6 +293,7 @@ body {
     outline: none;
     background: red;
     border: none;
+    line-height: 50px;
 
     &:focus {
       outline: none;
@@ -314,7 +315,6 @@ body {
     text-transform: uppercase;
     background: #000;
     text-decoration: none;
-    float: left;
     line-height: 50px;
     margin-left: 20px;
 
@@ -338,5 +338,33 @@ body {
   &__wrapper {
     width: 90%;
     margin: 0 auto;
+  }
+}
+
+
+/*---------------LOGIN-------------*/
+.login{
+  margin: 50px 0;
+  &__wrapper{
+    position: relative;
+  }
+  &__login{
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    text-align: center;
+    color: red;
+    margin-bottom: 50px;
+  }
+  &__button{
+    height: 50px;
+    background: black;
+    color: white;
+    line-height: 50px;
+    width: 200px;
+    margin: 50px auto 0;
+
+    &:hover{
+      cursor: pointer;
+    }
   }
 }
