@@ -1,20 +1,24 @@
-import {deleteUser, newUser, openWindowEdit, getUsers} from "./ajax.js";
+import {deleteUser, newUser, openWindowEdit, getUsers, getMaket, login} from "./ajax.js";
 import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js";
-import {header} from "./components/header.js";
 
-let indexDel, indexEdit = 0;
-let userArr = $('.user');
-let del = document.querySelectorAll('.user__edit');
+//Hide and show
+$(() => {
+    // getUsers();
+    getMaket();
+})
 
 //Delete User
-let deleteItem = () => {
-    document.querySelectorAll('.user__del').forEach((item, index) => {
-        item.onclick = e => {
-            indexDel = index;
-            deleteUser(indexDel, userArr);
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('user__del')) {
+        let elDel = e.target;
+        elDel.closest('.user').classList.add('none');
+        for (let j = 0; j < document.querySelectorAll('.user').length; j++) {
+            if (document.querySelectorAll('.user')[j].classList.contains('none')) {
+                deleteUser(j, document.querySelectorAll('.user'));
+            }
         }
-    })
-}
+    }
+})
 
 //Hide form of edit user
 let invisible = () => {
@@ -28,12 +32,6 @@ let invisible = () => {
     }
 }
 
-//Hide and show
-$(() => {
-    deleteItem();
-    editItem();
-})
-
 $('.users__addUser').on('click', () => {
     $('.add').show();
 })
@@ -41,8 +39,6 @@ $('.users__addUser').on('click', () => {
 $('.add__close').on('click', () => {
     $('.add').hide();
 })
-
-deleteItem();
 
 //Check.php
 $(() => {
@@ -66,28 +62,29 @@ $(() => {
         if (checkDateTime(obj.data, '.error-dateTime')) return;
 
         try {
-            newUser(obj, userArr, del, editItem(), deleteItem());
+            newUser(obj);
         } catch (e) {
             console.error(e.name, e.message);
         }
     })
 })
 
-//OpenEdit.php
-let editItem = () => {
-    del.forEach((item, index) => {
-        item.addEventListener('click', () => {
-            $('.edit').show();
-            $('.edit').addClass('show');
-
-            invisible();
-
-            indexEdit = index;
-
-            openWindowEdit(indexEdit, userArr);
-        })
-    })
-}
+//OpenEdit
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('user__edit')) {
+        $('.edit').show();
+        $('.edit').addClass('show');
+        invisible();
+        let el = e.target;
+        el.closest('.user').classList.add('none');
+        for (let j = 0; j < document.querySelectorAll('.user').length; j++) {
+            if (document.querySelectorAll('.user')[j].classList.contains('none')) {
+                openWindowEdit(j, document.querySelectorAll('.user'));
+                break;
+            }
+        }
+    }
+})
 
 //Register
 $('.header__register').on('click', e => {
@@ -96,11 +93,27 @@ $('.header__register').on('click', e => {
 
 //Login
 $('.header__login').on('click', () => {
-    getUsers();
+    login();
 })
 
-//Load
-$(() => {
-    getUsers();
-    header();
+//Logo link
+$('.header__logo').on('click', () => {
+    let p = new Promise((resolve, reject) => {
+        $('.app').html('');
+        resolve();
+    })
+    p.then(() => {
+        $('.app').prepend("<section class=\"users\">\n" +
+            "        <div class=\"users__wrapper _container\">\n" +
+            "            <div class=\"users__add\">\n" +
+            "                <div class=\"users__addTitle\">Добавить нового пользователя</div>\n" +
+            "                <a class=\"users__addUser _button\"></a>\n" +
+            "            </div>\n" +
+            "\n" +
+            "        </div>\n" +
+            "    </section>");
+    }).then(() => {
+        $('.app').append(getUsers());
+    })
+
 })
