@@ -14,7 +14,7 @@ let deleteItem = () => {
         item.onclick = e => {
             indexDel = index;
             $.ajax({
-                url: './del.php',
+                url: '/api/user/delete',
                 type: 'POST',
                 cache: false,
                 data: {
@@ -23,7 +23,7 @@ let deleteItem = () => {
                 success: function () {
                     userArr[indexDel].remove();
                     $.ajax({
-                        url: './sort.php',
+                        url: '/api/user/sort',
                         type: 'POST',
                         success: function () {
                             return;
@@ -117,12 +117,10 @@ $(() => {
 
 $('.users__addUser').on('click', () => {
     $('.add').show();
-    history.pushState(null, null, '/new');
 })
 
 $('.add__close').on('click', () => {
     $('.add').hide();
-    window.history.go(-1);
 })
 
 deleteItem();
@@ -147,7 +145,7 @@ $(() => {
 
         try {
             $.ajax({
-                url: './check.php',
+                url: '/api/user/add',
                 type: 'POST',
                 cache: false,
                 data: {
@@ -192,7 +190,7 @@ let editItem = () => {
 
             indexEdit = index;
             $.ajax({
-                url: './OpenEdit.php',
+                url: '/api/window/edit',
                 type: 'POST',
                 cache: false,
                 dataType: 'html',
@@ -219,7 +217,7 @@ let editItem = () => {
                         if (checkPass(pass, '.error-pass-edit', confirm)) return;
 
                         $.ajax({
-                            url: './edit.php',
+                            url: '/api/user/edit',
                             type: 'POST',
                             cache: false,
                             data: {
@@ -251,41 +249,19 @@ let editItem = () => {
 //Register
 $('.header__register').on('click', e => {
     $('.add').show();
-    history.pushState(null, null, '/registration');
 })
 
 //Login
 let login = () => {
     $.ajax({
-        url: "./login.php",
+        url: "/api/user/login",
         method: "GET",
         success(response) {
             document.querySelector('.app').innerHTML = response;
         }
     })
 }
+
 $('.header__login').on('click', () => {
     login();
-    history.pushState(null, null, '/login');
-})
-
-//Router
-let locationResolver = (pathname) => {
-    switch (pathname) {
-        case "/new":
-            $('.add').show();
-            break;
-        case "/registration":
-            $('.add').show();
-            break;
-        case "/login":
-            document.querySelector('.app').innerHTML = "";
-            login();
-            break;
-    }
-}
-
-window.addEventListener('load', () => {
-    let path = window.location.pathname;
-    if (path) locationResolver(path);
 })

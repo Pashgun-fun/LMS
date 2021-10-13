@@ -1,7 +1,6 @@
 <?php
-session_start();
+require "./Route.php";
 require "./forms.php";
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -10,7 +9,7 @@ require "./forms.php";
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="src/assets/css/style.css">
     <title>Document</title>
 </head>
 <body>
@@ -33,14 +32,14 @@ require "./forms.php";
         <div class="users__wrapper _container">
             <div class="users__add">
                 <div class="users__addTitle">Добавить нового пользователя</div>
-                <a class="users__addUser _button" href="/new"></a>
+                <a class="users__addUser _button"></a>
             </div>
             <?php
-            $dir = "./dataBase/";
+            $dir = "./database/";
             $arr1 = array_values(myscandir($dir));
 
             foreach ($arr1 as $value) {
-                $file = './dataBase/' . $value;
+                $file = './database/' . $value;
                 $db = fopen($file, 'a+');
                 $read = trim(fread($db, filesize($file)));
                 $data = json_decode($read, true);
@@ -129,7 +128,7 @@ require "./forms.php";
     </div>
 </div>
 
-<script type="text/javascript" src="./js/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="src/assets/js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="src/assets/js/main.js"></script>
 </body>
 </html>
