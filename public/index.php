@@ -1,6 +1,5 @@
 <?php
-require "./Route.php";
-require "./forms.php";
+require "./Router.php";
 ?>
 <!doctype html>
 <html lang="en">
@@ -12,20 +11,7 @@ require "./forms.php";
     <link rel="stylesheet" href="src/assets/css/style.css">
     <title>Document</title>
 </head>
-<body>
-
-<header class="header">
-    <div class="header__wrapper _container">
-        <a>
-            <div class="header__logo"></div>
-        </a>
-        <div class="header__buttons">
-            <a class="header__login">Login</a>
-            <a class="header__register">Register</a>
-        </div>
-    </div>
-</header>
-
+<body class="body">
 
 <div class="app">
     <section class="users">
@@ -34,18 +20,7 @@ require "./forms.php";
                 <div class="users__addTitle">Добавить нового пользователя</div>
                 <a class="users__addUser _button"></a>
             </div>
-            <?php
-            $dir = "./database/";
-            $arr1 = array_values(myscandir($dir));
 
-            foreach ($arr1 as $value) {
-                $file = './database/' . $value;
-                $db = fopen($file, 'a+');
-                $read = trim(fread($db, filesize($file)));
-                $data = json_decode($read, true);
-                echo(user($data['name']));
-            }
-            ?>
         </div>
     </section>
 </div>
@@ -129,6 +104,6 @@ require "./forms.php";
 </div>
 
 <script type="text/javascript" src="src/assets/js/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="src/assets/js/main.js"></script>
+<script type="module" src="src/assets/js/main.js"></script>
 </body>
 </html>

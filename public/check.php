@@ -1,5 +1,5 @@
 <?php
-require "./forms.php";
+include "./forms.php";
 
 $u = array('name' => check($_POST['login']), 'email' => check($_POST['email']), 'desc' => check($_POST['desc']), 'data' => check($_POST['data']));
 
