@@ -3,7 +3,7 @@ import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js"
 
 //Hide and show
 $(() => {
-    // getUsers();
+    getUsers();
     getMaket();
 })
 
@@ -115,5 +115,4 @@ $('.header__logo').on('click', () => {
     }).then(() => {
         $('.app').append(getUsers());
     })
-
 })

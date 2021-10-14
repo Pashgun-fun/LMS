@@ -60,7 +60,7 @@ function login()
                         <input type="password" placeholder="Введите пароль" name="pass" class="edit-pass"><br>
                         <span class="_error error-pass-edit"></span>
                     </label>
-                    <div class="edit__button">Авторизоваться</div>
+                    <div class="edit__button _enter">Авторизоваться</div>
                 </div>
              </div>');
 }
@@ -70,15 +70,15 @@ function check($value)
     return stripslashes(strip_tags(htmlspecialchars(trim($value))));
 }
 
-function myscandir($dir, $sort = 0)
-{
-    $list = scandir($dir, $sort);
-
-    if (!$list) return false;
-
-    if ($sort == 0) unset($list[0], $list[1]);
-    else unset($list[count($list) - 1], $list[count($list) - 1]);
-    return $list;
-}
+//function myscandir($dir, $sort = 0)
+//{
+//    $list = scandir($dir, $sort);
+//
+//    if (!$list) return false;
+//
+//    if ($sort == 0) unset($list[0], $list[1]);
+//    else unset($list[count($list) - 1], $list[count($list) - 1]);
+//    return $list;
+//}
 
 ?>
