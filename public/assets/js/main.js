@@ -1,9 +1,8 @@
-import {deleteUser, newUser, openWindowEdit, getUsers, getMaket, login} from "./ajax.js";
+import {deleteUser, newUser, openWindowEdit, getUsers, getMaket, login, enterUser, exitUser} from "./ajax.js";
 import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js";
 
 //Hide and show
 $(() => {
-    getUsers();
     getMaket();
 })
 
@@ -32,18 +31,21 @@ let invisible = () => {
     }
 }
 
-$('.users__addUser').on('click', () => {
-    $('.add').show();
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('users__addUser')) {
+        $('.add').show();
+    }
 })
 
-$('.add__close').on('click', () => {
-    $('.add').hide();
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('add__close')) {
+        $('.add').hide();
+    }
 })
 
 //Check.php
-$(() => {
-    $('.add__button').on('click', (e) => {
-
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains("add__button")) {
         let obj = {
             login: $('.login').val().trim(),
             email: $('.email').val().trim(),
@@ -66,8 +68,9 @@ $(() => {
         } catch (e) {
             console.error(e.name, e.message);
         }
-    })
+    }
 })
+
 
 //OpenEdit
 document.addEventListener('click', e => {
@@ -87,32 +90,31 @@ document.addEventListener('click', e => {
 })
 
 //Register
-$('.header__register').on('click', e => {
-    $('.add').show();
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('header__register')) {
+        $('.add').show();
+    }
 })
 
 //Login
-$('.header__login').on('click', () => {
-    login();
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('header__login')) {
+        login();
+    }
 })
 
-//Logo link
-$('.header__logo').on('click', () => {
-    let p = new Promise((resolve, reject) => {
-        $('.app').html('');
-        resolve();
-    })
-    p.then(() => {
-        $('.app').prepend("<section class=\"users\">\n" +
-            "        <div class=\"users__wrapper _container\">\n" +
-            "            <div class=\"users__add\">\n" +
-            "                <div class=\"users__addTitle\">Добавить нового пользователя</div>\n" +
-            "                <a class=\"users__addUser _button\"></a>\n" +
-            "            </div>\n" +
-            "\n" +
-            "        </div>\n" +
-            "    </section>");
-    }).then(() => {
-        $('.app').append(getUsers());
-    })
+//EnterUser
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('_enter')) {
+        let login = $('.edit-email').val().trim();
+        let pass = $('.edit-pass').val().trim();
+        enterUser(login, pass);
+    }
+})
+
+//Exit
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('header__exit')){
+        exitUser();
+    }
 })
