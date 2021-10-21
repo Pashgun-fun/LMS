@@ -4,6 +4,13 @@ import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js"
 //Hide and show
 $(() => {
     getMaket();
+    $.ajax({
+        url: "/api/articles",
+        method: "POST",
+        success: function (response) {
+            $('.footer').before(response);
+        }
+    })
 })
 
 //Delete User

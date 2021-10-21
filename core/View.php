@@ -34,4 +34,8 @@ class View
     {
         include __DIR__ . "/../views/Admin/adminPage.php";
     }
+
+    public function Article($title, $text, $user, $date){
+        include __DIR__."/../views/Article.php";
+    }
 }

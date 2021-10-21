@@ -4,10 +4,11 @@ namespace core;
 
 use controllers\ControllerUser;
 use controllers\ControllerPage;
+use controllers\ControllerArticle;
 
 class Router extends Rote
 {
-    protected static ?Router $_instance = null;
+//    protected static ?Router $_instance = null;
 
     function __construct()
     {
@@ -17,13 +18,13 @@ class Router extends Rote
         $this->run();
     }
 
-    public static function getInstance(): Router
-    {
-        if (self::$_instance === null) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
+//    public static function getInstance(): Router
+//    {
+//        if (self::$_instance === null) {
+//            self::$_instance = new self();
+//        }
+//        return self::$_instance;
+//    }
 
     private function run()
     {
@@ -67,6 +68,10 @@ class Router extends Rote
             case "/":
                 $controllerUsers = new ControllerUser();
                 $controllerUsers->checkRole();
+                break;
+            case "/api/articles":
+                $controllerArticle = new ControllerArticle();
+                $controllerArticle->printAllArticles();
                 break;
         }
     }
