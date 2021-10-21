@@ -17,6 +17,15 @@ class UserModel extends Model
         $this->directory = __DIR__ . "/../database/";
     }
 
+    /**
+     * @param User $user
+     * @return string
+     * Создание нового пользователя с получением данных из ajax
+     * Первоначально проверяется, существет ли уже пользватель  с таким email,
+     * если существет новый пользователь не создастя
+     * Если всё успешно, записывается в файл и жобавляется в базу данных
+     * Если достаточно прав доступа то пользователь сразу отображается на экране (доступно только для admin)
+     **/
     public function newUser(User $user): string
     {
         $arrayFiles = array_values($this->helper->myscandir($this->directory));
@@ -42,12 +51,23 @@ class UserModel extends Model
         return $user->getLogin();
     }
 
+    /**
+     * @param int $indexDel
+     * Удаление пользователя из базы данных, удаление соответсвующего файла
+     * Удаление блока с пользоватлем происходит на frontend
+     **/
     public function deleteUser(int $indexDel)
     {
         $arr = array_values($this->helper->myscandir($this->directory));
         unlink($this->directory . $arr[$indexDel]);
     }
 
+    /**
+     * @param User $user
+     * Редактирование пользователя по которому произошло событие нажатия
+     * Обрабатывается по уникальному индексу этого пользователя
+     * Получаем новые данные о пользователе и менем их в его файле
+     **/
     public function editUser(User $user)
     {
         $file = $this->directory . $user->getIndex() . '.txt';
@@ -61,6 +81,10 @@ class UserModel extends Model
         file_put_contents($this->directory . $user->getIndex() . '.txt', json_encode($el));
     }
 
+    /**
+     * При удалении пользователя сортировка всех пользователей,
+     * чтобы они стояли на правильных позициях
+     **/
     public function sortUsers()
     {
         $arr = array_values($this->helper->myscandir($this->directory));
@@ -69,6 +93,10 @@ class UserModel extends Model
         }
     }
 
+    /**
+     * @return array|null
+     * Отображение всех пользователей, которые представлены в базе данных
+     **/
     public function getAllUsers(): ?array
     {
         $arr1 = array_values($this->helper->myscandir($this->directory));

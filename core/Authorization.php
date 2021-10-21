@@ -15,6 +15,13 @@ class Authorization extends Model
         $this->directory = __DIR__ . "/../database/";
     }
 
+    /**
+     * @param User $user
+     * @return string|null
+     * Авторизция пользователя с проверкой существует ли такой пользователя
+     * Если он существует добавляем ему роль в сессию  для дальнейшей проверки прав доступа
+     * Если такого пользователя нету, выход из авторизации
+     **/
     public function getAuthorization(User $user): ?string
     {
         $arr = array_values($this->helper->myscandir($this->directory));
