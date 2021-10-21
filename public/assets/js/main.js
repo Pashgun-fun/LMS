@@ -1,4 +1,4 @@
-import {deleteUser, newUser, openWindowEdit, getUsers, getMaket, login, enterUser, exitUser} from "./ajax.js";
+import {deleteUser, newUser, openWindowEdit, getMaket, login, enterUser, exitUser} from "./ajax.js";
 import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js";
 
 //Hide and show
@@ -83,6 +83,7 @@ document.addEventListener('click', e => {
         for (let j = 0; j < document.querySelectorAll('.user').length; j++) {
             if (document.querySelectorAll('.user')[j].classList.contains('none')) {
                 openWindowEdit(j, document.querySelectorAll('.user'));
+                el.closest('.user').classList.remove('none');
                 break;
             }
         }
@@ -106,15 +107,17 @@ document.addEventListener('click', (e) => {
 //EnterUser
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('_enter')) {
-        let login = $('.edit-email').val().trim();
-        let pass = $('.edit-pass').val().trim();
-        enterUser(login, pass);
+        let obj = {
+            'login': $('.edit-email').val().trim(),
+            'pass': $('.edit-pass').val().trim(),
+        }
+        enterUser(obj);
     }
 })
 
 //Exit
 document.addEventListener('click', e => {
-    if (e.target.classList.contains('header__exit')){
+    if (e.target.classList.contains('header__exit')) {
         exitUser();
     }
 })
