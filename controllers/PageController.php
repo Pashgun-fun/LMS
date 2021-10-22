@@ -3,11 +3,12 @@
 namespace controllers;
 
 use core\Controller;
-use models\PageModel;
-use models\User;
 
-class ControllerPage extends Controller
+class PageController extends Controller
 {
+    /**
+     * Загрузка страницы авторизации
+     */
     public function loginPage()
     {
         $this->view->login();
@@ -19,8 +20,6 @@ class ControllerPage extends Controller
      **/
     public function editPage()
     {
-        $window = new PageModel();
-        $user = new User($window->openEditWindow($_POST['indexEdit']));
-        $this->view->editWindow($user->getLogin(), $user->getEmail(), $user->getDesc());
+       $this->edit();
     }
 }

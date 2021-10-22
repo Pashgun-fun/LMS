@@ -35,7 +35,19 @@ class View
         include __DIR__ . "/../views/Admin/adminPage.php";
     }
 
-    public function Article($title, $text, $user, $date){
-        include __DIR__."/../views/Article.php";
+    public function article($title, $text, $user, $date)
+    {
+        include __DIR__ . "/../views/article.php";
     }
+
+    public function cardArticle($title, $text, $user, $date)
+    {
+        include __DIR__ . "/../views/cardArticle.php";
+    }
+
+    public function articleAdmin($title, $text, $user, $date)
+    {
+        include __DIR__ . "/../views/articleAdmin.php";
+    }
+
 }

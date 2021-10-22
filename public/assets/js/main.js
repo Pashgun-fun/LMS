@@ -1,16 +1,10 @@
-import {deleteUser, newUser, openWindowEdit, getMaket, login, enterUser, exitUser} from "./ajax.js";
+import {articles, deleteUser, newUser, openWindowEdit, getMaket, login, enterUser, exitUser} from "./ajax.js";
 import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js";
 
 //Hide and show
 $(() => {
     getMaket();
-    $.ajax({
-        url: "/api/articles",
-        method: "POST",
-        success: function (response) {
-            $('.footer').before(response);
-        }
-    })
+    articles();
 })
 
 //Delete User
@@ -126,5 +120,109 @@ document.addEventListener('click', (e) => {
 document.addEventListener('click', e => {
     if (e.target.classList.contains('header__exit')) {
         exitUser();
+    }
+})
+
+//Read a article
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('article__read')) {
+        let el = e.target;
+        el.closest('.article__wrapper').classList.add('show');
+        for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
+            if (document.querySelectorAll('.article__wrapper')[j].classList.contains('show')) {
+                $.ajax({
+                    url: '/api/article/read',
+                    method: 'POST',
+                    data: {
+                        'index': j,
+                    },
+                    success: function (response) {
+                        $('.body').css({
+                            "overflow": "hidden"
+                        })
+                        $('.header').after(response);
+                    }
+                })
+                el.closest('.article__wrapper').classList.remove('show');
+                break;
+            }
+        }
+
+    }
+})
+
+//Close article
+document.addEventListener('click', e => {
+    let el = e.target;
+    if (el.classList.contains('articleFull__close')) {
+        $('.body').css({
+            "overflow": "auto"
+        })
+        el.closest('.articleFull__wrapper').remove();
+    }
+})
+
+//Fill body a random articels
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('generator-article')) {
+        $.ajax({
+            url: '/api/article/random',
+            method: 'POST',
+            success: function (response) {
+                $('.articles').append(response);
+            }
+        })
+    }
+})
+
+//Delete Articles
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('articleFull__delete')) {
+        let el = e.target;
+        el.closest('.article__wrapper').classList.add('none');
+        for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
+            if (document.querySelectorAll('.article__wrapper')[j].classList.contains('none')) {
+                $.ajax({
+                    url: '/api/article/delete',
+                    method: 'DELETE',
+                    data: {
+                        'indexDel': j
+                    },
+                    success: function () {
+                        $('.article__wrapper')[j].remove();
+                    }
+                })
+            }
+        }
+    }
+})
+
+//Edit Article
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('articleFull__edit')) {
+        $('.edit').show();
+        $('.edit').addClass('show');
+        invisible();
+        let el = e.target;
+        el.closest('.article__wrapper').classList.add('none');
+        for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
+            if (document.querySelectorAll('.article__wrapper')[j].classList.contains('none')) {
+                $.ajax({
+                    url: '/api/article/edit',
+                    type: 'POST',
+                    cache: false,
+                    dataType: 'html',
+                    data: {
+                        'indexEdit': j,
+                    },
+                    success(response) {
+                        $('.edit').html(response);
+
+                    }
+                })
+                el.closest('.article__wrapper').classList.remove('none');
+                break;
+            }
+        }
     }
 })

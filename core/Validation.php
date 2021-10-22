@@ -22,4 +22,19 @@ class Validation
         }
         return $listErrors;
     }
+
+    public function checkLengthArticle($str)
+    {
+        $sum = 0;
+        $arrWords = [];
+        $arrOfWords = explode(" ", $str);
+        for ($j = 0; $j < count($arrOfWords); $j++) {
+            $sum += strlen($arrOfWords[$j]);
+            if ($sum > 90) {
+                return implode(" ", $arrWords)." ...";
+            }
+            array_push($arrWords, $arrOfWords[$j]);
+        }
+    }
+
 }

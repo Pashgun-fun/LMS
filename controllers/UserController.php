@@ -9,7 +9,7 @@ use models\User;
 use models\UserModel;
 use core\Authorization;
 
-class ControllerUser extends Controller
+class UserController extends Controller
 {
     protected UserModel $model;
     protected Authorization $auth;
@@ -47,7 +47,6 @@ class ControllerUser extends Controller
     public function deleteUser()
     {
         $arr = $this->helper->resetAPI();
-        var_dump($arr);
         $this->model->deleteUser($arr['indexDel']);
     }
 
@@ -61,15 +60,6 @@ class ControllerUser extends Controller
         foreach ($usersNameArr as $name) {
             $this->view->user(trim($name));
         }
-    }
-
-    /**
-     * Сортировка пользователей в базы данных
-     * Подтягиваем метод из модели
-     **/
-    public function sortUsers()
-    {
-        $this->model->sortUsers();
     }
 
     /**
@@ -88,6 +78,9 @@ class ControllerUser extends Controller
         $this->model->editUser($user);
     }
 
+    /**
+     * Авторизаци пользователя
+     */
     public function authorization()
     {
         $user = new User($_POST['arr']);
@@ -117,6 +110,9 @@ class ControllerUser extends Controller
 
     }
 
+    /**
+     * Выход из профиля
+     */
     public function exitFromProfile()
     {
         session_destroy();

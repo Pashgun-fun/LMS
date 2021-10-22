@@ -12,7 +12,7 @@ class Authorization extends Model
     function __construct()
     {
         $this->helper = new Helper();
-        $this->directory = __DIR__ . "/../database/";
+        $this->directory = __DIR__ . "/../database/Users/";
     }
 
     /**

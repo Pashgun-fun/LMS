@@ -10,13 +10,6 @@ let deleteUser = (indexDel, userArr) => {
         },
         success: function () {
             userArr[indexDel].remove();
-            $.ajax({
-                url: '/api/user/sort',
-                type: 'POST',
-                success: function () {
-                    return;
-                }
-            })
         },
         error: function () {
             alert("Удаление прошло безуспешно");
@@ -135,6 +128,8 @@ let login = () => {
         url: '/api/user/login',
         method: 'GET',
         success: function (response) {
+            $('.articles').remove();
+            $('.generator-article').remove();
             $('.header').after(response);
         }
     })
@@ -172,4 +167,13 @@ let exitUser = () => {
     })
 }
 
-export {deleteUser, newUser, openWindowEdit, getUsers, getMaket, login, enterUser, exitUser}
+let articles = () => {
+    $.ajax({
+        url: "/api/articles",
+        method: "POST",
+        success: function (response) {
+            $('.articles').append(response);
+        }
+    })
+}
+export {articles, deleteUser, newUser, openWindowEdit, getUsers, getMaket, login, enterUser, exitUser}

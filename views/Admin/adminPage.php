@@ -8,6 +8,23 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <title>Document</title>
 </head>
+
+<style>
+    .generator-article {
+        color: black;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+        text-align: center;
+        height: 50px;
+        line-height: 50px;
+        width: 30%;
+        background: red;
+        margin-top: 50px;
+        margin-bottom: 100px;
+    }
+</style>
+
 <body class="body">
 <header class="header">
     <div class="header__wrapper _container">
@@ -28,7 +45,7 @@
                 <a class="users__addUser _button"></a>
             </div>
             <?php
-            foreach ($usersNameArr as $login){
+            foreach ($usersNameArr as $login) {
                 echo('<div class="user">
                             <div class="user__wrapper">
                                 <div class="user__name">' . $login . '</div>
@@ -43,6 +60,9 @@
         </div>
     </section>
 </div>
+<section class="articles">
+</section>
+<div class="generator-article _container">Сгенерировать статьи</div>
 
 <div class="add">
     <div class="add__wrapper">
@@ -115,6 +135,7 @@
         </form>
     </div>
 </div>
+
 <footer class="footer">
     <div class="footer__wrapper _container">
         Footer

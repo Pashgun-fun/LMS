@@ -5,6 +5,4 @@ require __DIR__ . "/../core/Autoloader.php";
 
 use core\Router;
 
-new Router();
-
-//Router::getInstance();
+Router::getInstance();

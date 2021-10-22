@@ -2,19 +2,18 @@
 
 namespace models;
 
-use core\Helper;
 use core\Model;
-
+use core\Helper;
 
 class UserModel extends Model
 {
     public string $directory;
-    protected Helper $helper;
+    public Helper $helper;
 
     public function __construct()
     {
         $this->helper = new Helper();
-        $this->directory = __DIR__ . "/../database/";
+        $this->directory = __DIR__ . "/../database/Users/";
     }
 
     /**
@@ -28,7 +27,8 @@ class UserModel extends Model
      **/
     public function newUser(User $user): string
     {
-        $arrayFiles = array_values($this->helper->myscandir($this->directory));
+        $arrayFiles = $this->helper->myscandir($this->directory);
+        asort($arrayFiles);
         foreach ($arrayFiles as $file) {
             $fileName = $this->directory . $file;
             $el = $this->readFile($fileName);
@@ -45,7 +45,7 @@ class UserModel extends Model
             'pass' => $user->getPass(),
         );
 
-        $newFile = $this->directory . count($arrayFiles) . '.txt';
+        $newFile = $this->directory . (+array_pop($arrayFiles) + 1);
         $this->writeFile($newFile, $userData);
 
         return $user->getLogin();
@@ -59,7 +59,15 @@ class UserModel extends Model
     public function deleteUser(int $indexDel)
     {
         $arr = array_values($this->helper->myscandir($this->directory));
-        unlink($this->directory . $arr[$indexDel]);
+        asort($arr);
+        $file = null;
+        for ($j = 0; $j < count($arr); $j++) {
+            if ($j === $indexDel){
+                $file = $arr[$j];
+                break;
+            }
+        }
+        unlink($this->directory . $file);
     }
 
     /**
@@ -70,27 +78,25 @@ class UserModel extends Model
      **/
     public function editUser(User $user)
     {
-        $file = $this->directory . $user->getIndex() . '.txt';
+        $arr = array_values($this->helper->myscandir($this->directory));
+        asort($arr);
+        $fileEdit = null;
+        for ($j = 0; $j < count($arr); $j++) {
+            if ($j === $user->getIndex()) {
+                $fileEdit = $arr[$j];
+                break;
+            }
+        }
+
+        $file = $this->directory . $fileEdit;
         $el = $this->readFile($file);
 
         $el['login'] = $user->getLogin();
         $el['email'] = $user->getEmail();
         $el['desc'] = $user->getDesc();
 
-        file_put_contents($this->directory . $user->getIndex() . '.txt', '');
-        file_put_contents($this->directory . $user->getIndex() . '.txt', json_encode($el));
-    }
-
-    /**
-     * При удалении пользователя сортировка всех пользователей,
-     * чтобы они стояли на правильных позициях
-     **/
-    public function sortUsers()
-    {
-        $arr = array_values($this->helper->myscandir($this->directory));
-        for ($j = 0; $j < array_values($arr); $j++) {
-            rename($this->directory . $arr[$j], $this->directory . $j . ".txt");
-        }
+        file_put_contents($this->directory . $fileEdit, '');
+        file_put_contents($this->directory . $fileEdit, json_encode($el));
     }
 
     /**

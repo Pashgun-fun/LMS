@@ -23,7 +23,6 @@ class Helper
         if ($sort === 0) {
             unset($list[0], $list[1]);
         }
-
         return $list;
     }
 
