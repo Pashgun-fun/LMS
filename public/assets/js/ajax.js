@@ -103,16 +103,6 @@ let openWindowEdit = (indexEdit, userArr) => {
     })
 }
 
-let getUsers = () => {
-    $.ajax({
-        url: '/api/user/get',
-        method: 'GET',
-        success: function (response) {
-            $('.users__wrapper').append(response);
-        }
-    })
-}
-
 let getMaket = () => {
     $.ajax({
         url: "/",
@@ -129,7 +119,10 @@ let login = () => {
         method: 'GET',
         success: function (response) {
             $('.articles').remove();
+            $('.news').remove();
             $('.generator-article').remove();
+            $('.generator-news').remove();
+            $('._title').remove();
             $('.header').after(response);
         }
     })
@@ -176,4 +169,4 @@ let articles = () => {
         }
     })
 }
-export {articles, deleteUser, newUser, openWindowEdit, getUsers, getMaket, login, enterUser, exitUser}
+export {articles, deleteUser, newUser, openWindowEdit, getMaket, login, enterUser, exitUser}

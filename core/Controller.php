@@ -23,4 +23,5 @@ class Controller
         $user = new User($window->openEditWindow($_POST['indexEdit']));
         $this->view->editWindow($user->getLogin(), $user->getEmail(), $user->getDesc());
     }
+
 }

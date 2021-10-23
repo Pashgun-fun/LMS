@@ -5,6 +5,13 @@ import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js"
 $(() => {
     getMaket();
     articles();
+    $.ajax({
+        url: "/api/news",
+        method: "POST",
+        success: function (response) {
+            $('.news').append(response);
+        }
+    })
 })
 
 //Delete User
@@ -175,6 +182,18 @@ document.addEventListener('click', e => {
     }
 })
 
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('generator-news')) {
+        $.ajax({
+            url: '/api/news/random',
+            method: 'POST',
+            success: function (response) {
+                $('.news').append(response);
+            }
+        })
+    }
+})
+
 //Delete Articles
 document.addEventListener('click', e => {
     if (e.target.classList.contains('articleFull__delete')) {
@@ -197,32 +216,31 @@ document.addEventListener('click', e => {
     }
 })
 
-//Edit Article
+
+//New a article
 document.addEventListener('click', e => {
-    if (e.target.classList.contains('articleFull__edit')) {
-        $('.edit').show();
-        $('.edit').addClass('show');
-        invisible();
+    if (e.target.classList.contains('news__read')) {
         let el = e.target;
-        el.closest('.article__wrapper').classList.add('none');
-        for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
-            if (document.querySelectorAll('.article__wrapper')[j].classList.contains('none')) {
+        el.closest('.news__wrapper').classList.add('show');
+        for (let j = 0; j < document.querySelectorAll('.news__wrapper').length; j++) {
+            if (document.querySelectorAll('.news__wrapper')[j].classList.contains('show')) {
                 $.ajax({
-                    url: '/api/article/edit',
-                    type: 'POST',
-                    cache: false,
-                    dataType: 'html',
+                    url: '/api/news/read',
+                    method: 'POST',
                     data: {
-                        'indexEdit': j,
+                        'index': j,
                     },
-                    success(response) {
-                        $('.edit').html(response);
+                    success: function (response) { $('.header').after(response);
+                        $('.body').css({
+                            "overflow": "hidden"
+                        })
 
                     }
                 })
-                el.closest('.article__wrapper').classList.remove('none');
+                el.closest('.news__wrapper').classList.remove('show');
                 break;
             }
         }
+
     }
 })

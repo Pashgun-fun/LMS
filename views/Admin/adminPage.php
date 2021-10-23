@@ -60,9 +60,18 @@
         </div>
     </section>
 </div>
+
+<div class="_title _container">Статьи</div>
 <section class="articles">
 </section>
+
 <div class="generator-article _container">Сгенерировать статьи</div>
+
+<div class="_title _container" style="margin-top: 100px">Новости</div>
+<section class="news">
+</section>
+
+<div class="generator-news _container" style="margin-bottom: 100px">Сгенерировать новости</div>
 
 <div class="add">
     <div class="add__wrapper">

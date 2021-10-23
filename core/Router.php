@@ -2,6 +2,7 @@
 
 namespace core;
 
+use controllers\NewController;
 use controllers\UserController;
 use controllers\PageController;
 use controllers\ArticleController;
@@ -77,9 +78,17 @@ class Router extends Rote
                 $controllerArticle = new ArticleController();
                 $controllerArticle->deleteArticle();
                 break;
-            case "/api/article/edit":
-                $controllerArticle = new ArticleController();
-                $controllerArticle->editPage();
+            case "/api/news":
+                $controllerNews = new NewController();
+                $controllerNews->printShortsNews();
+                break;
+            case "/api/news/read":
+                $controllerNews = new NewController();
+                $controllerNews->printAllArticles();
+                break;
+            case "/api/news/random":
+                $controllerNews = new NewController();
+                $controllerNews->getRandomNews();
                 break;
             case "/":
                 $controllerUsers = new UserController();
