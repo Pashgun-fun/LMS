@@ -2,11 +2,8 @@
 
 namespace core;
 
-use core\View;
-use models\Article;
-use models\ArticleModel;
 use models\PageModel;
-use models\User;
+use entites\User;
 
 class Controller
 {
@@ -17,6 +14,9 @@ class Controller
         $this->view = new View();
     }
 
+    /**
+     * Открытие модального окна для редактирования пользовтаеля
+     */
     protected function edit()
     {
         $window = new PageModel();

@@ -4,6 +4,7 @@ namespace models;
 
 use core\Model;
 use core\Helper;
+use entites\User;
 
 class UserModel extends Model
 {
@@ -17,8 +18,6 @@ class UserModel extends Model
     }
 
     /**
-     * @param User $user
-     * @return string
      * Создание нового пользователя с получением данных из ajax
      * Первоначально проверяется, существет ли уже пользватель  с таким email,
      * если существет новый пользователь не создастя
@@ -52,26 +51,15 @@ class UserModel extends Model
     }
 
     /**
-     * @param int $indexDel
      * Удаление пользователя из базы данных, удаление соответсвующего файла
      * Удаление блока с пользоватлем происходит на frontend
      **/
     public function deleteUser(int $indexDel)
     {
-        $arr = array_values($this->helper->myscandir($this->directory));
-        asort($arr);
-        $file = null;
-        for ($j = 0; $j < count($arr); $j++) {
-            if ($j === $indexDel){
-                $file = $arr[$j];
-                break;
-            }
-        }
-        unlink($this->directory . $file);
+        $this->delete($this->directory, $indexDel);
     }
 
     /**
-     * @param User $user
      * Редактирование пользователя по которому произошло событие нажатия
      * Обрабатывается по уникальному индексу этого пользователя
      * Получаем новые данные о пользователе и менем их в его файле
@@ -100,7 +88,6 @@ class UserModel extends Model
     }
 
     /**
-     * @return array|null
      * Отображение всех пользователей, которые представлены в базе данных
      **/
     public function getAllUsers(): ?array

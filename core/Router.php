@@ -7,7 +7,7 @@ use controllers\UserController;
 use controllers\PageController;
 use controllers\ArticleController;
 
-class Router extends Rote
+class Router extends Roters
 {
     protected static ?Router $_instance = null;
 
@@ -19,6 +19,11 @@ class Router extends Rote
         $this->run();
     }
 
+    /**
+     * Принцип singleton
+     * Суть такая, что если объект уже существует при повторном его вызове не будет
+     * создаваться новый объект, а будет работа с тем же
+     */
     public static function getInstance(): Router
     {
         if (self::$_instance === null) {

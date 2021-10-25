@@ -5,7 +5,7 @@ namespace controllers;
 use core\Controller;
 use core\Helper;
 use core\Validation;
-use models\User;
+use entites\User;
 use models\UserModel;
 use core\Authorization;
 

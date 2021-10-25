@@ -8,6 +8,7 @@ use core\Helper;
 class NewModel extends Model
 {
     public string $directory;
+    public string $config;
 
     public Helper $helper;
 
@@ -15,36 +16,31 @@ class NewModel extends Model
     {
         $this->helper = new Helper();
         $this->directory = __DIR__ . "/../database/News/";
+        $this->config = __DIR__ . "/../public/config/random_articles_and_news.php";
     }
 
+    /**
+     * Добавляем необходимое количество статей для заполнения сайта
+     */
     public function getAllNews(): array
     {
-        $arrayArticles = array();
-
-        $arr = array_values($this->helper->myscandir($this->directory));
-        foreach ($arr as $val) {
-            $fileName = $this->directory . $val;
-            $file = $this->readFile($fileName);
-            array_push($arrayArticles, $file);
-        }
-        return $arrayArticles;
+        return $this->publishing($this->directory);
     }
 
+    /**
+     * Добавляем необходимое количество статей для заполнения сайта
+     */
     public function setRandomNews()
     {
-        $config = require_once __DIR__ . "/../public/config/random_articles_and_news.php";
-        $arrFiles = $this->helper->myscandir($this->directory);
-        asort($arrFiles);
-        $lastFile = (+array_pop($arrFiles) + 1);
-        $j = 0;
-        while ($j <= 25) {
-            $index = $lastFile + $j;
-            $fileName = $this->directory . $index;
-            $this->writeFile($fileName, $config['articles']);
-            $j++;
-        }
+        $this->publishRandom($this->directory, $this->config);
     }
 
+    /**
+     * @param int $time
+     * Удаление новости, по истечении суток, из ленты
+     * Чтобы понять, можно ли удалять файл из базы, мы сравниваем занесенное туда время с текущим
+     * Время заносится, когда новость создалась в формате количества секунд с 1970 года
+     */
     public function deleteNews(int $time)
     {
         $arr = array_values($this->helper->myscandir($this->directory));

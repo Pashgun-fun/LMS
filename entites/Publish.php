@@ -1,9 +1,9 @@
 <?php
 
-namespace models;
+namespace entites;
 
 
-class Article
+class Publish
 {
     private string $title;
     private string $text;

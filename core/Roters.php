@@ -2,7 +2,7 @@
 
 namespace core;
 
-class Rote
+class Roters
 {
     protected string $path;
 
@@ -11,6 +11,9 @@ class Rote
         $this->path = $_SERVER['REQUEST_URI'];
     }
 
+    /**
+     * Функиця для порверки прав доступа
+     */
     public function check()
     {
         switch ($this->path) {

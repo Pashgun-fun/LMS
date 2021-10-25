@@ -6,7 +6,7 @@ use core\Controller;
 use core\Validation;
 use core\Helper;
 use models\NewModel;
-use models\News;
+use entites\Publish;
 
 class NewController extends Controller
 {
@@ -20,12 +20,17 @@ class NewController extends Controller
         $this->helper = new Helper();
     }
 
+    /**
+     * Вывод новостей с валидацией
+     * Создаётся сущность и через геттеры выводим данные
+     * Обрезаем длину текста до 100 символов
+     */
     public function printShortsNews()
     {
         $valid = new Validation();
         $art = $this->newModel->getAllNews();
         foreach ($art as $val) {
-            $article = new News($val);
+            $article = new Publish($val);
             $this->view->news(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
@@ -35,10 +40,13 @@ class NewController extends Controller
         }
     }
 
+    /**
+     * Вывод полной новости по нужному индексу
+     */
     public function printAllArticles()
     {
         $art = $this->newModel->getAllNews();
-        $article = new News($art[$_POST['index']]);
+        $article = new Publish($art[$_POST['index']]);
         $this->view->cardArticle(
             $article->getTitle(),
             $article->getText(),
@@ -47,16 +55,22 @@ class NewController extends Controller
         );
     }
 
+    /**
+     * Заполнение блок случайными новостями
+     */
     public function getRandomNews()
     {
         $this->newModel->setRandomNews();
         $this->printShortsNews();
     }
 
+    /**
+     * Удаление новости
+     */
     public function deleteNews()
     {
         $arr = $this->helper->resetAPI();
-        $this->newModel->deleteNews(+$arr['time']);
+        $this->newModel->deleteNews((int)$arr['time']);
     }
 
 }

@@ -2,8 +2,8 @@
 
 namespace core;
 
-use models\User;
-use Enums\Roles;
+use entites\User;
+use enums\Roles;
 
 class Authorization extends Model
 {
@@ -19,8 +19,6 @@ class Authorization extends Model
     }
 
     /**
-     * @param User $user
-     * @return string|null
      * Авторизция пользователя с проверкой существует ли такой пользователя
      * Если он существует добавляем ему роль в сессию  для дальнейшей проверки прав доступа
      * Если такого пользователя нету, выход из авторизации

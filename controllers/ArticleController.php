@@ -4,7 +4,7 @@ namespace controllers;
 
 use core\Controller;
 use core\Helper;
-use models\Article;
+use entites\Publish;
 use models\ArticleModel;
 use core\Validation;
 
@@ -20,13 +20,18 @@ class ArticleController extends Controller
         $this->helper = new Helper();
     }
 
+    /**
+     * Вывод статей с валидацией
+     * Создаётся сущность и через геттеры выводим данные
+     * Обрезаем длину текста до 100 символов
+     */
     public function printShortsArticles()
     {
         if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
             $valid = new Validation();
             $art = $this->articleModel->getAllArticles();
             foreach ($art as $val) {
-                $article = new Article($val);
+                $article = new Publish($val);
                 $this->view->article(
                     $article->getTitle(),
                     $valid->checkLengthArticle($article->getText()),
@@ -39,7 +44,7 @@ class ArticleController extends Controller
             $valid = new Validation();
             $art = $this->articleModel->getAllArticles();
             foreach ($art as $val) {
-                $article = new Article($val);
+                $article = new Publish($val);
                 $this->view->articleAdmin(
                     $article->getTitle(),
                     $valid->checkLengthArticle($article->getText()),
@@ -50,10 +55,13 @@ class ArticleController extends Controller
         }
     }
 
+    /**
+     * Вывод полной статьи по нужному индексу
+     */
     public function printAllArticles()
     {
         $art = $this->articleModel->getAllArticles();
-        $article = new Article($art[$_POST['index']]);
+        $article = new Publish($art[$_POST['index']]);
         $this->view->cardArticle(
             $article->getTitle(),
             $article->getText(),
@@ -62,16 +70,22 @@ class ArticleController extends Controller
         );
     }
 
+    /**
+     * Заполнение блок случайными статьями
+     */
     public function getRandomArticles()
     {
         $this->articleModel->setRandomArticles();
         $this->printShortsArticles();
     }
 
+    /**
+     * Удаление статьи
+     */
     public function deleteArticle()
     {
         $arr = $this->helper->resetAPI();
-        $this->articleModel->deleteArticle(+$arr['indexDel']);
+        $this->articleModel->deleteArticle((int)$arr['indexDel']);
     }
 
 }

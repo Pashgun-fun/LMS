@@ -7,25 +7,11 @@ $(() => {
     getMaket();
     articles();
 
-    setTimeout(() => {
-        let countArticles = $('.article__wrapper').length;
-        $('._article').find('span').html(countArticles);
-    }, 100)
-
-    setTimeout(() => {
-        let countArticles = $('.news__wrapper').length;
-        $('._news').find('span').html(countArticles);
-    }, 100)
-
     $.ajax({
         url: "/api/news",
         method: "POST",
         success: function (response) {
             $('.news').append(response);
-            setTimeout(() => {
-                let countArticles = $('.news__wrapper').length;
-                $('._news').find('span').html(countArticles);
-            }, 100)
         }
     })
     $.ajax({
@@ -203,10 +189,6 @@ document.addEventListener('click', e => {
             method: 'POST',
             success: function (response) {
                 $('.articles').append(response);
-                setTimeout(() => {
-                    let countArticles = $('.article__wrapper').length;
-                    $('._article').find('span').html(countArticles);
-                }, 10)
             }
         })
     }
