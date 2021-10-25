@@ -36,5 +36,4 @@ class Validation
             array_push($arrWords, $arrOfWords[$j]);
         }
     }
-
 }

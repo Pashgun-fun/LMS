@@ -3,13 +3,39 @@ import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js"
 
 //Hide and show
 $(() => {
+    let date = new Date();
     getMaket();
     articles();
+
+    setTimeout(() => {
+        let countArticles = $('.article__wrapper').length;
+        $('._article').find('span').html(countArticles);
+    }, 100)
+
+    setTimeout(() => {
+        let countArticles = $('.news__wrapper').length;
+        $('._news').find('span').html(countArticles);
+    }, 100)
+
     $.ajax({
         url: "/api/news",
         method: "POST",
         success: function (response) {
             $('.news').append(response);
+            setTimeout(() => {
+                let countArticles = $('.news__wrapper').length;
+                $('._news').find('span').html(countArticles);
+            }, 100)
+        }
+    })
+    $.ajax({
+        url: '/api/check/news',
+        method: 'DELETE',
+        data: {
+            'time': date.getTime() / 1000,
+        },
+        success: function () {
+            return;
         }
     })
 })
@@ -169,7 +195,7 @@ document.addEventListener('click', e => {
     }
 })
 
-//Fill body a random articels
+//Fill body a random articles
 document.addEventListener('click', e => {
     if (e.target.classList.contains('generator-article')) {
         $.ajax({
@@ -177,6 +203,10 @@ document.addEventListener('click', e => {
             method: 'POST',
             success: function (response) {
                 $('.articles').append(response);
+                setTimeout(() => {
+                    let countArticles = $('.article__wrapper').length;
+                    $('._article').find('span').html(countArticles);
+                }, 10)
             }
         })
     }
@@ -230,7 +260,8 @@ document.addEventListener('click', e => {
                     data: {
                         'index': j,
                     },
-                    success: function (response) { $('.header').after(response);
+                    success: function (response) {
+                        $('.header').after(response);
                         $('.body').css({
                             "overflow": "hidden"
                         })

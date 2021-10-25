@@ -49,14 +49,14 @@
     </div>
 </div>
 
-<div class="_title _container">Статьи</div>
+<div class="_title _container _article">Статьи <span></span></div>
 <section class="articles">
 </section>
 
 <div class="generator-article _container">Сгенерировать статьи</div>
 
 
-<div class="_title _container"  style="margin-top: 100px">Новости</div>
+<div class="_title _container _news"  style="margin-top: 100px">Новости <span></span></div>
 <section class="news">
 </section>
 

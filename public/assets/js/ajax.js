@@ -166,6 +166,7 @@ let articles = () => {
         method: "POST",
         success: function (response) {
             $('.articles').append(response);
+
         }
     })
 }

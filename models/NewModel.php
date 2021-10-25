@@ -30,7 +30,8 @@ class NewModel extends Model
         return $arrayArticles;
     }
 
-    public function setRandomNews(){
+    public function setRandomNews()
+    {
         $config = require_once __DIR__ . "/../public/config/random_articles_and_news.php";
         $arrFiles = $this->helper->myscandir($this->directory);
         asort($arrFiles);
@@ -43,4 +44,19 @@ class NewModel extends Model
             $j++;
         }
     }
+
+    public function deleteNews(int $time)
+    {
+        $arr = array_values($this->helper->myscandir($this->directory));
+        foreach ($arr as $val) {
+            $fileName = $this->directory . $val;
+            $infoAboutNew = $this->readFile($fileName);
+            $differentTime = +$time - $infoAboutNew['seconds'];
+            var_dump($differentTime);
+            if ($differentTime >= 86400) {
+                unlink($this->directory . $val);
+            }
+        }
+    }
+
 }

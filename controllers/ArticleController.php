@@ -74,5 +74,4 @@ class ArticleController extends Controller
         $this->articleModel->deleteArticle(+$arr['indexDel']);
     }
 
-
 }

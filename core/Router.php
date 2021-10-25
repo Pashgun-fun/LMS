@@ -90,6 +90,10 @@ class Router extends Rote
                 $controllerNews = new NewController();
                 $controllerNews->getRandomNews();
                 break;
+            case "/api/check/news":
+                $controllerNews = new NewController();
+                $controllerNews->deleteNews();
+                break;
             case "/":
                 $controllerUsers = new UserController();
                 $controllerUsers->checkRole();

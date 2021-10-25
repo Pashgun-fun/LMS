@@ -53,4 +53,10 @@ class NewController extends Controller
         $this->printShortsNews();
     }
 
+    public function deleteNews()
+    {
+        $arr = $this->helper->resetAPI();
+        $this->newModel->deleteNews(+$arr['time']);
+    }
+
 }

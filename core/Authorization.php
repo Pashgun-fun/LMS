@@ -3,14 +3,17 @@
 namespace core;
 
 use models\User;
+use Enums\Roles;
 
 class Authorization extends Model
 {
     protected Helper $helper;
     public ?string $directory = null;
+    protected Roles $roles;
 
     function __construct()
     {
+        $this->roles = new Roles();
         $this->helper = new Helper();
         $this->directory = __DIR__ . "/../database/Users/";
     }
@@ -29,10 +32,10 @@ class Authorization extends Model
             $el = parent::readFile($this->directory . $file);
             if ($el['email'] === $user->getLogin() && $el['pass'] === $user->getPass()) {
                 if ($el['role'] === "admin") {
-                    $_SESSION['ROLE'] = 'admin';
+                    $_SESSION['ROLE'] = $this->roles::ADMIN_ROLE;
                     return $user->getLogin();
                 }
-                $_SESSION['ROLE'] = 'user';
+                $_SESSION['ROLE'] = $this->roles::USER_ROLE;
                 return $user->getLogin();
             }
         }
