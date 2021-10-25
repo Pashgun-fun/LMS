@@ -99,6 +99,26 @@ class Router extends Roters
                 $controllerNews = new NewController();
                 $controllerNews->deleteNews();
                 break;
+            case "/api/news/delete":
+                $controllerNews = new NewController();
+                $controllerNews->removeNews();
+                break;
+            case "/api/window/edit/article":
+                $controllerArticle = new ArticleController();
+                $controllerArticle->windowEdit();
+                break;
+            case "/api/article/edit":
+                $controllerArticle = new ArticleController();
+                $controllerArticle->editArticleInfo();
+                break;
+            case "/api/window/edit/news":
+                $controllerNews = new NewController();
+                $controllerNews->windowEdit();
+                break;
+            case "/api/news/edit":
+                $controllerNews = new NewController();
+                $controllerNews->editNewsInfo();
+                break;
             case "/":
                 $controllerUsers = new UserController();
                 $controllerUsers->checkRole();

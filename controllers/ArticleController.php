@@ -88,4 +88,19 @@ class ArticleController extends Controller
         $this->articleModel->deleteArticle((int)$arr['indexDel']);
     }
 
+    public function windowEdit()
+    {
+        $this->editArticle();
+    }
+
+    public function editArticleInfo(): void
+    {
+        $valid = new Validation();
+        $arr = $valid->checkCreateForm($_POST['arr'], 'checkArticlesAndNewsFields');
+        if (count($arr) !== 0) {
+            return;
+        }
+        $article = new Publish($_POST['arr']);
+        $this->articleModel->edit($article);
+    }
 }

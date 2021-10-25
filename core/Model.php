@@ -2,6 +2,8 @@
 
 namespace core;
 
+use entites\Publish;
+
 class Model
 {
     /**
@@ -82,7 +84,8 @@ class Model
      * Удаляеем статью из базы данных
      * Путем сканироования и далее нахоэждения общего индекса
      */
-    protected function delete(string $dir, int $indexDel){
+    protected function delete(string $dir, int $indexDel)
+    {
         $arr = array_values($this->helper->myscandir($dir));
         asort($arr);
         $file = null;
@@ -93,5 +96,42 @@ class Model
             }
         }
         unlink($dir . $file);
+    }
+
+    protected function openEdit(string $dir, int $index)
+    {
+        $arr = array_values($this->helper->myscandir($dir));
+        asort($arr);
+        $file = null;
+        for ($j = 0; $j < count($arr); $j++) {
+            if ($j === $index) {
+                $file = $arr[$j];
+                break;
+            }
+        }
+        $fileEdit = $dir . $file;
+        return $this->readFile($fileEdit);
+    }
+
+    protected function editForArticlesAndNews($publish, $dir){
+        $arr = array_values($this->helper->myscandir($dir));
+        asort($arr);
+        $fileEdit = null;
+        for ($j = 0; $j < count($arr); $j++) {
+            if ($j === $publish->getIndex()) {
+                $fileEdit = $arr[$j];
+                break;
+            }
+        }
+
+        $file = $dir . $fileEdit;
+        $el = $this->readFile($file);
+
+        $el['user'] = $publish->getUser();
+        $el['title'] = $publish->getTitle();
+        $el['text'] = $publish->getText();
+
+        file_put_contents($dir . $fileEdit, '');
+        file_put_contents($dir . $fileEdit, json_encode($el));
     }
 }

@@ -1,5 +1,5 @@
 import {articles, deleteUser, newUser, openWindowEdit, getMaket, login, enterUser, exitUser} from "./ajax.js";
-import {checkLogin, checkEmail, checkPass, checkDateTime} from "./validation.js";
+import {checkLogin, checkEmail, checkPass, checkDateTime, checkLength} from "./validation.js";
 
 //Hide and show
 $(() => {
@@ -43,7 +43,7 @@ document.addEventListener('click', e => {
 let invisible = () => {
     if ($('.edit').hasClass('show')) {
         document.addEventListener('click', e => {
-            if (!e.target.closest('.user__edit') && !e.target.closest('.edit')) {
+            if (!e.target.closest('.user__edit') && !e.target.closest('.edit') && !e.target.closest('.articleFull__edit') && !e.target.closest('.newsFull__edit')) {
                 $('.edit').hide();
             }
             return;
@@ -109,6 +109,142 @@ document.addEventListener('click', e => {
         }
     }
 })
+
+//Edit Article
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('articleFull__edit')) {
+        $('.edit').show();
+        $('.edit').addClass('show');
+        invisible();
+        let el = e.target;
+        el.closest('.article__wrapper').classList.add('none');
+        for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
+            if (document.querySelectorAll('.article__wrapper')[j].classList.contains('none')) {
+                let arr = document.querySelectorAll('.article__wrapper');
+                $.ajax({
+                    url: '/api/window/edit/article',
+                    type: 'POST',
+                    cache: false,
+                    dataType: 'html',
+                    data: {
+                        'indexEdit': j,
+                    },
+                    success(response) {
+                        $('.edit').html(response);
+                        $('.edit__button').on('click', e => {
+                            e.preventDefault();
+                            let objEdit = {
+                                user: $('.edit-login').val().trim(),
+                                title: $('.edit-email').val().trim(),
+                                text: $('.edit-desc').val().trim(),
+                                index: j,
+                            }
+
+                            if (checkLogin(objEdit.user, '.error-login-edit')) return;
+
+                            if (checkLogin(objEdit.title, '.error-email-edit')) return;
+
+                            $.ajax({
+                                url: '/api/article/edit',
+                                type: 'POST',
+                                cache: false,
+                                data: {
+                                    'arr': objEdit,
+                                },
+                                dataType: 'html',
+                                beforeSend: function () {
+                                    $('.edit__button').prop("disabled", true);
+                                },
+                                success: function () {
+                                    $('.edit__button').prop("disabled", false);
+                                    document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__name').innerHTML = objEdit.user;
+                                    document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__title').innerHTML = objEdit.title;
+                                    document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__text').innerHTML = checkLength(objEdit.text);
+                                }
+                            })
+
+                            $('.edit').hide();
+                        })
+                    },
+                    error: function () {
+                        alert("Редактирование не возможно");
+                    }
+                })
+                el.closest('.article__wrapper').classList.remove('none');
+                break;
+            }
+        }
+    }
+})
+
+
+//Edit News
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('newsFull__edit')) {
+        $('.edit').show();
+        $('.edit').addClass('show');
+        invisible();
+        let el = e.target;
+        el.closest('.news__wrapper').classList.add('none');
+        for (let j = 0; j < document.querySelectorAll('.news__wrapper').length; j++) {
+            if (document.querySelectorAll('.news__wrapper')[j].classList.contains('none')) {
+                let arr = document.querySelectorAll('.news__wrapper');
+                $.ajax({
+                    url: '/api/window/edit/news',
+                    type: 'POST',
+                    cache: false,
+                    dataType: 'html',
+                    data: {
+                        'indexEdit': j,
+                    },
+                    success(response) {
+                        $('.edit').html(response);
+                        $('.edit__button').on('click', e => {
+                            e.preventDefault();
+                            let objEdit = {
+                                user: $('.edit-login').val().trim(),
+                                title: $('.edit-email').val().trim(),
+                                text: $('.edit-desc').val().trim(),
+                                index: j,
+                            }
+
+                            if (checkLogin(objEdit.user, '.error-login-edit')) return;
+
+                            if (checkLogin(objEdit.title, '.error-email-edit')) return;
+
+                            $.ajax({
+                                url: '/api/news/edit',
+                                type: 'POST',
+                                cache: false,
+                                data: {
+                                    'arr': objEdit,
+                                },
+                                dataType: 'html',
+                                beforeSend: function () {
+                                    $('.edit__button').prop("disabled", true);
+                                },
+                                success: function () {
+                                    $('.edit__button').prop("disabled", false);
+                                    document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__user').innerHTML = objEdit.user;
+                                    document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__title').innerHTML = objEdit.title;
+                                    document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__text').innerHTML = checkLength(objEdit.text);
+                                }
+                            })
+
+                            $('.edit').hide();
+                        })
+                    },
+                    error: function () {
+                        alert("Редактирование не возможно");
+                    }
+                })
+                el.closest('.news__wrapper').classList.remove('none');
+                break;
+            }
+        }
+    }
+})
+
 
 //Register
 document.addEventListener('click', (e) => {
@@ -221,6 +357,28 @@ document.addEventListener('click', e => {
                     },
                     success: function () {
                         $('.article__wrapper')[j].remove();
+                    }
+                })
+            }
+        }
+    }
+})
+
+//DeleteNews
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('newsFull__delete')) {
+        let el = e.target;
+        el.closest('.news__wrapper').classList.add('none');
+        for (let j = 0; j < document.querySelectorAll('.news__wrapper').length; j++) {
+            if (document.querySelectorAll('.news__wrapper')[j].classList.contains('none')) {
+                $.ajax({
+                    url: '/api/news/delete',
+                    method: 'DELETE',
+                    data: {
+                        'indexDel': j
+                    },
+                    success: function () {
+                        $('.news__wrapper')[j].remove();
                     }
                 })
             }

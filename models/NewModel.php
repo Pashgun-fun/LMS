@@ -4,6 +4,7 @@ namespace models;
 
 use core\Model;
 use core\Helper;
+use entites\Publish;
 
 class NewModel extends Model
 {
@@ -36,7 +37,6 @@ class NewModel extends Model
     }
 
     /**
-     * @param int $time
      * Удаление новости, по истечении суток, из ленты
      * Чтобы понять, можно ли удалять файл из базы, мы сравниваем занесенное туда время с текущим
      * Время заносится, когда новость создалась в формате количества секунд с 1970 года
@@ -55,4 +55,22 @@ class NewModel extends Model
         }
     }
 
+    /**
+     * Ручное удаление новости
+     */
+    public function removeNews(int $indexDel)
+    {
+        var_dump($this->directory);
+        $this->delete($this->directory, $indexDel);
+    }
+
+    public function openEditWindowNews(int $indexEdit): array
+    {
+        return $this->openEdit($this->directory, $indexEdit);
+    }
+
+    public function edit(Publish $publish)
+    {
+        $this->editForArticlesAndNews($publish, $this->directory);
+    }
 }

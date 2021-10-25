@@ -27,16 +27,31 @@ class NewController extends Controller
      */
     public function printShortsNews()
     {
-        $valid = new Validation();
-        $art = $this->newModel->getAllNews();
-        foreach ($art as $val) {
-            $article = new Publish($val);
-            $this->view->news(
-                $article->getTitle(),
-                $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
-                $article->getDate()
-            );
+        if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+            $valid = new Validation();
+            $art = $this->newModel->getAllNews();
+            foreach ($art as $val) {
+                $article = new Publish($val);
+                $this->view->news(
+                    $article->getTitle(),
+                    $valid->checkLengthArticle($article->getText()),
+                    $article->getUser(),
+                    $article->getDate()
+                );
+            }
+        }
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+            $valid = new Validation();
+            $art = $this->newModel->getAllNews();
+            foreach ($art as $val) {
+                $article = new Publish($val);
+                $this->view->newAdmin(
+                    $article->getTitle(),
+                    $valid->checkLengthArticle($article->getText()),
+                    $article->getUser(),
+                    $article->getDate()
+                );
+            }
         }
     }
 
@@ -65,7 +80,7 @@ class NewController extends Controller
     }
 
     /**
-     * Удаление новости
+     * Удаление новости по истечении суток
      */
     public function deleteNews()
     {
@@ -73,4 +88,28 @@ class NewController extends Controller
         $this->newModel->deleteNews((int)$arr['time']);
     }
 
+    /**
+     * Ручное удаление новости
+     */
+    public function removeNews()
+    {
+        $arr = $this->helper->resetAPI();
+        $this->newModel->removeNews((int)$arr['indexDel']);
+    }
+
+    public function windowEdit()
+    {
+        $this->editNews();
+    }
+
+    public function editNewsInfo(): void
+    {
+        $valid = new Validation();
+        $arr = $valid->checkCreateForm($_POST['arr'], 'checkArticlesAndNewsFields');
+        if (count($arr) !== 0) {
+            return;
+        }
+        $article = new Publish($_POST['arr']);
+        $this->newModel->edit($article);
+    }
 }

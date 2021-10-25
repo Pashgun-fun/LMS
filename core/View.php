@@ -50,6 +50,11 @@ class View
         include __DIR__ . "/../views/articleAdmin.php";
     }
 
+    public function newAdmin(string $title, string $text, string $user, string $date)
+    {
+        include __DIR__ . "/../views/newsAdmin.php";
+    }
+
     public function news(string $title, string $text, string $user, string $date)
     {
         include __DIR__ . "/../views/news.php";

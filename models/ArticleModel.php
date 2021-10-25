@@ -4,6 +4,7 @@ namespace models;
 
 use core\Model;
 use core\Helper;
+use entites\Publish;
 
 class ArticleModel extends Model
 {
@@ -42,5 +43,15 @@ class ArticleModel extends Model
     public function deleteArticle(int $indexDel)
     {
         $this->delete($this->directory, $indexDel);
+    }
+
+    public function openEditWindowArticle(int $indexEdit): array
+    {
+        return $this->openEdit($this->directory, $indexEdit);
+    }
+
+    public function edit(Publish $publish)
+    {
+        $this->editForArticlesAndNews($publish, $this->directory);
     }
 }

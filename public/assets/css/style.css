@@ -4,6 +4,7 @@ body {
     font-family: sans-serif;
     position: relative;
 }
+
 ._container {
     width: 90%;
     margin: 0 auto;
@@ -16,6 +17,7 @@ body {
     height: 20px;
     border-radius: 2px;
 }
+
 ._button:hover {
     cursor: pointer;
 }
@@ -32,6 +34,7 @@ body {
     color: red;
     display: block;
 }
+
 ._field input, ._field textarea {
     resize: none;
     margin-top: 10px;
@@ -43,44 +46,56 @@ body {
     height: 40px;
     width: 90%;
 }
+
 ._field input:focus, ._field textarea:focus {
     outline: none;
 }
+
 ._field input::-webkit-input-placeholder, ._field textarea::-webkit-input-placeholder {
     font-size: 1rem;
     color: #000;
 }
+
 ._field input::-moz-placeholder, ._field textarea::-moz-placeholder {
     font-size: 1rem;
     color: #000;
 }
+
 ._field input:-ms-input-placeholder, ._field textarea:-ms-input-placeholder {
     font-size: 1rem;
     color: #000;
 }
+
 ._field input::-ms-input-placeholder, ._field textarea::-ms-input-placeholder {
     font-size: 1rem;
     color: #000;
 }
+
 ._field input::placeholder, ._field textarea::placeholder {
     font-size: 1rem;
     color: #000;
 }
+
 ._field input:focus::-webkit-input-placeholder, ._field textarea:focus::-webkit-input-placeholder {
     color: transparent;
 }
+
 ._field input:focus::-moz-placeholder, ._field textarea:focus::-moz-placeholder {
     color: transparent;
 }
+
 ._field input:focus:-ms-input-placeholder, ._field textarea:focus:-ms-input-placeholder {
     color: transparent;
 }
+
 ._field input:focus::-ms-input-placeholder, ._field textarea:focus::-ms-input-placeholder {
     color: transparent;
 }
+
 ._field input:focus::placeholder, ._field textarea:focus::placeholder {
     color: transparent;
 }
+
 ._field:not(:last-child) {
     margin-bottom: 20px;
 }
@@ -106,6 +121,7 @@ body {
     -ms-flex-align: center;
     align-items: center;
 }
+
 .header__wrapper {
     min-height: 60px;
     display: -webkit-box;
@@ -118,12 +134,14 @@ body {
     -ms-flex-align: center;
     align-items: center;
 }
+
 .header__logo {
     width: 45px;
     height: 45px;
     border-radius: 50%;
     background: red;
 }
+
 .header__login, .header__register {
     font-size: 0.8rem;
     padding: 0.5em 1em;
@@ -132,9 +150,11 @@ body {
     color: white;
     text-transform: uppercase;
 }
+
 .header__login:hover, .header__register:hover {
     cursor: pointer;
 }
+
 .header__login {
     margin: 0 10px 0 0;
 }
@@ -151,9 +171,11 @@ body {
     -ms-flex-align: center;
     align-items: center;
 }
+
 .user:not(:last-child) {
     margin-bottom: 10px;
 }
+
 .user__wrapper {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -166,20 +188,24 @@ body {
     align-items: center;
     width: 100%;
 }
+
 .user__name {
     font-size: 1rem;
     color: #000;
     text-transform: uppercase;
 }
+
 .user__buttons {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
 }
+
 .user__edit {
     margin-right: 7px;
     position: relative;
 }
+
 .user__edit::before {
     content: "";
     position: absolute;
@@ -192,9 +218,11 @@ body {
     background: url("../img/pen.png") no-repeat center;
     background-size: cover;
 }
+
 .user__del {
     position: relative;
 }
+
 .user__del::before {
     content: "";
     position: absolute;
@@ -218,6 +246,7 @@ body {
     -ms-flex-direction: column;
     flex-direction: column;
 }
+
 .users__add {
     margin: 30px 0;
     display: -webkit-box;
@@ -227,6 +256,7 @@ body {
     -ms-flex-align: center;
     align-items: center;
 }
+
 .users__addTitle {
     font-size: 0.8rem;
     border-radius: 2px;
@@ -235,10 +265,12 @@ body {
     float: left;
     margin-right: 10px;
 }
+
 .users__addUser {
     position: relative;
     float: left;
 }
+
 .users__addUser::before {
     content: "";
     position: absolute;
@@ -251,6 +283,7 @@ body {
     top: 50%;
     left: 50%;
 }
+
 .users__addUser::after {
     content: "";
     position: absolute;
@@ -274,6 +307,7 @@ body {
     left: 0;
     width: 100%;
 }
+
 .footer__wrapper {
     min-height: 60px;
     line-height: 60px;
@@ -287,7 +321,7 @@ body {
 /*---------ADD AND EDIT----------*/
 .add, .edit {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     right: 0;
     width: 100%;
@@ -295,6 +329,7 @@ body {
     background: rgba(0, 0, 0, 0.2);
     z-index: 500;
 }
+
 .add__wrapper, .edit__wrapper {
     width: 100%;
     height: 100%;
@@ -308,6 +343,7 @@ body {
     -ms-flex-pack: center;
     justify-content: center;
 }
+
 .add__container, .edit__container {
     width: 60%;
     background: white;
@@ -320,10 +356,12 @@ body {
     -ms-flex-direction: column;
     flex-direction: column;
 }
+
 .add__title, .edit__title {
     float: left;
     margin-bottom: 15px;
 }
+
 .add__button, .edit__button {
     font-size: 1rem;
     float: left;
@@ -338,12 +376,15 @@ body {
     border: none;
     line-height: 50px;
 }
+
 .add__button:focus, .edit__button:focus {
     outline: none;
 }
+
 .add__button:hover, .edit__button:hover {
     cursor: pointer;
 }
+
 .add__close, .edit__close {
     font-size: 1rem;
     float: left;
@@ -358,20 +399,24 @@ body {
     line-height: 50px;
     margin-left: 20px;
 }
+
 .add__close:hover, .edit__close:hover {
     cursor: pointer;
 }
 
 /*------------EDIT-----------------*/
 .edit {
-    position: absolute;
+    position: fixed;
     border-radius: 2px 0 0 2px;
     z-index: 500;
+    top: 50%;
+    transform: translate(0, -50%);
     background: black;
     padding: 20px 0;
     max-width: 20%;
     height: max-content;
 }
+
 .edit__wrapper {
     width: 90%;
     margin: 0 auto;
@@ -381,9 +426,11 @@ body {
 .login {
     margin: 50px 0;
 }
+
 .login__wrapper {
     position: relative;
 }
+
 .login__login {
     text-transform: uppercase;
     font-size: 1.5rem;
@@ -391,6 +438,7 @@ body {
     color: red;
     margin-bottom: 50px;
 }
+
 .login__button {
     height: 50px;
     background: black;
@@ -399,6 +447,7 @@ body {
     width: 200px;
     margin: 50px auto 0;
 }
+
 .login__button:hover {
     cursor: pointer;
 }

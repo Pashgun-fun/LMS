@@ -20,18 +20,8 @@ class PageModel extends Model
      * Передача в контроллер данных пользователя, которые собираемся редактировать
      * Происходит работа с файлом этого пользователя, которые берется по его уникальному индексу
      **/
-    public function openEditWindow(int $indexEdit): ?array
+    public function openEditWindow(int $indexEdit): array
     {
-        $arr = array_values($this->helper->myscandir($this->directory));
-        asort($arr);
-        $file = null;
-        for ($j = 0; $j < count($arr); $j++) {
-            if ($j === $indexEdit) {
-                $file = $arr[$j];
-                break;
-            }
-        }
-        $fileEdit = $this->directory . $file;
-        return $this->readFile($fileEdit);
+        return $this->openEdit($this->directory, $indexEdit);
     }
 }

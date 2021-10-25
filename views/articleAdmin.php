@@ -50,6 +50,7 @@
         <span class="article__name"><?= $user ?></span>
         <div>
             <div class="articleFull__delete">Удалить</div>
+            <div class="articleFull__edit">Редактировать</div>
         </div>
         <span class="article__date"><?= $date ?></span>
     </div>

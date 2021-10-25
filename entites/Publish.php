@@ -9,6 +9,7 @@ class Publish
     private string $text;
     private string $user;
     private string $date;
+    private int $index;
 
     function __construct(array $data)
     {
@@ -39,6 +40,11 @@ class Publish
         return $this->date;
     }
 
+    public function getIndex(): int
+    {
+        return $this->index;
+    }
+
     public function setTitle(string $title): void
     {
         $this->title = $title;
@@ -57,5 +63,10 @@ class Publish
     public function setDate(string $date): void
     {
         $this->date = $date;
+    }
+
+    public function setIndex(int $index): void
+    {
+        $this->index = $index;
     }
 }

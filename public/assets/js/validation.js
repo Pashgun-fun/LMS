@@ -55,4 +55,20 @@ let checkDateTime = (newDate, el) => {
     }
 }
 
-export {checkLogin, checkEmail, checkPass, checkDateTime};
+let checkLength = (string) => {
+    let sum = 0;
+    let arrWords = [];
+
+    let arrOfWords = string.split(" ")
+
+    for (let j = 0; j < arrOfWords.length; j++) {
+        sum += arrOfWords[j].length;
+        if (sum > 90) {
+            return arrWords.join(" ") + ' ...';
+        }
+        arrWords.push(arrOfWords[j]);
+    }
+    return '';
+}
+
+export {checkLogin, checkEmail, checkPass, checkDateTime, checkLength};

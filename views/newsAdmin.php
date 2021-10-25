@@ -22,6 +22,11 @@
     <div class="news__read">Читать</div>
     <div>
         <span class="news__user"><?= $user ?></span>
+        <div>
+            <div class="newsFull__delete">Удалить</div>
+            <div class="newsFull__edit">Редактировать</div>
+
+        </div>
         <span><?= $date ?></span>
     </div>
 </div>
