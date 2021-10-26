@@ -64,13 +64,41 @@ class NewModel extends Model
         $this->delete($this->directory, $indexDel);
     }
 
+    /**
+     * Открытие окна редактирования для новости
+     */
     public function openEditWindowNews(int $indexEdit): array
     {
         return $this->openEdit($this->directory, $indexEdit);
     }
 
+    /**
+     * Редактирование данных новости
+     */
     public function edit(Publish $publish)
     {
         $this->editForArticlesAndNews($publish, $this->directory);
+    }
+
+    /**
+     * Создание новости
+     */
+    public function newNewsBlock(Publish $publish): array
+    {
+        $arrayFiles = $this->helper->myscandir($this->directory);
+        asort($arrayFiles);
+
+        $userData = array(
+            'title' => $publish->getTitle(),
+            'text' => $publish->getText(),
+            'user' => $publish->getUser(),
+            'date' => $publish->getDate(),
+            'time' => $publish->getTime(),
+        );
+
+        $newFile = $this->directory . (+array_pop($arrayFiles) + 1);
+        $this->writeFile($newFile, $userData);
+
+        return $userData;
     }
 }

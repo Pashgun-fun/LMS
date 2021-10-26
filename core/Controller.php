@@ -27,6 +27,9 @@ class Controller
         $this->view->editWindow($user->getLogin(), $user->getEmail(), $user->getDesc());
     }
 
+    /**
+     * Открытие модального окна для редактирования сатьи
+     */
     protected function editArticle()
     {
         $window = new ArticleModel();
@@ -34,6 +37,9 @@ class Controller
         $this->view->editWindow($user->getUser(), $user->getTitle(), $user->getText());
     }
 
+    /**
+     * Открытие модального окна для редактирования новостей
+     */
     protected function editNews(){
         $window = new NewModel();
         $user = new Publish($window->openEditWindowNews($_POST['indexEdit']));

@@ -45,13 +45,40 @@ class ArticleModel extends Model
         $this->delete($this->directory, $indexDel);
     }
 
+    /**
+     * Открытие окна редактирования для статьи
+     */
     public function openEditWindowArticle(int $indexEdit): array
     {
         return $this->openEdit($this->directory, $indexEdit);
     }
 
+    /**
+     * Редактирование данных статьи
+     */
     public function edit(Publish $publish)
     {
         $this->editForArticlesAndNews($publish, $this->directory);
+    }
+
+    /**
+     * Создание новой статьи
+     */
+    public function newArticleBlock(Publish $publish): array
+    {
+        $arrayFiles = $this->helper->myscandir($this->directory);
+        asort($arrayFiles);
+
+        $userData = array(
+            'title' => $publish->getTitle(),
+            'text' => $publish->getText(),
+            'user' => $publish->getUser(),
+            'date' => $publish->getDate(),
+        );
+
+        $newFile = $this->directory . (+array_pop($arrayFiles) + 1);
+        $this->writeFile($newFile, $userData);
+
+        return $userData;
     }
 }

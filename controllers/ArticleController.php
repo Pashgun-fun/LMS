@@ -88,11 +88,17 @@ class ArticleController extends Controller
         $this->articleModel->deleteArticle((int)$arr['indexDel']);
     }
 
+    /**
+     * Открытие окна редактирования для статей
+     */
     public function windowEdit()
     {
         $this->editArticle();
     }
 
+    /**
+     * Редактирование статьи с валидпцией по полям из конфига
+     */
     public function editArticleInfo(): void
     {
         $valid = new Validation();
@@ -102,5 +108,35 @@ class ArticleController extends Controller
         }
         $article = new Publish($_POST['arr']);
         $this->articleModel->edit($article);
+    }
+
+    /**
+     * Добавление новой статьи в список
+     */
+    public function newArticle(): void
+    {
+        $valid = new Validation();
+        $arr = $valid->checkCreateForm($_POST['arr'], 'checkArticlesAndNewsFields');
+        if (count($arr) !== 0) {
+            return;
+        }
+        $publish = new Publish($_POST['arr']);
+        $userName = $this->articleModel->newArticleBlock($publish);
+        if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+            $this->view->article(
+                $userName['title'],
+                $valid->checkLengthArticle($userName['text']),
+                $userName['user'],
+                $userName['date']
+            );
+        }
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+            $this->view->articleAdmin(
+                $userName['title'],
+                $valid->checkLengthArticle($userName['text']),
+                $userName['user'],
+                $userName['date']
+            );
+        }
     }
 }

@@ -58,8 +58,22 @@ document.addEventListener('click', (e) => {
 })
 
 document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('article__add')) {
+        $('.add__article').show();
+    }
+})
+
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('news__add')) {
+        $('.add__news').show();
+    }
+})
+
+document.addEventListener('click', (e) => {
     if (e.target.classList.contains('add__close')) {
         $('.add').hide();
+        $('.add__article').hide();
+        $('.add__news').hide();
     }
 })
 
@@ -91,6 +105,81 @@ document.addEventListener('click', (e) => {
     }
 })
 
+
+//Add article
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains("add__button__article")) {
+        let obj = {
+            title: $('.publish_title').val().trim(),
+            user: $('.publish_login').val().trim(),
+            text: $('.publish_text').val().trim(),
+            date: new Date(),
+        }
+        try {
+            $.ajax({
+                url: '/api/article/add',
+                type: 'POST',
+                cache: false,
+                data: {
+                    'arr': obj,
+                },
+                dataType: 'html',
+                beforeSend: function () {
+                    $('.add__button__article').prop("disabled", true);
+                },
+                success: function (data) {
+                    $('.articles').append(data);
+                    $('.add__form').trigger("reset");
+                    $('.add__article').hide();
+                    $('.add__button__article').prop("disabled", false);
+                },
+                error: function () {
+                    console.log("Error");
+                }
+            })
+        } catch (e) {
+            console.error(e.name, e.message);
+        }
+    }
+})
+
+//Add news
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains("add__button__news")) {
+        let obj = {
+            title: $('.news_title').val().trim(),
+            user: $('.news_login').val().trim(),
+            text: $('.news_text').val().trim(),
+            date: new Date(),
+            time: new Date().getTime() / 1000,
+        }
+        try {
+            $.ajax({
+                url: '/api/news/add',
+                type: 'POST',
+                cache: false,
+                data: {
+                    'arr': obj,
+                },
+                dataType: 'html',
+                beforeSend: function () {
+                    $('.add__button__news').prop("disabled", true);
+                },
+                success: function (data) {
+                    $('.news').append(data);
+                    $('.add__form').trigger("reset");
+                    $('.add__news').hide();
+                    $('.add__button__news').prop("disabled", false);
+                },
+                error: function () {
+                    console.log("Error");
+                }
+            })
+        } catch (e) {
+            console.error(e.name, e.message);
+        }
+    }
+})
 
 //OpenEdit
 document.addEventListener('click', e => {

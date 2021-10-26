@@ -97,11 +97,17 @@ class NewController extends Controller
         $this->newModel->removeNews((int)$arr['indexDel']);
     }
 
+    /**
+     * Открытие окна редактирования для новости
+     */
     public function windowEdit()
     {
         $this->editNews();
     }
 
+    /**
+     * Редактирование информации в новости с валидацией по полям из конфига
+     */
     public function editNewsInfo(): void
     {
         $valid = new Validation();
@@ -111,5 +117,35 @@ class NewController extends Controller
         }
         $article = new Publish($_POST['arr']);
         $this->newModel->edit($article);
+    }
+
+    /**
+     * Добавление нового длока новостей в общий список
+     */
+    public function newNews(): void
+    {
+        $valid = new Validation();
+        $arr = $valid->checkCreateForm($_POST['arr'], 'checkArticlesAndNewsFields');
+        if (count($arr) !== 0) {
+            return;
+        }
+        $publish = new Publish($_POST['arr']);
+        $userName = $this->newModel->newNewsBlock($publish);
+        if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+            $this->view->news(
+                $userName['title'],
+                $valid->checkLengthArticle($userName['text']),
+                $userName['user'],
+                $userName['date']
+            );
+        }
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+            $this->view->newAdmin(
+                $userName['title'],
+                $valid->checkLengthArticle($userName['text']),
+                $userName['user'],
+                $userName['date']
+            );
+        }
     }
 }

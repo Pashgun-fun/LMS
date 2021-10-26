@@ -23,6 +23,16 @@
         margin-top: 50px;
         margin-bottom: 100px;
     }
+    .add__article, .add__news{
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.2);
+        z-index: 500;
+    }
 </style>
 
 <body class="body">
@@ -61,14 +71,15 @@
     </section>
 </div>
 
-<div class="_title _container _article">Статьи <span></span></div>
+<div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span></div>
 <section class="articles">
 </section>
 
 <div class="generator-article _container">Сгенерировать статьи</div>
 
 
-<div class="_title _container _news" style="margin-top: 100px">Новости <span></span></div>
+<div class="_title _container _news" style="margin-top: 100px">Новости <span class="news__add">Добавить новость</span>
+</div>
 <section class="news">
 </section>
 
@@ -85,7 +96,7 @@
                     <span class="_error error-login"></span>
                 </label>
                 <label class="add__email _field">
-                    Email<br>
+                    Email (Название)<br>
                     <input type="text" placeholder="Введите email" name="email" class="email _check"><br>
                     <span class="_error error-email"></span>
                 </label>
@@ -104,7 +115,7 @@
                     <input type="password" placeholder="Подтвердите пароль" name="confirm" class="confirm _check">
                 </label>
                 <label class="add__desc _field">
-                    Описание<br>
+                    Описание (Текст)<br>
                     <textarea placeholder="Краткое описание" name="desc" class="desc"></textarea>
                 </label>
                 <button type="button" class="add__button">Добавить</button>
@@ -124,7 +135,7 @@
                 <span class="_error error-login-edit"></span>
             </label>
             <label class="add__email _field">
-                Email<br>
+                Email (Название)<br>
                 <input type="text" placeholder="Введите email" name="edit-email" class="edit-email" value=''><br>
                 <span class=" _error error-email-edit"></span>
             </label>
@@ -138,13 +149,66 @@
                 <input type="password" placeholder="Подтвердите пароль" name="confirm" class="edit-confirm">
             </label>
             <label class="add__desc _field">
-                Описание<br>
+                Описание (Текст)<br>
                 <textarea placeholder="Краткое описание" name="edit-desc" class="edit-desc"></textarea>
             </label>
             <div class="edit__button">Изменить</div>
         </form>
     </div>
 </div>
+
+<div class="add__article">
+    <div class="add__wrapper">
+        <div class="add__container">
+            <div class="add__title _title">Добавление новой статьи</div>
+            <form class="add__form">
+                <label class="add__login _field">
+                    Логин <br>
+                    <input type="text" placeholder="Введите логин" name="login" class="publish_login _check"><br>
+                    <span class="_error error-login"></span>
+                </label>
+                <label class="add__email _field">
+                    Название<br>
+                    <input type="text" placeholder="Введите email" name="email" class="publish_title _check"><br>
+                    <span class="_error error-email"></span>
+                </label>
+                <label class="add__desc _field">
+                    Текст<br>
+                    <textarea placeholder="Краткое описание" name="desc" class="publish_text"></textarea>
+                </label>
+                <button type="button" class="add__button__article">Добавить</button>
+                <div class="add__close">Закрыть</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="add__news">
+    <div class="add__wrapper">
+        <div class="add__container">
+            <div class="add__title _title">Добавление новости</div>
+            <form class="add__form">
+                <label class="add__login _field">
+                    Логин <br>
+                    <input type="text" placeholder="Введите логин" name="login" class="news_login _check"><br>
+                    <span class="_error error-login"></span>
+                </label>
+                <label class="add__email _field">
+                    Название<br>
+                    <input type="text" placeholder="Введите email" name="email" class="news_title _check"><br>
+                    <span class="_error error-email"></span>
+                </label>
+                <label class="add__desc _field">
+                    Текст<br>
+                    <textarea placeholder="Краткое описание" name="desc" class="news_text"></textarea>
+                </label>
+                <button type="button" class="add__button__news">Добавить</button>
+                <div class="add__close">Закрыть</div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <footer class="footer">
     <div class="footer__wrapper _container">

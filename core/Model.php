@@ -98,8 +98,14 @@ class Model
         unlink($dir . $file);
     }
 
+    /**
+     * Открытие окна редактирования
+     */
     protected function openEdit(string $dir, int $index)
     {
+        /**
+         * Сканируем дирректорию с файламии, которые хотим редактировать
+         */
         $arr = array_values($this->helper->myscandir($dir));
         asort($arr);
         $file = null;
@@ -113,7 +119,11 @@ class Model
         return $this->readFile($fileEdit);
     }
 
-    protected function editForArticlesAndNews($publish, $dir){
+    /**
+     * Редактирование новостей и статей
+     */
+    protected function editForArticlesAndNews($publish, $dir)
+    {
         $arr = array_values($this->helper->myscandir($dir));
         asort($arr);
         $fileEdit = null;
@@ -134,4 +144,5 @@ class Model
         file_put_contents($dir . $fileEdit, '');
         file_put_contents($dir . $fileEdit, json_encode($el));
     }
+
 }

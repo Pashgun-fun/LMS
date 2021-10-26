@@ -319,7 +319,7 @@ body {
 }
 
 /*---------ADD AND EDIT----------*/
-.add, .edit {
+.add, .edit{
     display: none;
     position: fixed;
     top: 0;

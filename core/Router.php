@@ -119,6 +119,14 @@ class Router extends Roters
                 $controllerNews = new NewController();
                 $controllerNews->editNewsInfo();
                 break;
+            case "/api/article/add":
+                $controllerArticle = new ArticleController();
+                $controllerArticle->newArticle();
+                break;
+            case "/api/news/add":
+                $controllerNews = new NewController();
+                $controllerNews->newNews();
+                break;
             case "/":
                 $controllerUsers = new UserController();
                 $controllerUsers->checkRole();
