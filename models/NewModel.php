@@ -8,6 +8,7 @@ use entites\Publish;
 
 class NewModel extends Model
 {
+    public string $newDirectory;
     public string $directory;
     public string $config;
 
@@ -18,6 +19,7 @@ class NewModel extends Model
         $this->helper = new Helper();
         $this->directory = __DIR__ . "/../database/News/";
         $this->config = __DIR__ . "/../public/config/random_articles_and_news.php";
+        $this->newDirectory = __DIR__ . "/../database/OldNews/";
     }
 
     /**
@@ -44,12 +46,17 @@ class NewModel extends Model
     public function deleteNews(int $time)
     {
         $arr = array_values($this->helper->myscandir($this->directory));
+        asort($arr);
+        $lastFile = ((int)array_pop($arr) + 1);
         foreach ($arr as $val) {
             $fileName = $this->directory . $val;
             $infoAboutNew = $this->readFile($fileName);
             $differentTime = +$time - $infoAboutNew['seconds'];
-            var_dump($differentTime);
             if ($differentTime >= 86400) {
+                $arrNew = array_values($this->helper->myscandir($this->newDirectory));
+                asort($arrNew);
+                $lastFile = ((int)array_pop($arrNew));
+                rename($this->directory . $val, $this->newDirectory . $lastFile++);
                 unlink($this->directory . $val);
             }
         }
@@ -60,7 +67,6 @@ class NewModel extends Model
      */
     public function removeNews(int $indexDel)
     {
-        var_dump($this->directory);
         $this->delete($this->directory, $indexDel);
     }
 
@@ -100,5 +106,21 @@ class NewModel extends Model
         $this->writeFile($newFile, $userData);
 
         return $userData;
+    }
+
+    /**
+     * Обраатываем полученные данные из ajax
+     * и вытягиваем нужный файл
+     */
+    public function oldNews(int $index): array
+    {
+        $arrNews = $this->helper->myscandir($this->newDirectory);
+        for ($j = 0; $j < count($arrNews); $j++) {
+            if ($j === $index) {
+                $fileName = $this->newDirectory . $arrNews[$j];
+                return $this->readFile($fileName);
+            }
+        }
+        return [];
     }
 }

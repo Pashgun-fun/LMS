@@ -160,13 +160,15 @@ let exitUser = () => {
     })
 }
 
-let articles = () => {
+let articles = (page = null) => {
     $.ajax({
         url: "/api/articles",
         method: "POST",
+        data: {
+            'page': +page,
+        },
         success: function (response) {
             $('.articles').append(response);
-
         }
     })
 }

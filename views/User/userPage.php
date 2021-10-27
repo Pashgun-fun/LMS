@@ -61,6 +61,13 @@
 </div>
 
 <div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span></div>
+<div>
+    <span class="nav_button" data-page = "1">1</span>
+    <span class="nav_button" data-page = "2">2</span>
+    <span class="nav_button" data-page = "3">3</span>
+    <span class="nav_button" data-page = "4">4</span>
+    <span class="nav_button" data-page = "5">5</span>
+</div>
 <section class="articles">
 </section>
 

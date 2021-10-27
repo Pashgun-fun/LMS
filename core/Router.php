@@ -69,7 +69,12 @@ class Router extends Roters
                 break;
             case "/api/articles":
                 $controllerArticle = new ArticleController();
-                $controllerArticle->printShortsArticles();
+                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+                    $controllerArticle->printShortsArticles();
+                }
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+                    $controllerArticle->printShortArticlesForAdmin();
+                }
                 break;
             case "/api/article/read":
                 $controllerArticle = new ArticleController();
@@ -77,7 +82,12 @@ class Router extends Roters
                 break;
             case "/api/article/random":
                 $controllerArticle = new ArticleController();
-                $controllerArticle->getRandomArticles();
+                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+                    $controllerArticle->getRandomArticles();
+                }
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+                    $controllerArticle->getRandomArticlesForAdmin();
+                }
                 break;
             case "/api/article/delete":
                 $controllerArticle = new ArticleController();
@@ -85,7 +95,12 @@ class Router extends Roters
                 break;
             case "/api/news":
                 $controllerNews = new NewController();
-                $controllerNews->printShortsNews();
+                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+                    $controllerNews->printShortsNews();
+                }
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+                    $controllerNews->printShortNewsForAdmin();
+                }
                 break;
             case "/api/news/read":
                 $controllerNews = new NewController();
@@ -93,7 +108,12 @@ class Router extends Roters
                 break;
             case "/api/news/random":
                 $controllerNews = new NewController();
-                $controllerNews->getRandomNews();
+                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+                    $controllerNews->getRandomNews();
+                }
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+                    $controllerNews->getRandomNewsAdmin();
+                }
                 break;
             case "/api/check/news":
                 $controllerNews = new NewController();
@@ -121,11 +141,25 @@ class Router extends Roters
                 break;
             case "/api/article/add":
                 $controllerArticle = new ArticleController();
-                $controllerArticle->newArticle();
+                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+                    $controllerArticle->newArticle();
+                }
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+                    $controllerArticle->newArticleAdmin();
+                }
                 break;
             case "/api/news/add":
                 $controllerNews = new NewController();
-                $controllerNews->newNews();
+                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+                    $controllerNews->newNews();
+                }
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+                    $controllerNews->newNewsAdmin();
+                }
+                break;
+            case "/api/news/old":
+                $controllerNews = new NewController();
+                $controllerNews->getOldNews();
                 break;
             case "/":
                 $controllerUsers = new UserController();

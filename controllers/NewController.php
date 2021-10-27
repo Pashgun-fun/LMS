@@ -24,35 +24,43 @@ class NewController extends Controller
      * Вывод новостей с валидацией
      * Создаётся сущность и через геттеры выводим данные
      * Обрезаем длину текста до 100 символов
+     * Для обычных пользователей и гостей
      */
     public function printShortsNews()
     {
-        if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
-            $valid = new Validation();
-            $art = $this->newModel->getAllNews();
-            foreach ($art as $val) {
-                $article = new Publish($val);
-                $this->view->news(
-                    $article->getTitle(),
-                    $valid->checkLengthArticle($article->getText()),
-                    $article->getUser(),
-                    $article->getDate()
-                );
-            }
+        $valid = new Validation();
+        $art = $this->newModel->getAllNews();
+        foreach ($art as $val) {
+            $article = new Publish($val);
+            $this->view->news(
+                $article->getTitle(),
+                $valid->checkLengthArticle($article->getText()),
+                $article->getUser(),
+                $article->getDate()
+            );
         }
-        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
-            $valid = new Validation();
-            $art = $this->newModel->getAllNews();
-            foreach ($art as $val) {
-                $article = new Publish($val);
-                $this->view->newAdmin(
-                    $article->getTitle(),
-                    $valid->checkLengthArticle($article->getText()),
-                    $article->getUser(),
-                    $article->getDate()
-                );
-            }
+    }
+
+    /**
+     * Вывод новостей с валидацией
+     * Создаётся сущность и через геттеры выводим данные
+     * Обрезаем длину текста до 100 символов
+     * Для админов
+     */
+    public function printShortNewsForAdmin()
+    {
+        $valid = new Validation();
+        $art = $this->newModel->getAllNews();
+        foreach ($art as $val) {
+            $article = new Publish($val);
+            $this->view->newAdmin(
+                $article->getTitle(),
+                $valid->checkLengthArticle($article->getText()),
+                $article->getUser(),
+                $article->getDate()
+            );
         }
+
     }
 
     /**
@@ -72,11 +80,22 @@ class NewController extends Controller
 
     /**
      * Заполнение блок случайными новостями
+     * Для обычных пользователей и гостей
      */
     public function getRandomNews()
     {
         $this->newModel->setRandomNews();
         $this->printShortsNews();
+    }
+
+    /**
+     * Заполнение блок случайными новостями
+     * Для админов
+     */
+    public function getRandomNewsAdmin()
+    {
+        $this->newModel->setRandomNews();
+        $this->printShortNewsForAdmin();
     }
 
     /**
@@ -121,6 +140,7 @@ class NewController extends Controller
 
     /**
      * Добавление нового длока новостей в общий список
+     * Для обычных  пользователей
      */
     public function newNews(): void
     {
@@ -131,21 +151,43 @@ class NewController extends Controller
         }
         $publish = new Publish($_POST['arr']);
         $userName = $this->newModel->newNewsBlock($publish);
-        if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
-            $this->view->news(
-                $userName['title'],
-                $valid->checkLengthArticle($userName['text']),
-                $userName['user'],
-                $userName['date']
-            );
+        $this->view->news(
+            $userName['title'],
+            $valid->checkLengthArticle($userName['text']),
+            $userName['user'],
+            $userName['date']
+        );
+    }
+
+    /**
+     * Добавление нового длока новостей в общий список
+     * Для админов
+     */
+    public function newNewsAdmin(): void
+    {
+        $valid = new Validation();
+        $arr = $valid->checkCreateForm($_POST['arr'], 'checkArticlesAndNewsFields');
+        if (count($arr) !== 0) {
+            return;
         }
-        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
-            $this->view->newAdmin(
-                $userName['title'],
-                $valid->checkLengthArticle($userName['text']),
-                $userName['user'],
-                $userName['date']
-            );
-        }
+        $publish = new Publish($_POST['arr']);
+        $userName = $this->newModel->newNewsBlock($publish);
+
+        $this->view->newAdmin(
+            $userName['title'],
+            $valid->checkLengthArticle($userName['text']),
+            $userName['user'],
+            $userName['date']
+        );
+    }
+
+    /**
+     * Достаем старую новость по хэшу
+     */
+    public function getOldNews()
+    {
+        $data = $this->newModel->oldNews($_POST['index']);
+        $news = new Publish($data);
+        $this->view->cardArticle($news->getTitle(), $news->getText(), $news->getUser(), $news->getDate());
     }
 }

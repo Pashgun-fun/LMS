@@ -54,12 +54,13 @@ class Model
         /**
          * СОздаём новые файлы в том колибесвте, сколшько нам необходимо
          */
-        while ($j <= 25) {
+        while ($j <= 24) {
             $index = $lastFile + $j;
             $fileName = $dir . $index;
             $this->writeFile($fileName, $config['articles']);
             $j++;
         }
+        $_SESSION['PAGES'] += 3;
     }
 
     /**

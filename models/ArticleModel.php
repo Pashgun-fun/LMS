@@ -20,10 +20,31 @@ class ArticleModel extends Model
         $this->config = __DIR__ . "/../public/config/random_articles_and_news.php";
     }
 
+
+    public function pagination(array $list, $page): array
+    {
+        $arrOfPages = array_chunk($list, $page);
+        return $arrOfPages;
+    }
+
     /**
      * Вывод списка всех статей из базы данных
      */
-    public function getAllArticles(): array
+    public function getAllArticles(int $page): array
+    {
+        $_SESSION['PAGES'] = 9;
+        $countPerPage = ceil(count($this->publishing($this->directory)) / 9);
+
+        if (count($this->publishing($this->directory)) > $countPerPage) {
+            return $this->pagination($this->publishing($this->directory), $countPerPage)[$page - 1];
+        }
+        return $this->publishing($this->directory);
+    }
+
+    /**
+     * Чтение полной статьи
+     */
+    public function readAllArticles(): array
     {
         return $this->publishing($this->directory);
     }

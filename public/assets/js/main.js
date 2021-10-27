@@ -5,7 +5,7 @@ import {checkLogin, checkEmail, checkPass, checkDateTime, checkLength} from "./v
 $(() => {
     let date = new Date();
     getMaket();
-    articles();
+    articles(1);
 
     $.ajax({
         url: "/api/news",
@@ -14,6 +14,7 @@ $(() => {
             $('.news').append(response);
         }
     })
+
     $.ajax({
         url: '/api/check/news',
         method: 'DELETE',
@@ -24,6 +25,15 @@ $(() => {
             return;
         }
     })
+
+    history.replaceState(null, null, ' ');
+})
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('nav_button')) {
+        $('.articles').html('');
+        articles(e.target.getAttribute('data-page'))
+    }
 })
 
 //Delete User
@@ -402,6 +412,7 @@ document.addEventListener('click', e => {
         $('.body').css({
             "overflow": "auto"
         })
+        history.replaceState(null, null, ' ');
         el.closest('.articleFull__wrapper').remove();
     }
 })
@@ -503,4 +514,25 @@ document.addEventListener('click', e => {
         }
 
     }
+})
+
+$(window).bind('hashchange', function () {
+    let hash = window.location.hash;
+    hash = hash.substring(1);
+    hash = hash.split('/');
+    let index = hash.pop();
+    console.log(index)
+    $.ajax({
+        url: '/api/news/old',
+        method: 'POST',
+        data: {
+            'index': index,
+        },
+        success: function (response) {
+            $('.header').after(response);
+            $('.body').css({
+                "overflow": "hidden"
+            })
+        }
+    })
 })
