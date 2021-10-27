@@ -169,4 +169,5 @@ let articles = () => {
         }
     })
 }
+
 export {articles, deleteUser, newUser, openWindowEdit, getMaket, login, enterUser, exitUser}

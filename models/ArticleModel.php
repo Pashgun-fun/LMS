@@ -20,13 +20,16 @@ class ArticleModel extends Model
         $this->config = __DIR__ . "/../public/config/random_articles_and_news.php";
     }
 
-
-
     /**
      * Вывод списка всех статей из базы данных
      */
     public function getAllArticles(): array
     {
+//        $countPerPage = 6;
+//        $countPages = 1;
+//        if (count($this->publishing($this->directory)) > $countPerPage) {
+//            $countPages = count($this->publishing($this->directory))/$countPages;
+//        }
         return $this->publishing($this->directory);
     }
 

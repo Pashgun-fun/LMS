@@ -5,6 +5,9 @@ import {checkLogin, checkEmail, checkPass, checkDateTime, checkLength} from "./v
 $(() => {
     let date = new Date();
 
+    getMaket();
+    articles();
+
     $.ajax({
         url: '/api/check/news',
         method: 'DELETE',
@@ -15,9 +18,6 @@ $(() => {
             return;
         }
     })
-
-    getMaket();
-    articles();
 
     $.ajax({
         url: "/api/news",
@@ -109,7 +109,6 @@ document.addEventListener('click', (e) => {
     }
 })
 
-
 //Add article
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains("add__button__article")) {
@@ -155,7 +154,7 @@ document.addEventListener('click', (e) => {
             user: $('.news_login').val().trim(),
             text: $('.news_text').val().trim(),
             date: new Date(),
-            time: "nsjdcbnsdjbcjs",
+            time: new Date().getTime() / 1000,
         }
         try {
             $.ajax({
@@ -270,7 +269,6 @@ document.addEventListener('click', e => {
     }
 })
 
-
 //Edit News
 document.addEventListener('click', e => {
     if (e.target.classList.contains('newsFull__edit')) {
@@ -337,7 +335,6 @@ document.addEventListener('click', e => {
         }
     }
 })
-
 
 //Register
 document.addEventListener('click', (e) => {
@@ -479,7 +476,6 @@ document.addEventListener('click', e => {
         }
     }
 })
-
 
 //New a article
 document.addEventListener('click', e => {

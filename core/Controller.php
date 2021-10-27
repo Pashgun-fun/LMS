@@ -34,7 +34,7 @@ class Controller
     {
         $window = new ArticleModel();
         $user = new Publish($window->openEditWindowArticle($_POST['indexEdit']));
-        $this->view->editWindow($user->getUser(), $user->getTitle(), $user->getText());
+        $this->view->editWindowArticlesAndNews($user->getUser(), $user->getTitle(), $user->getText());
     }
 
     /**
@@ -43,7 +43,7 @@ class Controller
     protected function editNews(){
         $window = new NewModel();
         $user = new Publish($window->openEditWindowNews($_POST['indexEdit']));
-        $this->view->editWindow($user->getUser(), $user->getTitle(), $user->getText());
+        $this->view->editWindowArticlesAndNews($user->getUser(), $user->getTitle(), $user->getText());
     }
 
 }

@@ -6,7 +6,12 @@ class View
 {
     public function editWindow(string $name, string $email, string $desc)
     {
-        include __DIR__ . "/../views/edit_Window.php";
+        include __DIR__ . "/../views/editWindow.php";
+    }
+
+    public function editWindowArticlesAndNews(string $name, string $email, string $desc)
+    {
+        include __DIR__ . "/../views/editWindowArticlesAndNews.php";
     }
 
     public function guestPage()
