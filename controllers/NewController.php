@@ -187,6 +187,9 @@ class NewController extends Controller
     public function getOldNews()
     {
         $data = $this->newModel->oldNews($_POST['index']);
+        if (empty($data)) {
+            return;
+        }
         $news = new Publish($data);
         $this->view->cardArticle($news->getTitle(), $news->getText(), $news->getUser(), $news->getDate());
     }

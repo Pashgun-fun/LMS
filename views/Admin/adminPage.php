@@ -73,11 +73,7 @@
 
 <div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span></div>
 <div>
-    <?php
-        for ($j = 0; $j < (int)$_SESSION['PAGES']; $j++){
-            echo '<span class="nav_button" data-page = '.$j.'>'.$j.'</span>';
-        }
-    ?>
+
 </div>
 <section class="articles">
 </section>

@@ -21,23 +21,12 @@ class ArticleModel extends Model
     }
 
 
-    public function pagination(array $list, $page): array
-    {
-        $arrOfPages = array_chunk($list, $page);
-        return $arrOfPages;
-    }
 
     /**
      * Вывод списка всех статей из базы данных
      */
-    public function getAllArticles(int $page): array
+    public function getAllArticles(): array
     {
-        $_SESSION['PAGES'] = 9;
-        $countPerPage = ceil(count($this->publishing($this->directory)) / 9);
-
-        if (count($this->publishing($this->directory)) > $countPerPage) {
-            return $this->pagination($this->publishing($this->directory), $countPerPage)[$page - 1];
-        }
         return $this->publishing($this->directory);
     }
 

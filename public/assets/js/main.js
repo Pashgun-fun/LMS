@@ -4,16 +4,6 @@ import {checkLogin, checkEmail, checkPass, checkDateTime, checkLength} from "./v
 //Hide and show
 $(() => {
     let date = new Date();
-    getMaket();
-    articles(1);
-
-    $.ajax({
-        url: "/api/news",
-        method: "POST",
-        success: function (response) {
-            $('.news').append(response);
-        }
-    })
 
     $.ajax({
         url: '/api/check/news',
@@ -26,14 +16,18 @@ $(() => {
         }
     })
 
-    history.replaceState(null, null, ' ');
-})
+    getMaket();
+    articles();
 
-document.addEventListener('click', e => {
-    if (e.target.classList.contains('nav_button')) {
-        $('.articles').html('');
-        articles(e.target.getAttribute('data-page'))
-    }
+    $.ajax({
+        url: "/api/news",
+        method: "POST",
+        success: function (response) {
+            $('.news').append(response);
+        }
+    })
+
+    history.replaceState(null, null, ' ');
 })
 
 //Delete User
@@ -161,7 +155,7 @@ document.addEventListener('click', (e) => {
             user: $('.news_login').val().trim(),
             text: $('.news_text').val().trim(),
             date: new Date(),
-            time: new Date().getTime() / 1000,
+            time: "nsjdcbnsdjbcjs",
         }
         try {
             $.ajax({
@@ -521,18 +515,20 @@ $(window).bind('hashchange', function () {
     hash = hash.substring(1);
     hash = hash.split('/');
     let index = hash.pop();
-    console.log(index)
-    $.ajax({
-        url: '/api/news/old',
-        method: 'POST',
-        data: {
-            'index': index,
-        },
-        success: function (response) {
-            $('.header').after(response);
-            $('.body').css({
-                "overflow": "hidden"
-            })
-        }
-    })
+    if (index.match(/^\d*\.?\d+\$?$/)) {
+        $.ajax({
+            url: '/api/news/old',
+            method: 'POST',
+            data: {
+                'index': index,
+            },
+            success: function (response) {
+                $('.header').after(response);
+                $('.body').css({
+                    "overflow": "hidden"
+                })
+            }
+        })
+    }
+    return;
 })

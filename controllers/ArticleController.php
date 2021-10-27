@@ -29,7 +29,7 @@ class ArticleController extends Controller
     public function printShortsArticles()
     {
         $valid = new Validation();
-        $art = $this->articleModel->getAllArticles($_POST['page']);
+        $art = $this->articleModel->getAllArticles();
         foreach ($art as $val) {
             $article = new Publish($val);
             $this->view->article(
@@ -51,7 +51,7 @@ class ArticleController extends Controller
     function printShortArticlesForAdmin()
     {
         $valid = new Validation();
-        $art = $this->articleModel->getAllArticles($_POST['page']);
+        $art = $this->articleModel->getAllArticles();
         foreach ($art as $val) {
             $article = new Publish($val);
             $this->view->articleAdmin(

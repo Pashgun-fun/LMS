@@ -60,7 +60,6 @@ class Model
             $this->writeFile($fileName, $config['articles']);
             $j++;
         }
-        $_SESSION['PAGES'] += 3;
     }
 
     /**
