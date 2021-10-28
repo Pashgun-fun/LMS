@@ -31,11 +31,11 @@ class Authorization extends Model
             if ($el['email'] === $user->getLogin() && $el['pass'] === $user->getPass()) {
                 if ($el['role'] === "admin") {
                     $_SESSION['ROLE'] = $this->roles::ADMIN_ROLE;
-                    $_SESSION['NAME'] = $el['login'];
+                    $_SESSION['id'] = $file;
                     return $user->getLogin();
                 }
                 $_SESSION['ROLE'] = $this->roles::USER_ROLE;
-                $_SESSION['NAME'] = $el['login'];
+                $_SESSION['id'] = $file;
                 return $user->getLogin();
             }
         }

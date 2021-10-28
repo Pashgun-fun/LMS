@@ -92,6 +92,7 @@ class NewModel extends Model
             'user' => $publish->getUser(),
             'date' => $publish->getDate(),
             'time' => $publish->getTime(),
+            'userID' => $_SESSION['id'],
         );
 
         $newFile = $this->directory . (+array_pop($arrayFiles) + 1);

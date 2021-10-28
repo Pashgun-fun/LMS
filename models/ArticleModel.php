@@ -74,6 +74,7 @@ class ArticleModel extends Model
             'text' => $publish->getText(),
             'user' => $publish->getUser(),
             'date' => $publish->getDate(),
+            'userID' => $_SESSION['id'],
         );
 
         $newFile = $this->directory . (+array_pop($arrayFiles) + 1);
