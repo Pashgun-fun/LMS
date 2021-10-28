@@ -80,26 +80,6 @@ class ArticleController extends Controller
     }
 
     /**
-     * Заполнение блок случайными статьями
-     * Для обычных пользователей и гостей
-     */
-    public function getRandomArticles()
-    {
-        $this->articleModel->setRandomArticles();
-        $this->printShortsArticles();
-    }
-
-    /**
-     * Заполнение блок случайными статьями
-     * Для админов
-     */
-    public function getRandomArticlesForAdmin()
-    {
-        $this->articleModel->setRandomArticles();
-        $this->printShortArticlesForAdmin();
-    }
-
-    /**
      * Удаление статьи
      */
     public function deleteArticle()
@@ -170,6 +150,46 @@ class ArticleController extends Controller
             $userName['user'],
             $userName['date']
         );
+    }
 
+    /**
+     * Отображение страниц с пагинацией
+     * для обычных пользоватлей и гостей
+     */
+    public function pagination()
+    {
+        $valid = new Validation();
+        $articleBlock = $this->articleModel->pagination($_POST['page']);
+        foreach ($articleBlock as $val) {
+            $article = new Publish($val);
+            $this->view->article(
+                $article->getTitle(),
+                $valid->checkLengthArticle($article->getText()),
+                $article->getUser(),
+                $article->getDate()
+            );
+        }
+    }
+
+    /**
+     * Отображение страниц с пагинацией
+     * для админов
+     */
+    public function paginationAdmin()
+    {
+        $valid = new Validation();
+        $articleBlock = $this->articleModel->pagination($_POST['page']);
+        if (empty($articleBlock)) {
+            return;
+        }
+        foreach ($articleBlock as $val) {
+            $article = new Publish($val);
+            $this->view->articleAdmin(
+                $article->getTitle(),
+                $valid->checkLengthArticle($article->getText()),
+                $article->getUser(),
+                $article->getDate()
+            );
+        }
     }
 }

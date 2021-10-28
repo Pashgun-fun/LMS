@@ -4,7 +4,7 @@
         display: grid;
         grid-template-columns: repeat(3, 4fr);
         grid-gap: 50px;
-        margin: 100px auto 0 auto;
+        margin: 0 auto 0 auto;
         width: 90%;
     }
     .article__title {

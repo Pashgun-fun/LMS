@@ -1,4 +1,15 @@
-import {articles, deleteUser, newUser, openWindowEdit, getMaket, login, enterUser, exitUser} from "./ajax.js";
+import {
+    articles,
+    deleteUser,
+    newUser,
+    openWindowEdit,
+    getMaket,
+    login,
+    enterUser,
+    exitUser, moveByPage,
+    news,
+    moveByPageNews,
+} from "./ajax.js";
 import {checkLogin, checkEmail, checkPass, checkDateTime, checkLength} from "./validation.js";
 
 //Hide and show
@@ -19,15 +30,33 @@ $(() => {
         }
     })
 
-    $.ajax({
-        url: "/api/news",
-        method: "POST",
-        success: function (response) {
-            $('.news').append(response);
-        }
-    })
+    news();
 
     history.replaceState(null, null, ' ');
+})
+
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('article_page_nav')) {
+        document.querySelectorAll('.article_page_nav').forEach(item => {
+            item.classList.remove('active');
+        })
+        e.target.classList.add('active');
+        $('.articles').html('');
+        moveByPage(e.target.getAttribute('data-page'))
+    }
+})
+
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('news_page_nav')) {
+        document.querySelectorAll('.news_page_nav').forEach(item => {
+            item.classList.remove('active');
+        })
+        e.target.classList.add('active');
+        $('.news').html('');
+        moveByPageNews(e.target.getAttribute('data-page'))
+    }
 })
 
 //Delete User
@@ -213,55 +242,115 @@ document.addEventListener('click', e => {
         for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
             if (document.querySelectorAll('.article__wrapper')[j].classList.contains('none')) {
                 let arr = document.querySelectorAll('.article__wrapper');
-                $.ajax({
-                    url: '/api/window/edit/article',
-                    type: 'POST',
-                    cache: false,
-                    dataType: 'html',
-                    data: {
-                        'indexEdit': j,
-                    },
-                    success(response) {
-                        $('.edit').html(response);
-                        $('.edit__button').on('click', e => {
-                            e.preventDefault();
-                            let objEdit = {
-                                user: $('.edit-login').val().trim(),
-                                title: $('.edit-email').val().trim(),
-                                text: $('.edit-desc').val().trim(),
-                                index: j,
-                            }
-
-                            if (checkLogin(objEdit.user, '.error-login-edit')) return;
-
-                            if (checkLogin(objEdit.title, '.error-email-edit')) return;
-
-                            $.ajax({
-                                url: '/api/article/edit',
-                                type: 'POST',
-                                cache: false,
-                                data: {
-                                    'arr': objEdit,
-                                },
-                                dataType: 'html',
-                                beforeSend: function () {
-                                    $('.edit__button').prop("disabled", true);
-                                },
-                                success: function () {
-                                    $('.edit__button').prop("disabled", false);
-                                    document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__name').innerHTML = objEdit.user;
-                                    document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__title').innerHTML = objEdit.title;
-                                    document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__text').innerHTML = checkLength(objEdit.text);
-                                }
-                            })
-
-                            $('.edit').hide();
-                        })
-                    },
-                    error: function () {
-                        alert("Редактирование не возможно");
+                let koeficient;
+                document.querySelectorAll('.article_page_nav').forEach(item => {
+                    if (item.classList.contains('active')) {
+                        koeficient = item.getAttribute('data-page');
                     }
                 })
+                if (+koeficient === 1) {
+                    $.ajax({
+                        url: '/api/window/edit/article',
+                        type: 'POST',
+                        cache: false,
+                        dataType: 'html',
+                        data: {
+                            'indexEdit': j,
+                        },
+                        success(response) {
+                            $('.edit').html(response);
+                            $('.edit__button').on('click', e => {
+                                e.preventDefault();
+                                let objEdit = {
+                                    user: $('.edit-login').val().trim(),
+                                    title: $('.edit-email').val().trim(),
+                                    text: $('.edit-desc').val().trim(),
+                                    index: j,
+                                }
+
+                                if (checkLogin(objEdit.user, '.error-login-edit')) return;
+
+                                if (checkLogin(objEdit.title, '.error-email-edit')) return;
+
+                                $.ajax({
+                                    url: '/api/article/edit',
+                                    type: 'POST',
+                                    cache: false,
+                                    data: {
+                                        'arr': objEdit,
+                                    },
+                                    dataType: 'html',
+                                    beforeSend: function () {
+                                        $('.edit__button').prop("disabled", true);
+                                    },
+                                    success: function () {
+                                        $('.edit__button').prop("disabled", false);
+                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__name').innerHTML = objEdit.user;
+                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__title').innerHTML = objEdit.title;
+                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__text').innerHTML = checkLength(objEdit.text);
+                                    }
+                                })
+
+                                $('.edit').hide();
+                            })
+                        },
+                        error: function () {
+                            alert("Редактирование не возможно");
+                        }
+                    })
+                }
+
+                if (+koeficient !== 1) {
+                    $.ajax({
+                        url: '/api/window/edit/article',
+                        type: 'POST',
+                        cache: false,
+                        dataType: 'html',
+                        data: {
+                            'indexEdit': 6 * koeficient - (6 - j),
+                        },
+                        success(response) {
+                            $('.edit').html(response);
+                            $('.edit__button').on('click', e => {
+                                e.preventDefault();
+                                let objEdit = {
+                                    user: $('.edit-login').val().trim(),
+                                    title: $('.edit-email').val().trim(),
+                                    text: $('.edit-desc').val().trim(),
+                                    index: 6 * koeficient - (6 - j),
+                                }
+
+                                if (checkLogin(objEdit.user, '.error-login-edit')) return;
+
+                                if (checkLogin(objEdit.title, '.error-email-edit')) return;
+
+                                $.ajax({
+                                    url: '/api/article/edit',
+                                    type: 'POST',
+                                    cache: false,
+                                    data: {
+                                        'arr': objEdit,
+                                    },
+                                    dataType: 'html',
+                                    beforeSend: function () {
+                                        $('.edit__button').prop("disabled", true);
+                                    },
+                                    success: function () {
+                                        $('.edit__button').prop("disabled", false);
+                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__name').innerHTML = objEdit.user;
+                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__title').innerHTML = objEdit.title;
+                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__text').innerHTML = checkLength(objEdit.text);
+                                    }
+                                })
+
+                                $('.edit').hide();
+                            })
+                        },
+                        error: function () {
+                            alert("Редактирование не возможно");
+                        }
+                    })
+                }
                 el.closest('.article__wrapper').classList.remove('none');
                 break;
             }
@@ -280,55 +369,114 @@ document.addEventListener('click', e => {
         for (let j = 0; j < document.querySelectorAll('.news__wrapper').length; j++) {
             if (document.querySelectorAll('.news__wrapper')[j].classList.contains('none')) {
                 let arr = document.querySelectorAll('.news__wrapper');
-                $.ajax({
-                    url: '/api/window/edit/news',
-                    type: 'POST',
-                    cache: false,
-                    dataType: 'html',
-                    data: {
-                        'indexEdit': j,
-                    },
-                    success(response) {
-                        $('.edit').html(response);
-                        $('.edit__button').on('click', e => {
-                            e.preventDefault();
-                            let objEdit = {
-                                user: $('.edit-login').val().trim(),
-                                title: $('.edit-email').val().trim(),
-                                text: $('.edit-desc').val().trim(),
-                                index: j,
-                            }
-
-                            if (checkLogin(objEdit.user, '.error-login-edit')) return;
-
-                            if (checkLogin(objEdit.title, '.error-email-edit')) return;
-
-                            $.ajax({
-                                url: '/api/news/edit',
-                                type: 'POST',
-                                cache: false,
-                                data: {
-                                    'arr': objEdit,
-                                },
-                                dataType: 'html',
-                                beforeSend: function () {
-                                    $('.edit__button').prop("disabled", true);
-                                },
-                                success: function () {
-                                    $('.edit__button').prop("disabled", false);
-                                    document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__user').innerHTML = objEdit.user;
-                                    document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__title').innerHTML = objEdit.title;
-                                    document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__text').innerHTML = checkLength(objEdit.text);
-                                }
-                            })
-
-                            $('.edit').hide();
-                        })
-                    },
-                    error: function () {
-                        alert("Редактирование не возможно");
+                let koeficient;
+                document.querySelectorAll('.news_page_nav').forEach(item => {
+                    if (item.classList.contains('active')) {
+                        koeficient = item.getAttribute('data-page');
                     }
                 })
+                if (+koeficient === 1) {
+                    $.ajax({
+                        url: '/api/window/edit/news',
+                        type: 'POST',
+                        cache: false,
+                        dataType: 'html',
+                        data: {
+                            'indexEdit': j,
+                        },
+                        success(response) {
+                            $('.edit').html(response);
+                            $('.edit__button').on('click', e => {
+                                e.preventDefault();
+                                let objEdit = {
+                                    user: $('.edit-login').val().trim(),
+                                    title: $('.edit-email').val().trim(),
+                                    text: $('.edit-desc').val().trim(),
+                                    index: j,
+                                }
+
+                                if (checkLogin(objEdit.user, '.error-login-edit')) return;
+
+                                if (checkLogin(objEdit.title, '.error-email-edit')) return;
+
+                                $.ajax({
+                                    url: '/api/news/edit',
+                                    type: 'POST',
+                                    cache: false,
+                                    data: {
+                                        'arr': objEdit,
+                                    },
+                                    dataType: 'html',
+                                    beforeSend: function () {
+                                        $('.edit__button').prop("disabled", true);
+                                    },
+                                    success: function () {
+                                        $('.edit__button').prop("disabled", false);
+                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__user').innerHTML = objEdit.user;
+                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__title').innerHTML = objEdit.title;
+                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__text').innerHTML = checkLength(objEdit.text);
+                                    }
+                                })
+
+                                $('.edit').hide();
+                            })
+                        },
+                        error: function () {
+                            alert("Редактирование не возможно");
+                        }
+                    })
+                }
+                if (+koeficient !== 1) {
+                    $.ajax({
+                        url: '/api/window/edit/news',
+                        type: 'POST',
+                        cache: false,
+                        dataType: 'html',
+                        data: {
+                            'indexEdit': 6 * koeficient - (6 - j),
+                        },
+                        success(response) {
+                            $('.edit').html(response);
+                            $('.edit__button').on('click', e => {
+                                e.preventDefault();
+                                let objEdit = {
+                                    user: $('.edit-login').val().trim(),
+                                    title: $('.edit-email').val().trim(),
+                                    text: $('.edit-desc').val().trim(),
+                                    index: 6 * koeficient - (6 - j),
+                                }
+
+                                if (checkLogin(objEdit.user, '.error-login-edit')) return;
+
+                                if (checkLogin(objEdit.title, '.error-email-edit')) return;
+
+                                $.ajax({
+                                    url: '/api/news/edit',
+                                    type: 'POST',
+                                    cache: false,
+                                    data: {
+                                        'arr': objEdit,
+                                    },
+                                    dataType: 'html',
+                                    beforeSend: function () {
+                                        $('.edit__button').prop("disabled", true);
+                                    },
+                                    success: function () {
+                                        $('.edit__button').prop("disabled", false);
+                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__user').innerHTML = objEdit.user;
+                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__title').innerHTML = objEdit.title;
+                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__text').innerHTML = checkLength(objEdit.text);
+                                    }
+                                })
+
+                                $('.edit').hide();
+                            })
+                        },
+                        error: function () {
+                            alert("Редактирование не возможно");
+                        }
+                    })
+                }
                 el.closest('.news__wrapper').classList.remove('none');
                 break;
             }
@@ -375,6 +523,28 @@ document.addEventListener('click', e => {
         el.closest('.article__wrapper').classList.add('show');
         for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
             if (document.querySelectorAll('.article__wrapper')[j].classList.contains('show')) {
+                let koeficient;
+                document.querySelectorAll('.article_page_nav').forEach(item => {
+                    if (item.classList.contains('active')) {
+                        koeficient = item.getAttribute('data-page');
+                    }
+                })
+                if (+koeficient !== 1) {
+                    $.ajax({
+                        url: '/api/article/read',
+                        method: 'POST',
+                        data: {
+                            'index': 6 * koeficient - (6 - j),
+                        },
+                        success: function (response) {
+                            $('.body').css({
+                                "overflow": "hidden"
+                            })
+                            $('.header').after(response);
+                        }
+                    })
+                    return;
+                }
                 $.ajax({
                     url: '/api/article/read',
                     method: 'POST',
@@ -408,31 +578,6 @@ document.addEventListener('click', e => {
     }
 })
 
-//Fill body a random articles
-document.addEventListener('click', e => {
-    if (e.target.classList.contains('generator-article')) {
-        $.ajax({
-            url: '/api/article/random',
-            method: 'POST',
-            success: function (response) {
-                $('.articles').append(response);
-            }
-        })
-    }
-})
-
-document.addEventListener('click', e => {
-    if (e.target.classList.contains('generator-news')) {
-        $.ajax({
-            url: '/api/news/random',
-            method: 'POST',
-            success: function (response) {
-                $('.news').append(response);
-            }
-        })
-    }
-})
-
 //Delete Articles
 document.addEventListener('click', e => {
     if (e.target.classList.contains('articleFull__delete')) {
@@ -440,16 +585,37 @@ document.addEventListener('click', e => {
         el.closest('.article__wrapper').classList.add('none');
         for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
             if (document.querySelectorAll('.article__wrapper')[j].classList.contains('none')) {
-                $.ajax({
-                    url: '/api/article/delete',
-                    method: 'DELETE',
-                    data: {
-                        'indexDel': j
-                    },
-                    success: function () {
-                        $('.article__wrapper')[j].remove();
+                let koeficient;
+                document.querySelectorAll('.article_page_nav').forEach(item => {
+                    if (item.classList.contains('active')) {
+                        koeficient = item.getAttribute('data-page');
                     }
                 })
+                if (+koeficient === 1) {
+                    $.ajax({
+                        url: '/api/article/delete',
+                        method: 'DELETE',
+                        data: {
+                            'indexDel': j
+                        },
+                        success: function () {
+                            $('.article__wrapper')[j].remove();
+                        }
+                    })
+                }
+
+                if (+koeficient !== 1) {
+                    $.ajax({
+                        url: '/api/article/delete',
+                        method: 'DELETE',
+                        data: {
+                            'indexDel': 6 * koeficient - (6 - j)
+                        },
+                        success: function () {
+                            $('.article__wrapper')[j].remove();
+                        }
+                    })
+                }
             }
         }
     }
@@ -462,6 +628,25 @@ document.addEventListener('click', e => {
         el.closest('.news__wrapper').classList.add('none');
         for (let j = 0; j < document.querySelectorAll('.news__wrapper').length; j++) {
             if (document.querySelectorAll('.news__wrapper')[j].classList.contains('none')) {
+                let koeficient;
+                document.querySelectorAll('.news_page_nav').forEach(item => {
+                    if (item.classList.contains('active')) {
+                        koeficient = item.getAttribute('data-page');
+                    }
+                })
+                if (+koeficient !== 1) {
+                    $.ajax({
+                        url: '/api/news/delete',
+                        method: 'DELETE',
+                        data: {
+                            'indexDel': 6 * koeficient - (6 - j)
+                        },
+                        success: function () {
+                            $('.news__wrapper')[j].remove();
+                        }
+                    })
+                    return;
+                }
                 $.ajax({
                     url: '/api/news/delete',
                     method: 'DELETE',
@@ -477,13 +662,36 @@ document.addEventListener('click', e => {
     }
 })
 
-//New a article
+//ReadNews
 document.addEventListener('click', e => {
     if (e.target.classList.contains('news__read')) {
         let el = e.target;
         el.closest('.news__wrapper').classList.add('show');
         for (let j = 0; j < document.querySelectorAll('.news__wrapper').length; j++) {
             if (document.querySelectorAll('.news__wrapper')[j].classList.contains('show')) {
+                let koeficient;
+                document.querySelectorAll('.news_page_nav').forEach(item => {
+                    if (item.classList.contains('active')) {
+                        koeficient = item.getAttribute('data-page');
+                    }
+                })
+                if (+koeficient !== 1) {
+                    $.ajax({
+                        url: '/api/news/read',
+                        method: 'POST',
+                        data: {
+                            'index': 6 * koeficient - (6 - j),
+                        },
+                        success: function (response) {
+                            $('.header').after(response);
+                            $('.body').css({
+                                "overflow": "hidden"
+                            })
+
+                        }
+                    })
+                    return
+                }
                 $.ajax({
                     url: '/api/news/read',
                     method: 'POST',

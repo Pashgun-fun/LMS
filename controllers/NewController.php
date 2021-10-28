@@ -79,26 +79,6 @@ class NewController extends Controller
     }
 
     /**
-     * Заполнение блок случайными новостями
-     * Для обычных пользователей и гостей
-     */
-    public function getRandomNews()
-    {
-        $this->newModel->setRandomNews();
-        $this->printShortsNews();
-    }
-
-    /**
-     * Заполнение блок случайными новостями
-     * Для админов
-     */
-    public function getRandomNewsAdmin()
-    {
-        $this->newModel->setRandomNews();
-        $this->printShortNewsForAdmin();
-    }
-
-    /**
      * Удаление новости по истечении суток
      */
     public function deleteNews()
@@ -193,4 +173,46 @@ class NewController extends Controller
         $news = new Publish($data);
         $this->view->cardArticle($news->getTitle(), $news->getText(), $news->getUser(), $news->getDate());
     }
+
+    /**
+     * Отображение страниц с пагинацией с новостями
+     * для обычных пользоватлей и гостей
+     */
+    public function pagination()
+    {
+        $valid = new Validation();
+        $articleBlock = $this->newModel->pagination($_POST['page']);
+        foreach ($articleBlock as $val) {
+            $article = new Publish($val);
+            $this->view->news(
+                $article->getTitle(),
+                $valid->checkLengthArticle($article->getText()),
+                $article->getUser(),
+                $article->getDate()
+            );
+        }
+    }
+
+    /**
+     * Отображение страниц с пагинацией с новостями
+     * для админов
+     */
+    public function paginationAdmin()
+    {
+        $valid = new Validation();
+        $articleBlock = $this->newModel->pagination($_POST['page']);
+        if (empty($articleBlock)) {
+            return;
+        }
+        foreach ($articleBlock as $val) {
+            $article = new Publish($val);
+            $this->view->newAdmin(
+                $article->getTitle(),
+                $valid->checkLengthArticle($article->getText()),
+                $article->getUser(),
+                $article->getDate()
+            );
+        }
+    }
+
 }

@@ -120,8 +120,6 @@ let login = () => {
         success: function (response) {
             $('.articles').remove();
             $('.news').remove();
-            $('.generator-article').remove();
-            $('.generator-news').remove();
             $('._title').remove();
             $('.header').after(response);
         }
@@ -166,8 +164,81 @@ let articles = () => {
         method: "POST",
         success: function (response) {
             $('.articles').append(response);
+            $('.article_pages').html('');
+            let articlesArr = $('.article__wrapper').length + 1;
+            $('.count_articles').html(articlesArr - 1);
+            let countPerPage = Math.ceil(articlesArr / 6);
+            for (let j = 1; j <= countPerPage; j++) {
+                let page = `<span class="article_page_nav" data-page = '${j}'>${j}</span>`;
+                $('.article_pages').append(page);
+            }
+            $('.article_page_nav')[0].classList.add('active');
+            $('.articles').html('');
+            moveByPage()
         }
     })
 }
 
-export {articles, deleteUser, newUser, openWindowEdit, getMaket, login, enterUser, exitUser}
+let moveByPage = (page = 1) => {
+    $.ajax({
+        url: '/api/articles/pagination',
+        method: 'POST',
+        dataType: 'html',
+        data: {
+            'page': page,
+        },
+        success: function (response) {
+            $('.articles').append(response);
+        }
+    })
+}
+
+
+let news = () => {
+    $.ajax({
+        url: "/api/news",
+        method: "POST",
+        success: function (response) {
+            $('.news').append(response);
+            $('.news_pages').html('');
+            let articlesArr = $('.news__wrapper').length + 1;
+            $('.count_news').html(articlesArr - 1);
+            let countPerPage = Math.ceil(articlesArr / 6);
+            for (let j = 1; j <= countPerPage; j++) {
+                let page = `<span class="news_page_nav" data-page = '${j}'>${j}</span>`;
+                $('.news_pages').append(page);
+            }
+            $('.news_page_nav')[0].classList.add('active');
+            $('.news').html('');
+            moveByPageNews();
+        }
+    })
+}
+
+let moveByPageNews = (page = 1) => {
+    $.ajax({
+        url: '/api/news/pagination',
+        method: 'POST',
+        dataType: 'html',
+        data: {
+            'page': page,
+        },
+        success: function (response) {
+            $('.news').append(response);
+        }
+    })
+}
+
+export {
+    moveByPageNews,
+    news,
+    moveByPage,
+    articles,
+    deleteUser,
+    newUser,
+    openWindowEdit,
+    getMaket,
+    login,
+    enterUser,
+    exitUser
+}

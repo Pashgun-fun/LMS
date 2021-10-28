@@ -31,14 +31,6 @@ class NewModel extends Model
     }
 
     /**
-     * Добавляем необходимое количество статей для заполнения сайта
-     */
-    public function setRandomNews()
-    {
-        $this->publishRandom($this->directory, $this->config);
-    }
-
-    /**
      * Удаление новости, по истечении суток, из ленты
      * Чтобы понять, можно ли удалять файл из базы, мы сравниваем занесенное туда время с текущим
      * Время заносится, когда новость создалась в формате количества секунд с 1970 года
@@ -122,5 +114,13 @@ class NewModel extends Model
             }
         }
         return [];
+    }
+
+    /**
+     * Отображение страниц с пагинацией
+     */
+    public function pagination(int $page): array
+    {
+        return $this->generalPagination($this->directory, $page);
     }
 }

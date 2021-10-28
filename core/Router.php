@@ -80,15 +80,6 @@ class Router extends Roters
                 $controllerArticle = new ArticleController();
                 $controllerArticle->printAllArticles();
                 break;
-            case "/api/article/random":
-                $controllerArticle = new ArticleController();
-                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
-                    $controllerArticle->getRandomArticles();
-                }
-                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
-                    $controllerArticle->getRandomArticlesForAdmin();
-                }
-                break;
             case "/api/article/delete":
                 $controllerArticle = new ArticleController();
                 $controllerArticle->deleteArticle();
@@ -105,15 +96,6 @@ class Router extends Roters
             case "/api/news/read":
                 $controllerNews = new NewController();
                 $controllerNews->printAllArticles();
-                break;
-            case "/api/news/random":
-                $controllerNews = new NewController();
-                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
-                    $controllerNews->getRandomNews();
-                }
-                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
-                    $controllerNews->getRandomNewsAdmin();
-                }
                 break;
             case "/api/check/news":
                 $controllerNews = new NewController();
@@ -160,6 +142,24 @@ class Router extends Roters
             case "/api/news/old":
                 $controllerNews = new NewController();
                 $controllerNews->getOldNews();
+                break;
+            case "/api/articles/pagination":
+                $controllerArticle = new ArticleController();
+                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+                    $controllerArticle->pagination();
+                }
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+                    $controllerArticle->paginationAdmin();
+                }
+                break;
+            case "/api/news/pagination":
+                $controllerNews = new NewController();
+                if (!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] === 'user') {
+                    $controllerNews->pagination();
+                }
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === 'admin') {
+                    $controllerNews->paginationAdmin();
+                }
                 break;
             case "/":
                 $controllerUsers = new UserController();

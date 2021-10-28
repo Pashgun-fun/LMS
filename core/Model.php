@@ -33,36 +33,6 @@ class Model
     }
 
     /**
-     * Добавляем необходимое количество статей для заполнения сайта
-     */
-    protected function publishRandom(string $dir, string $config)
-    {
-        /**
-         * Данные для скелетона статьи берутся из config`a
-         */
-        $config = require_once $config;
-        /**
-         * Далее сканируется дирректория, где будут размещаться новые статьи
-         * Сортируется, чтобы наибольший индекс файла был послденим в списке
-         * Получаем значение последнего элемента, который и будет являться максимальным индексом
-         * Создаем новый индекс для новго файла на еденицу больше предыдущего
-         */
-        $arrFiles = $this->helper->myscandir($dir);
-        asort($arrFiles);
-        $lastFile = ((int)array_pop($arrFiles) + 1);
-        $j = 0;
-        /**
-         * СОздаём новые файлы в том колибесвте, сколшько нам необходимо
-         */
-        while ($j <= 24) {
-            $index = $lastFile + $j;
-            $fileName = $dir . $index;
-            $this->writeFile($fileName, $config['articles']);
-            $j++;
-        }
-    }
-
-    /**
      * Вывод списка всех статей из базы данных
      */
     protected function publishing(string $dir): array
@@ -122,7 +92,7 @@ class Model
     /**
      * Редактирование новостей и статей
      */
-    protected function editForArticlesAndNews($publish, $dir)
+    protected function editForArticlesAndNews(Publish $publish, string $dir)
     {
         $arr = array_values($this->helper->myscandir($dir));
         asort($arr);
@@ -143,6 +113,21 @@ class Model
 
         file_put_contents($dir . $fileEdit, '');
         file_put_contents($dir . $fileEdit, json_encode($el));
+    }
+
+    /**
+     * Модель для обработки пагинации страниц статей и новостей
+     */
+    public function generalPagination(string $dir, int $page){
+        $countPage = ceil(count($this->publishing($dir)) / 6);
+        if (empty($this->publishing($dir))) {
+            return [];
+        }
+        $subarray = [];
+        for ($i = 0; $i <= $countPage; $i++) {
+            $subarray[$i] = array_slice($this->publishing($dir), $i * 6, 6);
+        }
+        return $subarray[$page - 1];
     }
 
 }

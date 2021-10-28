@@ -10,20 +10,6 @@
 </head>
 
 <style>
-    .generator-article {
-        color: black;
-        font-weight: bold;
-        text-transform: uppercase;
-        font-size: 1.1rem;
-        text-align: center;
-        height: 50px;
-        line-height: 50px;
-        width: 30%;
-        background: red;
-        margin-top: 50px;
-        margin-bottom: 100px;
-    }
-
     .add__article, .add__news {
         display: none;
         position: fixed;
@@ -33,6 +19,32 @@
         height: 100vh;
         background: rgba(0, 0, 0, 0.2);
         z-index: 500;
+    }
+
+    .news {
+        margin-bottom: 100px;
+        display: grid;
+        grid-template-columns: repeat(3, 4fr);
+    }
+
+    .article_pages, .news_pages {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .article_page_nav:not(:last-child), .news_page_nav:not(:last-child) {
+        margin-right: 1rem;
+    }
+
+    .active {
+        font-weight: bold;
+        font-size: 1.3rem;
+        color: red;
+    }
+
+    .count_news, .count_articles {
+        margin-left: 20px;
+        opacity: 0.7;
     }
 </style>
 
@@ -60,19 +72,16 @@
     </div>
 </div>
 
-<div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span></div>
+<div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span><span class="count_articles"></span></div>
+<div class="article_pages _container"></div>
 <section class="articles">
 </section>
 
-<div class="generator-article _container">Сгенерировать статьи</div>
-
-
-<div class="_title _container _news" style="margin-top: 100px">Новости <span class="news__add">Добавить новость</span>
+<div class="_title _container _news" style="margin-top: 100px">Новости <span class="news__add">Добавить новость</span><span class="count_news"></span>
 </div>
-<section class="news">
+<div class="news_pages _container"></div>
+<section class="news _container">
 </section>
-
-<div class="generator-news _container" style="margin-bottom: 100px">Сгенерировать новости</div>
 
 <div class="add__article">
     <div class="add__wrapper">

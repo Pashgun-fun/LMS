@@ -25,11 +25,6 @@ class ArticleModel extends Model
      */
     public function getAllArticles(): array
     {
-//        $countPerPage = 6;
-//        $countPages = 1;
-//        if (count($this->publishing($this->directory)) > $countPerPage) {
-//            $countPages = count($this->publishing($this->directory))/$countPages;
-//        }
         return $this->publishing($this->directory);
     }
 
@@ -39,14 +34,6 @@ class ArticleModel extends Model
     public function readAllArticles(): array
     {
         return $this->publishing($this->directory);
-    }
-
-    /**
-     * Добавляем необходимое количество статей для заполнения сайта
-     */
-    public function setRandomArticles()
-    {
-        $this->publishRandom($this->directory, $this->config);
     }
 
     /**
@@ -93,5 +80,13 @@ class ArticleModel extends Model
         $this->writeFile($newFile, $userData);
 
         return $userData;
+    }
+
+    /**
+     * Отображение страниц с пагинацией
+     */
+    public function pagination(int $page): array
+    {
+        return $this->generalPagination($this->directory, $page);
     }
 }
