@@ -90,16 +90,22 @@ class UserModel extends Model
     /**
      * Отображение всех пользователей, которые представлены в базе данных
      **/
-    public function getAllUsers(): ?array
+    public function getAllUsers()
     {
-        $arr1 = array_values($this->helper->myscandir($this->directory));
+//        $arr1 = array_values($this->helper->myscandir($this->directory));
         $usersNameArr = array();
-
-        foreach ($arr1 as $value) {
-            $file = $this->directory . $value;
-            $data = $this->readFile($file);
-            $user = new User($data);
-            array_push($usersNameArr, $user->getLogin());
+//
+//        foreach ($arr1 as $value) {
+//            $file = $this->directory . $value;
+//            $data = $this->readFile($file);
+//            $user = new User($data);
+//            array_push($usersNameArr, $user->getLogin());
+//        }
+        $mysql = new \mysqli('homestead', 'homestead', 'secret', 'homestead');
+        $query = "SELECT * FROM homestead.Users";
+        $result = $mysql->query($query);
+        while ($row = $result->fetch_assoc()) {
+            array_push($usersNameArr, $row['Login']);
         }
         return $usersNameArr;
     }
