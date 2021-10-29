@@ -8,7 +8,7 @@ class User
     private string $pass;
     private string $email;
     private string $confirm;
-    private string $desc;
+    private string $descr;
     private string $data;
     private int $index;
     private string $admin;
@@ -54,7 +54,7 @@ class User
 
     public function getDesc(): ?string
     {
-        return $this->desc;
+        return $this->descr;
     }
 
     public function getIndex(): ?int
@@ -84,7 +84,7 @@ class User
 
     public function setDesc($desc): void
     {
-        $this->desc = $desc;
+        $this->descr = $desc;
     }
 
     public function setAdmin($admin): void

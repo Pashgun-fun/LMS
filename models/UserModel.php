@@ -5,25 +5,17 @@ namespace models;
 use core\Model;
 use core\Helper;
 use entites\User;
-use core\mysql\Variability;
 
 class UserModel extends Model
 {
-    public string $directory;
-
 
     public Helper $helper;
-    public Variability $variability;
-    public array $variant;
     protected static ?UserModel $instance = null;
-    protected $connect = null;
 
     public function __construct()
     {
+        parent::__construct();
         $this->helper = new Helper();
-        $this->variability = new Variability();
-        $this->directory = __DIR__ . "/../database/Users/";
-        $this->connect = $this->variability->chooseVariant();
     }
 
     public static function getInstance(): UserModel
@@ -73,7 +65,7 @@ class UserModel extends Model
                     'pass' => $user->getPass(),
                 );
 
-                $newFile = $this->directory . (+array_pop($arrayFiles) + 1);
+                $newFile = __DIR__ . $this->connect['file']['users'] . (+array_pop($arrayFiles) + 1);
                 $this->writeFile($newFile, $userData);
                 return $user->getLogin();
         }
@@ -86,7 +78,26 @@ class UserModel extends Model
      **/
     public function deleteUser(int $indexDel)
     {
-        $this->delete($this->directory, $indexDel);
+        switch (gettype($this->connect)) {
+            case "object":
+                $result = $this->connect->query("SELECT * FROM homestead.Users");
+                $allUsers = [];
+                $delID = null;
+                while ($row = $result->fetch_assoc()) {
+                    array_push($allUsers, $row);
+                }
+                foreach (array_values($allUsers) as $key => $value) {
+                    if ($key === $indexDel) {
+                        $delID = (int)$value['ID'];
+                        break;
+                    }
+                }
+                $this->connect->query("DELETE FROM homestead.Users WHERE ID = '{$delID}'");
+                break;
+            case "array":
+                $this->delete(__DIR__ . $this->connect['file']['users'], $indexDel);
+                break;
+        }
     }
 
     /**
@@ -96,25 +107,45 @@ class UserModel extends Model
      **/
     public function editUser(User $user)
     {
-        $arr = array_values($this->helper->myscandir($this->directory));
-        asort($arr);
-        $fileEdit = null;
-        for ($j = 0; $j < count($arr); $j++) {
-            if ($j === $user->getIndex()) {
-                $fileEdit = $arr[$j];
+        switch (gettype($this->connect)) {
+            case "object":
+                $result = $this->connect->query("SELECT * FROM homestead.Users");
+                $allUsers = [];
+                $editID = null;
+                while ($row = $result->fetch_assoc()) {
+                    array_push($allUsers, $row);
+                }
+                foreach (array_values($allUsers) as $key => $value) {
+                    if ($key === $user->getIndex()) {
+                        $editID += (int)$value['ID'];
+                        break;
+                    }
+                }
+
+                $this->connect->query("UPDATE Users SET `login` = '{$user->getLogin()}', `email` = '{$user->getEmail()}', `descr` = '{$user->getDesc()}' WHERE ID = '{$editID}'");
                 break;
-            }
+            case "array":
+                $arr = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
+                asort($arr);
+                $fileEdit = null;
+                for ($j = 0; $j < count($arr); $j++) {
+                    if ($j === $user->getIndex()) {
+                        $fileEdit = $arr[$j];
+                        break;
+                    }
+                }
+
+                $file = __DIR__ . $this->connect['file']['users'] . $fileEdit;
+                $el = $this->readFile($file);
+
+                $el['login'] = $user->getLogin();
+                $el['email'] = $user->getEmail();
+                $el['descr'] = $user->getDesc();
+
+                file_put_contents(__DIR__ . $this->connect['file']['users'] . $fileEdit, '');
+                file_put_contents(__DIR__ . $this->connect['file']['users'] . $fileEdit, json_encode($el));
+                break;
         }
-
-        $file = $this->directory . $fileEdit;
-        $el = $this->readFile($file);
-
-        $el['login'] = $user->getLogin();
-        $el['email'] = $user->getEmail();
-        $el['desc'] = $user->getDesc();
-
-        file_put_contents($this->directory . $fileEdit, '');
-        file_put_contents($this->directory . $fileEdit, json_encode($el));
     }
 
     /**
@@ -128,7 +159,7 @@ class UserModel extends Model
                 $query = "SELECT * FROM homestead.Users";
                 $result = $this->connect->query($query);
                 while ($row = $result->fetch_assoc()) {
-                    array_push($usersNameArr, $row['Login']);
+                    array_push($usersNameArr, $row['login']);
                 }
                 return $usersNameArr;
             case "array":

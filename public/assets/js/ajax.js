@@ -82,7 +82,7 @@ let openWindowEdit = (indexEdit, userArr) => {
                     email: $('.edit-email').val().trim(),
                     pass: $('.edit-pass').val().trim(),
                     confirm: $('.edit-confirm').val().trim(),
-                    desc: $('.edit-desc').val().trim(),
+                    descr: $('.edit-desc').val().trim(),
                     index: indexEdit,
                 }
 

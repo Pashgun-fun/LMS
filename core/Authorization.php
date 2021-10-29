@@ -29,7 +29,7 @@ class Authorization extends Model
         foreach ($arr as $file) {
             $el = parent::readFile($this->directory . $file);
             if ($el['email'] === $user->getLogin() && $el['pass'] === $user->getPass()) {
-                if ($el['role'] === "admin") {
+                if ($el['role'] == $this->roles::ADMIN_ROLE) {
                     $_SESSION['ROLE'] = $this->roles::ADMIN_ROLE;
                     $_SESSION['id'] = $file;
                     return $user->getLogin();

@@ -118,7 +118,7 @@ document.addEventListener('click', (e) => {
             email: $('.email').val().trim(),
             pass: $('.pass').val().trim(),
             confirm: $('.confirm').val().trim(),
-            desc: $('.desc').val().trim(),
+            descr: $('.desc').val().trim(),
             data: $('.date').val().trim()
         }
 

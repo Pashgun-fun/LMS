@@ -3,9 +3,18 @@
 namespace core;
 
 use entites\Publish;
+use core\mysql\Variability;
 
 class Model
 {
+    protected $connect = null;
+    protected Variability $variability;
+
+    public function __construct()
+    {
+        $this->variability = new Variability();
+        $this->connect = $this->variability->chooseVariant();
+    }
     /**
      * Метод используемый в большинстве моделей
      * Необходим для чтения данных файла
@@ -118,7 +127,8 @@ class Model
     /**
      * Модель для обработки пагинации страниц статей и новостей
      */
-    public function generalPagination(string $dir, int $page){
+    public function generalPagination(string $dir, int $page)
+    {
         $countPage = ceil(count($this->publishing($dir)) / 6);
         if (empty($this->publishing($dir))) {
             return [];

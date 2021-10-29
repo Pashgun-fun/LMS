@@ -7,13 +7,12 @@ use core\Model;
 
 class PageModel extends Model
 {
-    public $directory = null;
     public Helper $helper;
 
     public function __construct()
     {
+        parent::__construct();
         $this->helper = new Helper();
-        $this->directory = __DIR__ . "/../database/Users/";
     }
 
     /**
@@ -22,6 +21,24 @@ class PageModel extends Model
      **/
     public function openEditWindow(int $indexEdit): array
     {
-        return $this->openEdit($this->directory, $indexEdit);
+        switch (gettype($this->connect)) {
+            case "object":
+                $result = $this->connect->query("SELECT * FROM homestead.Users");
+                $allUsers = [];
+                $editID = null;
+                while ($row = $result->fetch_assoc()) {
+                    array_push($allUsers, $row);
+                }
+                foreach (array_values($allUsers) as $key => $value) {
+                    if ($key === $indexEdit) {
+                        $editID = (int)$value['ID'];
+                        break;
+                    }
+                }
+                return $this->connect->query("SELECT * FROM homestead.Users WHERE ID = '{$editID}'")->fetch_assoc();
+            case "array":
+                return $this->openEdit(__DIR__ . $this->connect['file']['users'], $indexEdit);
+        }
+        return [];
     }
 }
