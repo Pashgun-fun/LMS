@@ -20,7 +20,7 @@ class UserController extends Controller
         $this->helper = new Helper();
         $this->auth = new Authorization();
         parent::__construct();
-        $this->model = new UserModel();
+        $this->model = UserModel::getInstance();
     }
 
     /**

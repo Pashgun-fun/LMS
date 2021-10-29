@@ -193,7 +193,6 @@ let moveByPage = (page = 1) => {
     })
 }
 
-
 let news = () => {
     $.ajax({
         url: "/api/news",

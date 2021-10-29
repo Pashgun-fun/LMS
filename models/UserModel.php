@@ -5,16 +5,33 @@ namespace models;
 use core\Model;
 use core\Helper;
 use entites\User;
+use core\mysql\Variability;
 
 class UserModel extends Model
 {
     public string $directory;
+
+
     public Helper $helper;
+    public Variability $variability;
+    public array $variant;
+    protected static ?UserModel $instance = null;
+    protected $connect = null;
 
     public function __construct()
     {
         $this->helper = new Helper();
+        $this->variability = new Variability();
         $this->directory = __DIR__ . "/../database/Users/";
+        $this->connect = $this->variability->chooseVariant();
+    }
+
+    public static function getInstance(): UserModel
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
     /**
@@ -26,28 +43,41 @@ class UserModel extends Model
      **/
     public function newUser(User $user): string
     {
-        $arrayFiles = $this->helper->myscandir($this->directory);
-        asort($arrayFiles);
-        foreach ($arrayFiles as $file) {
-            $fileName = $this->directory . $file;
-            $el = $this->readFile($fileName);
-            if ($user->getEmail() === $el['email']) {
-                return '';
-            }
+        switch (gettype($this->connect)) {
+            case "object":
+                $query = "INSERT INTO homestead.Users VALUES (
+                                    null, 
+                                    '{$user->getLogin()}', 
+                                    '{$user->getEmail()}', 
+                                    '{$user->getPass()}', 
+                                    '{$user->getData()}',
+                                    '{$user->getDesc()}')";
+                $this->connect->query($query);
+                return $user->getLogin();
+            case "array":
+                $arrayFiles = $this->helper->myscandir(__DIR__ . $this->connect['file']['users']);
+                asort($arrayFiles);
+                foreach ($arrayFiles as $file) {
+                    $fileName = __DIR__ . $this->connect['file']['users'] . $file;
+                    $el = $this->readFile($fileName);
+                    if ($user->getEmail() === $el['email']) {
+                        return '';
+                    }
+                }
+
+                $userData = array(
+                    'login' => $user->getLogin(),
+                    'email' => $user->getEmail(),
+                    'desc' => $user->getDesc(),
+                    'data' => $user->getData(),
+                    'pass' => $user->getPass(),
+                );
+
+                $newFile = $this->directory . (+array_pop($arrayFiles) + 1);
+                $this->writeFile($newFile, $userData);
+                return $user->getLogin();
         }
-
-        $userData = array(
-            'login' => $user->getLogin(),
-            'email' => $user->getEmail(),
-            'desc' => $user->getDesc(),
-            'data' => $user->getData(),
-            'pass' => $user->getPass(),
-        );
-
-        $newFile = $this->directory . (+array_pop($arrayFiles) + 1);
-        $this->writeFile($newFile, $userData);
-
-        return $user->getLogin();
+        return "";
     }
 
     /**
@@ -90,24 +120,27 @@ class UserModel extends Model
     /**
      * Отображение всех пользователей, которые представлены в базе данных
      **/
-    public function getAllUsers()
+    public function getAllUsers(): array
     {
-//        $arr1 = array_values($this->helper->myscandir($this->directory));
         $usersNameArr = array();
-//
-//        foreach ($arr1 as $value) {
-//            $file = $this->directory . $value;
-//            $data = $this->readFile($file);
-//            $user = new User($data);
-//            array_push($usersNameArr, $user->getLogin());
-//        }
-        $mysql = new \mysqli('homestead', 'homestead', 'secret', 'homestead');
-        $query = "SELECT * FROM homestead.Users";
-        $result = $mysql->query($query);
-        while ($row = $result->fetch_assoc()) {
-            array_push($usersNameArr, $row['Login']);
+        switch (gettype($this->connect)) {
+            case "object":
+                $query = "SELECT * FROM homestead.Users";
+                $result = $this->connect->query($query);
+                while ($row = $result->fetch_assoc()) {
+                    array_push($usersNameArr, $row['Login']);
+                }
+                return $usersNameArr;
+            case "array":
+                $arr1 = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
+                foreach ($arr1 as $value) {
+                    $file = __DIR__ . $this->connect['file']['users'] . $value;
+                    $data = $this->readFile($file);
+                    $user = new User($data);
+                    array_push($usersNameArr, $user->getLogin());
+                }
+                return $usersNameArr;
         }
         return $usersNameArr;
     }
-
 }
