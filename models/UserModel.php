@@ -18,6 +18,16 @@ class UserModel extends Model
         $this->helper = new Helper();
     }
 
+    public function __destruct()
+    {
+        switch (gettype($this->connect)) {
+            case "object":
+            {
+                $this->connect->close();
+            }
+        }
+    }
+
     public static function getInstance(): UserModel
     {
         if (self::$instance === null) {
