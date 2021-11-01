@@ -7,10 +7,9 @@ function createArticlesTable()
     $query = "CREATE TABLE `homestead`.`Articles` (
               `ID` INT NOT NULL AUTO_INCREMENT,
               `UserID` INT NULL,
-              `Title` VARCHAR(45) NULL,
-              `Text` VARCHAR(255) NULL,
-              `Date` VARCHAR(45) NULL,
-              `Time` MEDIUMTEXT NULL,
+              `title` VARCHAR(45) NULL,
+              `text` TEXT NULL,
+              `date` VARCHAR(100) NULL,
               PRIMARY KEY (`ID`),
               UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)";
     $mysql->query($query);

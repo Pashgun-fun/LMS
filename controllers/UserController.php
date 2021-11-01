@@ -7,19 +7,16 @@ use core\Helper;
 use core\Validation;
 use entites\User;
 use models\UserModel;
-use core\Authorization;
 
 class UserController extends Controller
 {
     protected UserModel $model;
-    protected Authorization $auth;
     protected Helper $helper;
 
     function __construct()
     {
-        $this->helper = new Helper();
-        $this->auth = new Authorization();
         parent::__construct();
+        $this->helper = new Helper();
         $this->model = UserModel::getInstance();
     }
 
@@ -84,7 +81,7 @@ class UserController extends Controller
     public function authorization()
     {
         $user = new User($_POST['arr']);
-        $this->auth->getAuthorization($user);
+        $this->model->getAuthorization($user);
     }
 
     /**
@@ -100,11 +97,11 @@ class UserController extends Controller
         switch ($_SESSION['ROLE']) {
             case 'user':
                 $usersNameArr = $this->model->getAllUsers();
-                $this->view->userPage($usersNameArr);
+                $this->view->userPage($usersNameArr, $_SESSION['NAME']);
                 break;
             case 'admin':
                 $usersNameArr = $this->model->getAllUsers();
-                $this->view->adminPage($usersNameArr);
+                $this->view->adminPage($usersNameArr, $_SESSION['NAME']);
                 break;
         }
 

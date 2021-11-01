@@ -17,15 +17,15 @@ class Variability
      * Если тип подключения к файлам, возвращаем пути к локальным БД
      * В этом случае возвращается ассоциативный массив
      */
-    public function chooseVariant(): mixed
+    public function chooseVariant()
     {
         switch ($this->variant) {
             case "file":
                 return require_once __DIR__ . "/../../public/config/directories.php";
             case "base":
+            default:
                 $dataConnectToBase = require_once __DIR__ . "/../../public/config/mysql_config/config_database.php";
                 return new \mysqli($dataConnectToBase['base']['hostname'], $dataConnectToBase['base']['username'], $dataConnectToBase['base']['password'], $dataConnectToBase['base']['database']);
         }
-        return null;
     }
 }

@@ -5,18 +5,18 @@ namespace controllers;
 use core\Controller;
 use core\Validation;
 use core\Helper;
-use models\NewModel;
+use models\NewsModel;
 use entites\Publish;
 
 class NewController extends Controller
 {
     protected Helper $helper;
-    protected NewModel $newModel;
+    protected NewsModel $newModel;
 
     function __construct()
     {
         parent::__construct();
-        $this->newModel = new NewModel();
+        $this->newModel = NewsModel::getInstance();
         $this->helper = new Helper();
     }
 
@@ -35,7 +35,7 @@ class NewController extends Controller
             $this->view->news(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
+                "User",//$article->getUser()
                 $article->getDate()
             );
         }
@@ -56,7 +56,7 @@ class NewController extends Controller
             $this->view->newAdmin(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
+                "User",//$article->getUser()
                 $article->getDate()
             );
         }
@@ -73,7 +73,7 @@ class NewController extends Controller
         $this->view->cardArticle(
             $article->getTitle(),
             $article->getText(),
-            $article->getUser(),
+            "User",//$article->getUser()
             $article->getDate()
         );
     }
@@ -84,7 +84,7 @@ class NewController extends Controller
     public function deleteNews()
     {
         $arr = $this->helper->resetAPI();
-        $this->newModel->deleteNews((int)$arr['time']);
+        $this->newModel->deleteNews((int)$arr['seconds']);
     }
 
     /**
@@ -187,7 +187,7 @@ class NewController extends Controller
             $this->view->news(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
+                "User",//$article->getUser()
                 $article->getDate()
             );
         }
@@ -209,7 +209,7 @@ class NewController extends Controller
             $this->view->newAdmin(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
+                "User",//$article->getUser()
                 $article->getDate()
             );
         }

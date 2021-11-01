@@ -121,6 +121,8 @@ let login = () => {
             $('.articles').remove();
             $('.news').remove();
             $('._title').remove();
+            $('.article_pages').remove();
+            $('.news_pages').remove();
             $('.header').after(response);
         }
     })

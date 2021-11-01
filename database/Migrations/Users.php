@@ -6,11 +6,13 @@ function createUsersTable()
     $mysql = mysqli_connect('192.168.10.10',$data['base']['username'],$data['base']['password'],$data['base']['database']);
     $query = "CREATE TABLE `homestead`.`Users` (
               `ID` INT NOT NULL AUTO_INCREMENT,
-              `Login` VARCHAR(45) NULL,
-              `Email` VARCHAR(45) NULL,
-              `Password` VARCHAR(45) NULL,
-              `Date` VARCHAR(45) NULL,
-              `Description` VARCHAR(100) NULL,
+              `login` VARCHAR(45) NULL,
+              `email` VARCHAR(45) NULL,
+              `pass` VARCHAR(45) NULL,
+              `data` VARCHAR(45) NULL,
+              `descr` VARCHAR(100) NULL,
+              `role` VARCHAR(100) NULL,
+              
               PRIMARY KEY (`ID`),
               UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)";
     $mysql->query($query);

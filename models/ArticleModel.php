@@ -3,21 +3,42 @@
 namespace models;
 
 use core\Model;
-use core\Helper;
 use entites\Publish;
 
 class ArticleModel extends Model
 {
-    public string $directory;
-    public string $config;
 
-    public Helper $helper;
+    protected static ?ArticleModel $instance = null;
 
     public function __construct()
     {
-        $this->helper = new Helper();
-        $this->directory = __DIR__ . "/../database/Articles/";
-        $this->config = __DIR__ . "/../public/config/random_articles_and_news.php";
+        parent::__construct();
+    }
+
+    /**
+     * Закрываем подключение к БД
+     */
+    public function __destruct()
+    {
+        switch (gettype($this->connect)) {
+            case "object":
+            {
+                $this->connect->close();
+            }
+        }
+    }
+
+    /**
+     * Singleton
+     * Чтобы объект не создавалася несолько раз один и тот же
+     * а использовался один и тот же, если он уже создан
+     */
+    public static function getInstance(): ArticleModel
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
     /**
@@ -25,7 +46,18 @@ class ArticleModel extends Model
      */
     public function getAllArticles(): array
     {
-        return $this->publishing($this->directory);
+        $arrOfArticles = [];
+        switch (gettype($this->connect)) {
+            case "object":
+                $result = $this->connect->query("SELECT * FROM homestead.Articles");
+                while ($row = $result->fetch_assoc()) {
+                    array_push($arrOfArticles, $row);
+                }
+                return $arrOfArticles;
+            case "array":
+                return $this->publishing(__DIR__ . $this->connect['file']['articles']);
+        }
+        return [];
     }
 
     /**
@@ -33,7 +65,18 @@ class ArticleModel extends Model
      */
     public function readAllArticles(): array
     {
-        return $this->publishing($this->directory);
+        switch (gettype($this->connect)) {
+            case "object":
+                $articles = [];
+                $result = $this->connect->query("SELECT * FROM homestead.Articles");
+                while ($article = $result->fetch_assoc()) {
+                    array_push($articles, $article);
+                }
+                return $articles;
+            case "array":
+                return $this->publishing(__DIR__ . $this->connect['file']['articles']);
+        }
+        return [];
     }
 
     /**
@@ -42,7 +85,25 @@ class ArticleModel extends Model
      */
     public function deleteArticle(int $indexDel)
     {
-        $this->delete($this->directory, $indexDel);
+        switch (gettype($this->connect)) {
+            case "object":
+                $result = $this->connect->query("SELECT * FROM homestead.Articles");
+                $allArticles = [];
+                $delArticle = null;
+                while ($row = $result->fetch_assoc()) {
+                    array_push($allArticles, $row);
+                }
+                foreach (array_values($allArticles) as $key => $value) {
+                    if ($key === $indexDel) {
+                        $delArticle = (int)$value['ID'];
+                        break;
+                    }
+                }
+                $this->connect->query("DELETE FROM homestead.Articles WHERE ID = {$delArticle}");
+                break;
+            case "array":
+                $this->delete(__DIR__ . $this->connect['file']['articles'], $indexDel);
+        }
     }
 
     /**
@@ -50,7 +111,25 @@ class ArticleModel extends Model
      */
     public function openEditWindowArticle(int $indexEdit): array
     {
-        return $this->openEdit($this->directory, $indexEdit);
+        switch (gettype($this->connect)) {
+            case "object":
+                $result = $this->connect->query("SELECT * FROM homestead.Articles");
+                $allArticles = [];
+                $editID = null;
+                while ($article = $result->fetch_assoc()) {
+                    array_push($allArticles, $article);
+                }
+                foreach ($allArticles as $key => $value) {
+                    if ($key === $indexEdit) {
+                        $editID = (int)$value['ID'];
+                        break;
+                    }
+                }
+                return $this->connect->query("SELECT * FROM homestead.Articles WHERE ID = '{$editID}'")->fetch_assoc();
+            case "array":
+                return $this->openEdit(__DIR__ . $this->connect['file']['articles'], $indexEdit);
+        }
+        return [];
     }
 
     /**
@@ -58,7 +137,25 @@ class ArticleModel extends Model
      */
     public function edit(Publish $publish)
     {
-        $this->editForArticlesAndNews($publish, $this->directory);
+        switch (gettype($this->connect)) {
+            case "object":
+                $result = $this->connect->query("SELECT * FROM homestead.Articles");
+                $allArticles = [];
+                $editID = null;
+                while ($row = $result->fetch_assoc()) {
+                    array_push($allArticles, $row);
+                }
+                foreach (array_values($allArticles) as $key => $value) {
+                    if ($key === $publish->getIndex()) {
+                        $editID += (int)$value['ID'];
+                        break;
+                    }
+                }
+                $this->connect->query("UPDATE homestead.Articles SET `title` = '{$publish->getTitle()}', `text` = '{$publish->getText()}' WHERE ID = {$editID}");
+                break;
+            case "array":
+                $this->editForArticlesAndNews($publish, __DIR__ . $this->connect['file']['articles']);
+        }
     }
 
     /**
@@ -66,21 +163,41 @@ class ArticleModel extends Model
      */
     public function newArticleBlock(Publish $publish): array
     {
-        $arrayFiles = $this->helper->myscandir($this->directory);
-        asort($arrayFiles);
+        switch (gettype($this->connect)) {
+            case "object":
+                $newArticle = [
+                    'title' => $publish->getTitle(),
+                    'text' => $publish->getText(),
+                    'user' => $_SESSION['NAME'],
+                    'date' => $publish->getDate(),
 
-        $userData = array(
-            'title' => $publish->getTitle(),
-            'text' => $publish->getText(),
-            'user' => $publish->getUser(),
-            'date' => $publish->getDate(),
-            'userID' => $_SESSION['id'],
-        );
+                ];
+                $query = "INSERT INTO homestead.Articles VALUES (
+                                    null, 
+                                     {$_SESSION['id']}, 
+                                    '{$publish->getTitle()}', 
+                                    '{$publish->getText()}', 
+                                    '{$publish->getDate()}')";
+                $this->connect->query($query);
+                return $newArticle;
+            case "array":
+                $arrayFiles = $this->helper->myscandir(__DIR__ . $this->connect['file']['articles']);
+                asort($arrayFiles);
 
-        $newFile = $this->directory . (+array_pop($arrayFiles) + 1);
-        $this->writeFile($newFile, $userData);
+                $userData = array(
+                    'title' => $publish->getTitle(),
+                    'text' => $publish->getText(),
+                    'user' => $publish->getUser(),
+                    'date' => $publish->getDate(),
+                    'userID' => $_SESSION['id'],
+                );
 
-        return $userData;
+                $newFile = __DIR__ . $this->connect['file']['articles'] . (+array_pop($arrayFiles) + 1);
+                $this->writeFile($newFile, $userData);
+
+                return $userData;
+        }
+        return [];
     }
 
     /**
@@ -88,6 +205,18 @@ class ArticleModel extends Model
      */
     public function pagination(int $page): array
     {
-        return $this->generalPagination($this->directory, $page);
+        switch (gettype($this->connect)) {
+            case "object":
+                $articles = [];
+                $numberStart = $page * 6 - 6;
+                $result = $this->connect->query("SELECT * FROM homestead.Articles LIMIT {$numberStart} ,6");
+                while ($article = $result->fetch_assoc()) {
+                    array_push($articles, $article);
+                }
+                return $articles;
+            case "array":
+                return $this->generalPagination(__DIR__ . $this->connect['file']['articles'], $page);
+        }
+        return [];
     }
 }

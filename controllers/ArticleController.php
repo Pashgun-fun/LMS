@@ -16,7 +16,7 @@ class ArticleController extends Controller
     function __construct()
     {
         parent::__construct();
-        $this->articleModel = new ArticleModel();
+        $this->articleModel = ArticleModel::getInstance();
         $this->helper = new Helper();
     }
 
@@ -35,7 +35,7 @@ class ArticleController extends Controller
             $this->view->article(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
+                "User",
                 $article->getDate()
             );
 
@@ -57,7 +57,7 @@ class ArticleController extends Controller
             $this->view->articleAdmin(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
+                "User",
                 $article->getDate()
             );
         }
@@ -74,10 +74,11 @@ class ArticleController extends Controller
         $this->view->cardArticle(
             $article->getTitle(),
             $article->getText(),
-            $article->getUser(),
+            "User",//$article->getUser()
             $article->getDate()
         );
     }
+
 
     /**
      * Удаление статьи
@@ -165,7 +166,7 @@ class ArticleController extends Controller
             $this->view->article(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
+                "User",//$article->getUser()
                 $article->getDate()
             );
         }
@@ -187,7 +188,7 @@ class ArticleController extends Controller
             $this->view->articleAdmin(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                $article->getUser(),
+                "User",//$article->getUser()
                 $article->getDate()
             );
         }

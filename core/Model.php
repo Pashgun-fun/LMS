@@ -9,12 +9,15 @@ class Model
 {
     protected $connect = null;
     protected Variability $variability;
+    protected Helper $helper;
 
     public function __construct()
     {
+        $this->helper = new Helper();
         $this->variability = new Variability();
         $this->connect = $this->variability->chooseVariant();
     }
+
     /**
      * Метод используемый в большинстве моделей
      * Необходим для чтения данных файла
@@ -80,7 +83,7 @@ class Model
     /**
      * Открытие окна редактирования
      */
-    protected function openEdit(string $dir, int $index)
+    protected function openEdit(string $dir, int $index): array
     {
         /**
          * Сканируем дирректорию с файламии, которые хотим редактировать
@@ -127,7 +130,7 @@ class Model
     /**
      * Модель для обработки пагинации страниц статей и новостей
      */
-    public function generalPagination(string $dir, int $page)
+    protected function generalPagination(string $dir, int $page)
     {
         $countPage = ceil(count($this->publishing($dir)) / 6);
         if (empty($this->publishing($dir))) {

@@ -3,7 +3,7 @@
 namespace core;
 
 use models\ArticleModel;
-use models\NewModel;
+use models\NewsModel;
 use models\PageModel;
 use entites\User;
 use entites\Publish;
@@ -22,7 +22,7 @@ class Controller
      */
     protected function edit()
     {
-        $window = new PageModel();
+        $window = PageModel::getInstance();
         $user = new User($window->openEditWindow($_POST['indexEdit']));
         $this->view->editWindow($user->getLogin(), $user->getEmail(), $user->getDesc());
     }
@@ -32,18 +32,19 @@ class Controller
      */
     protected function editArticle()
     {
-        $window = new ArticleModel();
+        $window = ArticleModel::getInstance();
         $user = new Publish($window->openEditWindowArticle($_POST['indexEdit']));
-        $this->view->editWindowArticlesAndNews($user->getUser(), $user->getTitle(), $user->getText());
+        $this->view->editWindowArticlesAndNews("User", $user->getTitle(), $user->getText());
     }
 
     /**
      * Открытие модального окна для редактирования новостей
      */
-    protected function editNews(){
-        $window = new NewModel();
+    protected function editNews()
+    {
+        $window = NewsModel::getInstance();
         $user = new Publish($window->openEditWindowNews($_POST['indexEdit']));
-        $this->view->editWindowArticlesAndNews($user->getUser(), $user->getTitle(), $user->getText());
+        $this->view->editWindowArticlesAndNews("User", $user->getTitle(), $user->getText());
     }
 
 }

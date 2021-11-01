@@ -7,10 +7,10 @@ function createNewsTable()
     $query = "CREATE TABLE `homestead`.`News` (
               `ID` INT NOT NULL AUTO_INCREMENT,
               `UserID` INT NULL,
-              `Title` VARCHAR(45) NULL,
-              `Text` VARCHAR(255) NULL,
-              `Date` VARCHAR(45) NULL,
-              `Time` MEDIUMTEXT NULL,
+              `title` VARCHAR(45) NULL,
+              `text` text NULL,
+              `date` VARCHAR(45) NULL,
+              `seconds` bigint NULL,
               PRIMARY KEY (`ID`),
               UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)";
     $mysql->query($query);

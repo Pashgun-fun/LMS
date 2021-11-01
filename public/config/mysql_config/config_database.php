@@ -1,7 +1,9 @@
 <?php
-return ["base" => [
+return [
+    "base" => [
         'hostname' => "homestead",
         'username' => "homestead",
         'password' => "secret",
-        'database' => "homestead",]
-        ];
+        'database' => "homestead",
+    ]
+];

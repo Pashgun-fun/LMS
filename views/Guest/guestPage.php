@@ -15,6 +15,7 @@
         margin-bottom: 100px;
         display: grid;
         grid-template-columns: repeat(3, 4fr);
+        grid-gap: 50px;
     }
 
     .article_pages, .news_pages {

@@ -25,6 +25,7 @@
         margin-bottom: 100px;
         display: grid;
         grid-template-columns: repeat(3, 4fr);
+        grid-gap: 50px;
     }
 
     .article_pages, .news_pages {
@@ -54,6 +55,7 @@
             <div class="header__logo"></div>
         </a>
         <div class="header__buttons">
+            <span><?=$name?></span>
             <a class="header__exit">Exit</a>
         </div>
     </div>

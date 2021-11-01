@@ -10,7 +10,6 @@ function createArticles()
                                                     '{$dataArticles['articles']['title']}',
                                                     '{$dataArticles['articles']['text']}',
                                                     '{$dataArticles['articles']['date']}',
-                                                    {$dataArticles['articles']['seconds']}
                                                     )";
         $mysql->query($query);
     }

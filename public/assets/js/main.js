@@ -23,7 +23,7 @@ $(() => {
         url: '/api/check/news',
         method: 'DELETE',
         data: {
-            'time': date.getTime() / 1000,
+            'seconds': date.getTime() / 1000,
         },
         success: function () {
             return;
@@ -141,11 +141,12 @@ document.addEventListener('click', (e) => {
 //Add article
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains("add__button__article")) {
+        let date = new Date();
         let obj = {
             title: $('.publish_title').val().trim(),
             user: $('.publish_login').val().trim(),
             text: $('.publish_text').val().trim(),
-            date: new Date(),
+            date: `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
         }
         try {
             $.ajax({
@@ -164,6 +165,7 @@ document.addEventListener('click', (e) => {
                     $('.add__form').trigger("reset");
                     $('.add__article').hide();
                     $('.add__button__article').prop("disabled", false);
+                    location.reload();
                 },
                 error: function () {
                     console.log("Error");
@@ -178,12 +180,13 @@ document.addEventListener('click', (e) => {
 //Add news
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains("add__button__news")) {
+        let date = new Date();
         let obj = {
             title: $('.news_title').val().trim(),
             user: $('.news_login').val().trim(),
             text: $('.news_text').val().trim(),
-            date: new Date(),
-            time: new Date().getTime() / 1000,
+            date: `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
+            seconds: new Date().getTime() / 1000,
         }
         try {
             $.ajax({
@@ -202,6 +205,7 @@ document.addEventListener('click', (e) => {
                     $('.add__form').trigger("reset");
                     $('.add__news').hide();
                     $('.add__button__news').prop("disabled", false);
+                    location.reload();
                 },
                 error: function () {
                     console.log("Error");
@@ -337,9 +341,9 @@ document.addEventListener('click', e => {
                                     },
                                     success: function () {
                                         $('.edit__button').prop("disabled", false);
-                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__name').innerHTML = objEdit.user;
-                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__title').innerHTML = objEdit.title;
-                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__text').innerHTML = checkLength(objEdit.text);
+                                        document.querySelectorAll('.article__wrapper')[j].querySelector('.article__name').innerHTML = objEdit.user;
+                                        document.querySelectorAll('.article__wrapper')[j].querySelector('.article__title').innerHTML = objEdit.title;
+                                        document.querySelectorAll('.article__wrapper')[j].querySelector('.article__text').innerHTML = checkLength(objEdit.text);
                                     }
                                 })
 
@@ -463,9 +467,9 @@ document.addEventListener('click', e => {
                                     },
                                     success: function () {
                                         $('.edit__button').prop("disabled", false);
-                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__user').innerHTML = objEdit.user;
-                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__title').innerHTML = objEdit.title;
-                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__text').innerHTML = checkLength(objEdit.text);
+                                        document.querySelectorAll('.news__wrapper')[j].querySelector('.news__user').innerHTML = objEdit.user;
+                                        document.querySelectorAll('.news__wrapper')[j].querySelector('.news__title').innerHTML = objEdit.title;
+                                        document.querySelectorAll('.news__wrapper')[j].querySelector('.news__text').innerHTML = checkLength(objEdit.text);
                                     }
                                 })
 

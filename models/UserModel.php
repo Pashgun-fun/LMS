@@ -3,21 +3,24 @@
 namespace models;
 
 use core\Model;
-use core\Helper;
 use entites\User;
+use enums\Roles;
 
 class UserModel extends Model
 {
 
-    public Helper $helper;
     protected static ?UserModel $instance = null;
+    protected Roles $roles;
 
     public function __construct()
     {
         parent::__construct();
-        $this->helper = new Helper();
+        $this->roles = new Roles();
     }
 
+    /**
+     * Закрываем подключение к БД
+     */
     public function __destruct()
     {
         switch (gettype($this->connect)) {
@@ -28,6 +31,11 @@ class UserModel extends Model
         }
     }
 
+    /**
+     * Singleton
+     * Чтобы объект не создавалася несолько раз один и тот же
+     * а использовался один и тот же, если он уже создан
+     */
     public static function getInstance(): UserModel
     {
         if (self::$instance === null) {
@@ -53,7 +61,8 @@ class UserModel extends Model
                                     '{$user->getEmail()}', 
                                     '{$user->getPass()}', 
                                     '{$user->getData()}',
-                                    '{$user->getDesc()}')";
+                                    '{$user->getDesc()}',
+                                    'user')";
                 $this->connect->query($query);
                 return $user->getLogin();
             case "array":
@@ -79,7 +88,7 @@ class UserModel extends Model
                 $this->writeFile($newFile, $userData);
                 return $user->getLogin();
         }
-        return "";
+        return '';
     }
 
     /**
@@ -131,8 +140,7 @@ class UserModel extends Model
                         break;
                     }
                 }
-
-                $this->connect->query("UPDATE Users SET `login` = '{$user->getLogin()}', `email` = '{$user->getEmail()}', `descr` = '{$user->getDesc()}' WHERE ID = '{$editID}'");
+                $this->connect->query("UPDATE homestead.Users SET `login` = '{$user->getLogin()}', `email` = '{$user->getEmail()}', `descr` = '{$user->getDesc()}' WHERE ID = {$editID}");
                 break;
             case "array":
                 $arr = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
@@ -183,5 +191,48 @@ class UserModel extends Model
                 return $usersNameArr;
         }
         return $usersNameArr;
+    }
+
+    /**
+     * Авторизция пользователя с проверкой существует ли такой пользователя
+     * Если он существует добавляем ему роль в сессию  для дальнейшей проверки прав доступа
+     * Если такого пользователя нету, выход из авторизации
+     **/
+    public function getAuthorization(User $user): ?string
+    {
+        switch (gettype($this->connect)) {
+            case "object":
+                $query = "SELECT * FROM homestead.Users WHERE email = '{$user->getLogin()}' AND pass = '{$user->getPass()}'";
+                $result = $this->connect->query($query)->fetch_assoc();
+                if ($result['role'] === $this->roles::ADMIN_ROLE) {
+                    $_SESSION['ROLE'] = $this->roles::ADMIN_ROLE;
+                    $_SESSION['NAME'] = $result['login'];
+                    $_SESSION['id'] = (int)$result['ID'];
+                    return $user->getLogin();
+                }
+                $_SESSION['ROLE'] = $this->roles::USER_ROLE;
+                $_SESSION['NAME'] = $result['login'];
+                $_SESSION['id'] = (int)$result['ID'];
+                return $user->getLogin();
+            case "array":
+                $arr = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
+                foreach ($arr as $file) {
+                    $el = $this->readFile(__DIR__ . $this->connect['file']['users'] . $file);
+                    if ($el['email'] === $user->getLogin() && $el['pass'] === $user->getPass()) {
+                        if ($el['role'] == $this->roles::ADMIN_ROLE) {
+                            $_SESSION['ROLE'] = $this->roles::ADMIN_ROLE;
+                            $_SESSION['NAME'] = $el['login'];
+                            $_SESSION['id'] = $file;
+                            return $user->getLogin();
+                        }
+                        $_SESSION['ROLE'] = $this->roles::USER_ROLE;
+                        $_SESSION['NAME'] = $el['login'];
+                        $_SESSION['id'] = $file;
+                        return $user->getLogin();
+                    }
+                }
+        }
+
+        return null;
     }
 }

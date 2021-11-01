@@ -10,7 +10,7 @@ class Publish
     private string $user;
     private string $date;
     private int $index;
-    private int $time;
+    private int $seconds;
 
     function __construct(array $data)
     {
@@ -48,12 +48,12 @@ class Publish
 
     public function getTime(): int
     {
-        return $this->time;
+        return $this->seconds;
     }
 
     public function setTime(int $time): void
     {
-        $this->time = $time;
+        $this->seconds = $time;
     }
 
     public function setTitle(string $title): void
