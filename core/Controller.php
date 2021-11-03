@@ -23,7 +23,7 @@ class Controller
     protected function edit()
     {
         $window = PageModel::getInstance();
-        $user = new User($window->openEditWindow($_POST['indexEdit']));
+        $user = new User($window->openEditWindow($_POST['indexEdit'], $_POST['id']));
         $this->view->editWindow($user->getLogin(), $user->getEmail(), $user->getDesc());
     }
 
@@ -33,8 +33,8 @@ class Controller
     protected function editArticle()
     {
         $window = ArticleModel::getInstance();
-        $user = new Publish($window->openEditWindowArticle($_POST['indexEdit']));
-        $this->view->editWindowArticlesAndNews("User", $user->getTitle(), $user->getText());
+        $user = new Publish($window->openEditWindowArticle($_POST['indexEdit'], $_POST['id']));
+        $this->view->editWindowArticlesAndNews($user->getTitle(), $user->getText());
     }
 
     /**
@@ -43,8 +43,8 @@ class Controller
     protected function editNews()
     {
         $window = NewsModel::getInstance();
-        $user = new Publish($window->openEditWindowNews($_POST['indexEdit']));
-        $this->view->editWindowArticlesAndNews("User", $user->getTitle(), $user->getText());
+        $user = new Publish($window->openEditWindowNews($_POST['indexEdit'], $_POST['id']));
+        $this->view->editWindowArticlesAndNews($user->getTitle(), $user->getText());
     }
 
 }

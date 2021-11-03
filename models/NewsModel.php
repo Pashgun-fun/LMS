@@ -4,6 +4,7 @@ namespace models;
 
 use core\Model;
 use entites\Publish;
+use enums\TypeConnect;
 
 class NewsModel extends Model
 {
@@ -20,7 +21,7 @@ class NewsModel extends Model
     public function __destruct()
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
             {
                 $this->connect->close();
             }
@@ -45,16 +46,23 @@ class NewsModel extends Model
      */
     public function getAllNews(): array
     {
-        $date = getdate()[0];
         $arrOfNews = [];
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.News WHERE ({$date} - seconds) < 86400");
+            case TypeConnect::OBJECT_CONNECT:
+                $result = $this->connect->query("select homestead.News.id,
+                                                               homestead.Users.login as `user`,
+                                                               homestead.News.title,
+                                                               homestead.News.text,
+                                                               homestead.News.date
+                                                        from News
+                                                        join Users
+                                                        on News.user_id = Users.id
+                                                        where ({$this->date} - homestead.News.seconds) < {$this->seconds}");
                 while ($row = $result->fetch_assoc()) {
                     array_push($arrOfNews, $row);
                 }
                 return $arrOfNews;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 return $this->publishing(__DIR__ . $this->connect['file']['news']);
         }
         return [];
@@ -67,7 +75,7 @@ class NewsModel extends Model
      */
     public function deleteNews(int $time)
     {
-        if (gettype($this->connect)) {
+        if (gettype($this->connect) === TypeConnect::ARRAY_CONNECT) {
             $arr = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['news']));
             asort($arr);
             $lastFile = ((int)array_pop($arr) + 1);
@@ -89,25 +97,13 @@ class NewsModel extends Model
     /**
      * Ручное удаление новости
      */
-    public function removeNews(int $indexDel)
+    public function removeNews(int $indexDel, int $id)
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.News");
-                $allNews = [];
-                $delNews = null;
-                while ($row = $result->fetch_assoc()) {
-                    array_push($allNews, $row);
-                }
-                foreach (array_values($allNews) as $key => $value) {
-                    if ($key === $indexDel) {
-                        $delNews = (int)$value['ID'];
-                        break;
-                    }
-                }
-                $this->connect->query("DELETE FROM homestead.News WHERE ID = {$delNews}");
+            case TypeConnect::OBJECT_CONNECT:
+                $this->connect->query("DELETE FROM homestead.News WHERE id = {$id}");
                 break;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $this->delete(__DIR__ . $this->connect['file']['news'], $indexDel);
         }
     }
@@ -115,24 +111,20 @@ class NewsModel extends Model
     /**
      * Открытие окна редактирования для новости
      */
-    public function openEditWindowNews(int $indexEdit): array
+    public function openEditWindowNews(int $indexEdit, int $id): array
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.News");
-                $allNews = [];
-                $editID = null;
-                while ($article = $result->fetch_assoc()) {
-                    array_push($allNews, $article);
-                }
-                foreach ($allNews as $key => $value) {
-                    if ($key === $indexEdit) {
-                        $editID = (int)$value['ID'];
-                        break;
-                    }
-                }
-                return $this->connect->query("SELECT * FROM homestead.News WHERE ID = '{$editID}'")->fetch_assoc();
-            case "array":
+            case TypeConnect::OBJECT_CONNECT:
+                return $this->connect->query("select homestead.News.id,
+                                                               homestead.Users.login as `user`,
+                                                               homestead.News.title,
+                                                               homestead.News.text,
+                                                               homestead.News.date
+                                                        from News
+                                                        join Users
+                                                        on News.user_id = Users.id
+                                                    where homestead.News.id = {$id}")->fetch_assoc();
+            case TypeConnect::ARRAY_CONNECT:
                 return $this->openEdit(__DIR__ . $this->connect['file']['news'], $indexEdit);
 
         }
@@ -145,22 +137,12 @@ class NewsModel extends Model
     public function edit(Publish $publish)
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.News");
-                $allNews = [];
-                $editID = null;
-                while ($row = $result->fetch_assoc()) {
-                    array_push($allNews, $row);
-                }
-                foreach (array_values($allNews) as $key => $value) {
-                    if ($key === $publish->getIndex()) {
-                        $editID += (int)$value['ID'];
-                        break;
-                    }
-                }
-                $this->connect->query("UPDATE homestead.News SET `title` = '{$publish->getTitle()}', `text` = '{$publish->getText()}' WHERE ID = {$editID}");
+            case TypeConnect::OBJECT_CONNECT:
+                $this->connect->query("UPDATE homestead.News 
+                                             SET `title` = '{$publish->getTitle()}', `text` = '{$publish->getText()}'
+                                             WHERE id = {$publish->getId()}");
                 break;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $this->editForArticlesAndNews($publish, __DIR__ . $this->connect['file']['news']);
                 break;
         }
@@ -172,7 +154,7 @@ class NewsModel extends Model
     public function newNewsBlock(Publish $publish): array
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
                 $newNews = [
                     'title' => $publish->getTitle(),
                     'text' => $publish->getText(),
@@ -188,7 +170,7 @@ class NewsModel extends Model
                                    {$publish->getTime()})";
                 $this->connect->query($query);
                 return $newNews;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $arrayFiles = $this->helper->myscandir(__DIR__ . $this->connect['file']['news']);
                 asort($arrayFiles);
 
@@ -209,33 +191,33 @@ class NewsModel extends Model
         return [];
     }
 
-    ////
-
     /**
      * Обрабатываем полученные данные из ajax
      * и вытягиваем нужный файл
      */
     public function oldNews(int $index): array
     {
-        $date = getdate()[0];
         switch (gettype($this->connect)) {
-            case "object":
-                $allOldNews = [];
-                $result = $this->connect->query("SELECT * FROM homestead.News WHERE ({$date} - seconds) >= 86400");
-                while ($news = $result->fetch_assoc()) {
-                    array_push($allOldNews, $news);
+            case TypeConnect::OBJECT_CONNECT:
+                $result = $this->connect->query("select homestead.News.id,
+                                                               homestead.Users.login as `user`,
+                                                               homestead.News.title,
+                                                               homestead.News.text,
+                                                               homestead.News.date
+                                                        from News
+                                                        join Users
+                                                        on News.user_id = Users.id
+                                                         where ({$this->date} - homestead.News.seconds) >= {$this->seconds} 
+                                                           and homestead.News.id = {$index}")->fetch_assoc();
+                if (!empty($result)) {
+                    return $result;
                 }
-                foreach ($allOldNews as $key => $values) {
-                    if ($key === $index) {
-                        return $values;
-                    }
-                }
-                break;
-            case "array":
-                $arrNews = $this->helper->myscandir(__DIR__ . $this->connect['file']['oldNews']);
+                return [];
+            case TypeConnect::ARRAY_CONNECT:
+                $arrNews = $this->helper->myscandir(__DIR__ . $this->connect['file']['news']);
                 for ($j = 0; $j < count($arrNews); $j++) {
                     if ($j === $index) {
-                        $fileName = __DIR__ . $this->connect['file']['oldNews'] . $arrNews[$j];
+                        $fileName = __DIR__ . $this->connect['file']['news'] . $arrNews[$j];
                         return $this->readFile($fileName);
                     }
                 }
@@ -248,17 +230,25 @@ class NewsModel extends Model
      */
     public function pagination(int $page): array
     {
-        $date = getdate()[0];
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
                 $news = [];
-                $numberStart = $page * 6 - 6;
-                $result = $this->connect->query("SELECT * FROM homestead.News WHERE ({$date} - seconds) < 86400 LIMIT {$numberStart} ,6");
+                $numberStart = $page * $this->countPublishing - $this->countPublishing;
+                $result = $this->connect->query("select homestead.News.id,
+                                                               homestead.Users.login as `user`,
+                                                               homestead.News.title,
+                                                               homestead.News.text,
+                                                               homestead.News.date
+                                                        from News
+                                                        join Users
+                                                        on News.user_id = Users.id
+                                                        where ({$this->date} - homestead.News.seconds) < {$this->seconds} 
+                                                        limit {$numberStart} ,{$this->countPublishing}");
                 while ($new = $result->fetch_assoc()) {
                     array_push($news, $new);
                 }
                 return $news;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 return $this->generalPagination(__DIR__ . $this->connect['file']['news'], $page);
         }
         return [];

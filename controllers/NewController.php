@@ -35,7 +35,7 @@ class NewController extends Controller
             $this->view->news(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                "User",//$article->getUser()
+                "User",
                 $article->getDate()
             );
         }
@@ -56,7 +56,7 @@ class NewController extends Controller
             $this->view->newAdmin(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                "User",//$article->getUser()
+                "User",
                 $article->getDate()
             );
         }
@@ -73,7 +73,7 @@ class NewController extends Controller
         $this->view->cardArticle(
             $article->getTitle(),
             $article->getText(),
-            "User",//$article->getUser()
+            $article->getUser(),
             $article->getDate()
         );
     }
@@ -92,8 +92,7 @@ class NewController extends Controller
      */
     public function removeNews()
     {
-        $arr = $this->helper->resetAPI();
-        $this->newModel->removeNews((int)$arr['indexDel']);
+        $this->newModel->removeNews((int)$_POST['indexDel'], (int)$_POST['id']);
     }
 
     /**
@@ -187,8 +186,9 @@ class NewController extends Controller
             $this->view->news(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                "User",//$article->getUser()
-                $article->getDate()
+                $article->getUser(),
+                $article->getDate(),
+                $article->getId()
             );
         }
     }
@@ -209,8 +209,9 @@ class NewController extends Controller
             $this->view->newAdmin(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                "User",//$article->getUser()
-                $article->getDate()
+                $article->getUser(),
+                $article->getDate(),
+                $article->getId()
             );
         }
     }

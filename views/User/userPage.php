@@ -55,7 +55,7 @@
             <div class="header__logo"></div>
         </a>
         <div class="header__buttons">
-            <span><?=$name?></span>
+            <span><?= $name ?></span>
             <a class="header__exit">Exit</a>
         </div>
     </div>
@@ -64,78 +64,31 @@
     <div class="users__wrapper _container">
         <?php
         foreach ($usersNameArr as $login) {
-            echo('<div class="user">
+            if (is_array($login)) {
+                echo('<div class="user">
                             <div class="user__wrapper">
-                                <div class="user__name">' . $login . '</div>
+                                <div class="user__name">' . $login['login'] . '</div>
+                                <span class="id__user">' . $login['id'] . '</span>
                             </div>
                         </div>');
+            }
         }
         ?>
     </div>
 </div>
 
-<div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span><span class="count_articles"></span></div>
+<div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span><span
+            class="count_articles"></span></div>
 <div class="article_pages _container"></div>
 <section class="articles">
 </section>
 
-<div class="_title _container _news" style="margin-top: 100px">Новости <span class="news__add">Добавить новость</span><span class="count_news"></span>
+<div class="_title _container _news" style="margin-top: 100px">Новости <span
+            class="news__add">Добавить новость</span><span class="count_news"></span>
 </div>
 <div class="news_pages _container"></div>
 <section class="news _container">
 </section>
-
-<div class="add__article">
-    <div class="add__wrapper">
-        <div class="add__container">
-            <div class="add__title _title">Добавление новой статьи</div>
-            <form class="add__form">
-                <label class="add__login _field">
-                    Логин <br>
-                    <input type="text" placeholder="Введите логин" name="login" class="publish_login _check"><br>
-                    <span class="_error error-login"></span>
-                </label>
-                <label class="add__email _field">
-                    Название<br>
-                    <input type="text" placeholder="Введите email" name="email" class="publish_title _check"><br>
-                    <span class="_error error-email"></span>
-                </label>
-                <label class="add__desc _field">
-                    Текст<br>
-                    <textarea placeholder="Краткое описание" name="desc" class="publish_text"></textarea>
-                </label>
-                <button type="button" class="add__button__article">Добавить</button>
-                <div class="add__close">Закрыть</div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="add__news">
-    <div class="add__wrapper">
-        <div class="add__container">
-            <div class="add__title _title">Добавление новости</div>
-            <form class="add__form">
-                <label class="add__login _field">
-                    Логин <br>
-                    <input type="text" placeholder="Введите логин" name="login" class="news_login _check"><br>
-                    <span class="_error error-login"></span>
-                </label>
-                <label class="add__email _field">
-                    Название<br>
-                    <input type="text" placeholder="Введите email" name="email" class="news_title _check"><br>
-                    <span class="_error error-email"></span>
-                </label>
-                <label class="add__desc _field">
-                    Текст<br>
-                    <textarea placeholder="Краткое описание" name="desc" class="news_text"></textarea>
-                </label>
-                <button type="button" class="add__button__news">Добавить</button>
-                <div class="add__close">Закрыть</div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <footer class="footer">
     <div class="footer__wrapper _container">

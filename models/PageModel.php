@@ -3,6 +3,7 @@
 namespace models;
 
 use core\Model;
+use enums\TypeConnect;
 
 class PageModel extends Model
 {
@@ -32,24 +33,12 @@ class PageModel extends Model
      * Передача в контроллер данных пользователя, которые собираемся редактировать
      * Происходит работа с файлом этого пользователя, которые берется по его уникальному индексу
      **/
-    public function openEditWindow(int $indexEdit): array
+    public function openEditWindow(int $indexEdit, int $id): array
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.Users");
-                $allUsers = [];
-                $editID = null;
-                while ($row = $result->fetch_assoc()) {
-                    array_push($allUsers, $row);
-                }
-                foreach (array_values($allUsers) as $key => $value) {
-                    if ($key === $indexEdit) {
-                        $editID = (int)$value['ID'];
-                        break;
-                    }
-                }
-                return $this->connect->query("SELECT * FROM homestead.Users WHERE ID = '{$editID}'")->fetch_assoc();
-            case "array":
+            case TypeConnect::OBJECT_CONNECT:
+                return $this->connect->query("SELECT * FROM homestead.Users WHERE id = $id")->fetch_assoc();
+            case TypeConnect::ARRAY_CONNECT:
                 return $this->openEdit(__DIR__ . $this->connect['file']['users'], $indexEdit);
         }
         return [];

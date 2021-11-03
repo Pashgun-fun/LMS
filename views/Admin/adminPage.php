@@ -56,7 +56,7 @@
             <div class="header__logo"></div>
         </a>
         <div class="header__buttons">
-            <span><?=$name?></span>
+            <span><?= $name ?></span>
             <a class="header__exit">Exit</a>
         </div>
     </div>
@@ -71,7 +71,19 @@
             </div>
             <?php
             foreach ($usersNameArr as $login) {
-                echo('<div class="user">
+                if (is_array($login)) {
+                    echo('<div class="user">
+                            <div class="user__wrapper">
+                                <div class="user__name">' . $login['login'] . '</div>
+                                <span class="id__user">' . $login['id'] . '</span>
+                                <div class="user__buttons">
+                                    <div class="user__edit _button"></div>
+                                    <div class="user__del _button"></div>
+                                </div>
+                            </div>
+                        </div>');
+                } else {
+                    echo('<div class="user">
                             <div class="user__wrapper">
                                 <div class="user__name">' . $login . '</div>
                                 <div class="user__buttons">
@@ -80,18 +92,21 @@
                                 </div>
                             </div>
                         </div>');
+                }
             }
             ?>
         </div>
     </section>
 </div>
 
-<div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span><span class="count_articles"></span></div>
+<div class="_title _container _article">Статьи <span class="article__add">Добавить статью</span><span
+            class="count_articles"></span></div>
 <div class="article_pages _container"></div>
 <section class="articles">
 </section>
 
-<div class="_title _container _news" style="margin-top: 100px">Новости <span class="news__add">Добавить новость</span><span class="count_news"></span>
+<div class="_title _container _news" style="margin-top: 100px">Новости <span
+            class="news__add">Добавить новость</span><span class="count_news"></span>
 </div>
 <div class="news_pages _container"></div>
 <section class="news _container">

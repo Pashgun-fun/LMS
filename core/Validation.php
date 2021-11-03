@@ -2,6 +2,8 @@
 
 namespace core;
 
+use enums\General;
+
 class Validation
 {
     /**
@@ -11,7 +13,7 @@ class Validation
     public function checkCreateForm(array $data, string $fields): array
     {
         $listErrors = array();
-        $config = require_once __DIR__ . "/../public/config/validation_check.php";
+        $config = include __DIR__ . "/../config/validation_check.php";
         foreach ($config[$fields] as $value) {
             if (!isset($data[$value])) {
                 $listErrors[$value] = "Поле обязательно к заполнению";
@@ -26,25 +28,27 @@ class Validation
      */
     public function checkLengthArticle(string $str): string
     {
-        $sum = 0;
-        $arrWords = [];
-        /**
-         * Входная строка разбивается на элементы массива
-         */
-        $arrOfWords = explode(" ", $str);
-        /**
-         * Итеррируем массив, на каждой итерации длину слова добавляем в общую сумму сиволов
-         * Далее проверяем,больше ли длина строки необходимой для нас длины
-         * Если нет, то в общий массив кладём это влово и двигаемся дальше
-         * Иначе выходим из функции и возвращаем сокращенный массив
-         */
-        for ($j = 0; $j < count($arrOfWords); $j++) {
-            $sum += strlen($arrOfWords[$j]);
-            if ($sum > 90) {
-                return implode(" ", $arrWords) . " ...";
+        if (strlen($str) > General::LENGTH_OF_PUBLISHING) {
+            $sum = 0;
+            $arrWords = [];
+            /**
+             * Входная строка разбивается на элементы массива
+             */
+            $arrOfWords = explode(" ", $str);
+            /**
+             * Итеррируем массив, на каждой итерации длину слова добавляем в общую сумму сиволов
+             * Далее проверяем,больше ли длина строки необходимой для нас длины
+             * Если нет, то в общий массив кладём это влово и двигаемся дальше
+             * Иначе выходим из функции и возвращаем сокращенный массив
+             */
+            for ($j = 0; $j < count($arrOfWords); $j++) {
+                $sum += strlen($arrOfWords[$j]);
+                if ($sum > General::LENGTH_OF_PUBLISHING) {
+                    return implode(" ", $arrWords) . " ...";
+                }
+                array_push($arrWords, $arrOfWords[$j]);
             }
-            array_push($arrWords, $arrOfWords[$j]);
         }
-        return  '';
+        return $str;
     }
 }

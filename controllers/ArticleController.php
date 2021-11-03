@@ -36,7 +36,7 @@ class ArticleController extends Controller
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
                 "User",
-                $article->getDate()
+                $article->getDate(),
             );
 
         }
@@ -58,7 +58,7 @@ class ArticleController extends Controller
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
                 "User",
-                $article->getDate()
+                $article->getDate(),
             );
         }
 
@@ -74,7 +74,7 @@ class ArticleController extends Controller
         $this->view->cardArticle(
             $article->getTitle(),
             $article->getText(),
-            "User",//$article->getUser()
+            $article->getUser(),
             $article->getDate()
         );
     }
@@ -85,8 +85,7 @@ class ArticleController extends Controller
      */
     public function deleteArticle()
     {
-        $arr = $this->helper->resetAPI();
-        $this->articleModel->deleteArticle((int)$arr['indexDel']);
+        $this->articleModel->deleteArticle((int)$_POST['indexDel'], (int)$_POST['id']);
     }
 
     /**
@@ -166,8 +165,9 @@ class ArticleController extends Controller
             $this->view->article(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                "User",//$article->getUser()
-                $article->getDate()
+                $article->getUser(),
+                $article->getDate(),
+                $article->getId()
             );
         }
     }
@@ -188,8 +188,9 @@ class ArticleController extends Controller
             $this->view->articleAdmin(
                 $article->getTitle(),
                 $valid->checkLengthArticle($article->getText()),
-                "User",//$article->getUser()
-                $article->getDate()
+                $article->getUser(),
+                $article->getDate(),
+                $article->getId()
             );
         }
     }

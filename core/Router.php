@@ -13,13 +13,11 @@ class Router
 {
     protected static ?Router $_instance = null;
     protected Middleware $middleware;
-    protected Roles $roles;
 
     function __construct()
     {
         $this->middleware = new Middleware();
         $this->middleware->check();
-        $this->roles = new Roles();
         $this->run();
     }
 
@@ -75,6 +73,10 @@ class Router
                 $controllerArticle = new ArticleController();
                 $controllerArticle->printAllArticles();
                 break;
+            case "/api/check/news":
+                $controllerNews = new NewController();
+                $controllerNews->deleteNews();
+                break;
             case "/api/article/delete":
                 $controllerArticle = new ArticleController();
                 $controllerArticle->deleteArticle();
@@ -82,10 +84,6 @@ class Router
             case "/api/news/read":
                 $controllerNews = new NewController();
                 $controllerNews->printAllArticles();
-                break;
-            case "/api/check/news":
-                $controllerNews = new NewController();
-                $controllerNews->deleteNews();
                 break;
             case "/api/news/delete":
                 $controllerNews = new NewController();

@@ -5,17 +5,16 @@ namespace models;
 use core\Model;
 use entites\User;
 use enums\Roles;
+use enums\TypeConnect;
 
 class UserModel extends Model
 {
 
     protected static ?UserModel $instance = null;
-    protected Roles $roles;
 
     public function __construct()
     {
         parent::__construct();
-        $this->roles = new Roles();
     }
 
     /**
@@ -24,7 +23,7 @@ class UserModel extends Model
     public function __destruct()
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
             {
                 $this->connect->close();
             }
@@ -54,7 +53,7 @@ class UserModel extends Model
     public function newUser(User $user): string
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
                 $query = "INSERT INTO homestead.Users VALUES (
                                     null, 
                                     '{$user->getLogin()}', 
@@ -65,7 +64,7 @@ class UserModel extends Model
                                     'user')";
                 $this->connect->query($query);
                 return $user->getLogin();
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $arrayFiles = $this->helper->myscandir(__DIR__ . $this->connect['file']['users']);
                 asort($arrayFiles);
                 foreach ($arrayFiles as $file) {
@@ -76,12 +75,14 @@ class UserModel extends Model
                     }
                 }
 
+
                 $userData = array(
                     'login' => $user->getLogin(),
                     'email' => $user->getEmail(),
-                    'desc' => $user->getDesc(),
+                    'descr' => $user->getDesc(),
                     'data' => $user->getData(),
                     'pass' => $user->getPass(),
+                    'id' => 1
                 );
 
                 $newFile = __DIR__ . $this->connect['file']['users'] . (+array_pop($arrayFiles) + 1);
@@ -95,25 +96,13 @@ class UserModel extends Model
      * Удаление пользователя из базы данных, удаление соответсвующего файла
      * Удаление блока с пользоватлем происходит на frontend
      **/
-    public function deleteUser(int $indexDel)
+    public function deleteUser(int $indexDel, int $id)
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.Users");
-                $allUsers = [];
-                $delID = null;
-                while ($row = $result->fetch_assoc()) {
-                    array_push($allUsers, $row);
-                }
-                foreach (array_values($allUsers) as $key => $value) {
-                    if ($key === $indexDel) {
-                        $delID = (int)$value['ID'];
-                        break;
-                    }
-                }
-                $this->connect->query("DELETE FROM homestead.Users WHERE ID = '{$delID}'");
+            case TypeConnect::OBJECT_CONNECT:
+                $this->connect->query("DELETE FROM homestead.Users WHERE id = $id");
                 break;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $this->delete(__DIR__ . $this->connect['file']['users'], $indexDel);
                 break;
         }
@@ -127,39 +116,24 @@ class UserModel extends Model
     public function editUser(User $user)
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.Users");
-                $allUsers = [];
-                $editID = null;
-                while ($row = $result->fetch_assoc()) {
-                    array_push($allUsers, $row);
-                }
-                foreach (array_values($allUsers) as $key => $value) {
-                    if ($key === $user->getIndex()) {
-                        $editID += (int)$value['ID'];
-                        break;
-                    }
-                }
-                $this->connect->query("UPDATE homestead.Users SET `login` = '{$user->getLogin()}', `email` = '{$user->getEmail()}', `descr` = '{$user->getDesc()}' WHERE ID = {$editID}");
+            case TypeConnect::OBJECT_CONNECT:
+                $this->connect->query("UPDATE homestead.Users SET `login` = '{$user->getLogin()}', `email` = '{$user->getEmail()}', `descr` = '{$user->getDesc()}' WHERE id = {$user->getIndex()}");
                 break;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $arr = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
                 asort($arr);
                 $fileEdit = null;
                 for ($j = 0; $j < count($arr); $j++) {
-                    if ($j === $user->getIndex()) {
+                    if ($j === $user->getIndexEdit()) {
                         $fileEdit = $arr[$j];
                         break;
                     }
                 }
-
                 $file = __DIR__ . $this->connect['file']['users'] . $fileEdit;
                 $el = $this->readFile($file);
-
                 $el['login'] = $user->getLogin();
                 $el['email'] = $user->getEmail();
                 $el['descr'] = $user->getDesc();
-
                 file_put_contents(__DIR__ . $this->connect['file']['users'] . $fileEdit, '');
                 file_put_contents(__DIR__ . $this->connect['file']['users'] . $fileEdit, json_encode($el));
                 break;
@@ -173,20 +147,19 @@ class UserModel extends Model
     {
         $usersNameArr = array();
         switch (gettype($this->connect)) {
-            case "object":
-                $query = "SELECT * FROM homestead.Users";
-                $result = $this->connect->query($query);
+            case TypeConnect::OBJECT_CONNECT:
+                $result = $this->connect->query(file_get_contents(__DIR__ . "/../config/sql/allUsers.sql"));
                 while ($row = $result->fetch_assoc()) {
-                    array_push($usersNameArr, $row['login']);
+                    array_push($usersNameArr, $row);
                 }
                 return $usersNameArr;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $arr1 = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
                 foreach ($arr1 as $value) {
                     $file = __DIR__ . $this->connect['file']['users'] . $value;
                     $data = $this->readFile($file);
                     $user = new User($data);
-                    array_push($usersNameArr, $user->getLogin());
+                    array_push($usersNameArr, $data);
                 }
                 return $usersNameArr;
         }
@@ -198,41 +171,29 @@ class UserModel extends Model
      * Если он существует добавляем ему роль в сессию  для дальнейшей проверки прав доступа
      * Если такого пользователя нету, выход из авторизации
      **/
-    public function getAuthorization(User $user): ?string
+    public function getAuthorization(User $user): array
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
                 $query = "SELECT * FROM homestead.Users WHERE email = '{$user->getLogin()}' AND pass = '{$user->getPass()}'";
                 $result = $this->connect->query($query)->fetch_assoc();
-                if ($result['role'] === $this->roles::ADMIN_ROLE) {
-                    $_SESSION['ROLE'] = $this->roles::ADMIN_ROLE;
-                    $_SESSION['NAME'] = $result['login'];
-                    $_SESSION['id'] = (int)$result['ID'];
-                    return $user->getLogin();
+                if ($result['role'] === Roles::ADMIN_ROLE) {
+                    return ['ROLE' => Roles::ADMIN_ROLE, 'NAME' => $result['login'], 'id' => (int)$result['id']];
                 }
-                $_SESSION['ROLE'] = $this->roles::USER_ROLE;
-                $_SESSION['NAME'] = $result['login'];
-                $_SESSION['id'] = (int)$result['ID'];
-                return $user->getLogin();
-            case "array":
+                return ['ROLE' => Roles::USER_ROLE, 'NAME' => $result['login'], 'id' => (int)$result['id']];
+            case TypeConnect::ARRAY_CONNECT:
                 $arr = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
                 foreach ($arr as $file) {
                     $el = $this->readFile(__DIR__ . $this->connect['file']['users'] . $file);
                     if ($el['email'] === $user->getLogin() && $el['pass'] === $user->getPass()) {
-                        if ($el['role'] == $this->roles::ADMIN_ROLE) {
-                            $_SESSION['ROLE'] = $this->roles::ADMIN_ROLE;
-                            $_SESSION['NAME'] = $el['login'];
-                            $_SESSION['id'] = $file;
-                            return $user->getLogin();
+                        if ($el['role'] == Roles::ADMIN_ROLE) {
+                            return ['ROLE' => Roles::ADMIN_ROLE, 'NAME' => $el['login'], 'id' => (int)$file];
                         }
-                        $_SESSION['ROLE'] = $this->roles::USER_ROLE;
-                        $_SESSION['NAME'] = $el['login'];
-                        $_SESSION['id'] = $file;
-                        return $user->getLogin();
+                        return ['ROLE' => Roles::USER_ROLE, 'NAME' => $el['login'], 'id' => (int)$file];
                     }
                 }
+                break;
         }
-
-        return null;
+        return [];
     }
 }

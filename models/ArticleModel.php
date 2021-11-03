@@ -4,6 +4,8 @@ namespace models;
 
 use core\Model;
 use entites\Publish;
+use enums\General;
+use enums\TypeConnect;
 
 class ArticleModel extends Model
 {
@@ -21,7 +23,7 @@ class ArticleModel extends Model
     public function __destruct()
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
             {
                 $this->connect->close();
             }
@@ -48,13 +50,13 @@ class ArticleModel extends Model
     {
         $arrOfArticles = [];
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.Articles");
+            case TypeConnect::OBJECT_CONNECT:
+                $result = $this->connect->query(file_get_contents(__DIR__ . "/../config/sql/Articles/allArticles.sql"));
                 while ($row = $result->fetch_assoc()) {
                     array_push($arrOfArticles, $row);
                 }
                 return $arrOfArticles;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 return $this->publishing(__DIR__ . $this->connect['file']['articles']);
         }
         return [];
@@ -66,14 +68,22 @@ class ArticleModel extends Model
     public function readAllArticles(): array
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
                 $articles = [];
-                $result = $this->connect->query("SELECT * FROM homestead.Articles");
+                $query = "select homestead.Articles.id,
+                                  homestead.Users.login as `user`,
+                                  homestead.Articles.title,
+                                  homestead.Articles.text,
+                                  homestead.Articles.date
+                          from Articles
+                          join Users
+                          on Articles.user_id = Users.id";
+                $result = $this->connect->query($query);
                 while ($article = $result->fetch_assoc()) {
                     array_push($articles, $article);
                 }
                 return $articles;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 return $this->publishing(__DIR__ . $this->connect['file']['articles']);
         }
         return [];
@@ -83,25 +93,13 @@ class ArticleModel extends Model
      * Удаляеем статью из базы данных
      * Путем сканироования и далее нахоэждения общего индекса
      */
-    public function deleteArticle(int $indexDel)
+    public function deleteArticle(int $indexDel, int $id)
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.Articles");
-                $allArticles = [];
-                $delArticle = null;
-                while ($row = $result->fetch_assoc()) {
-                    array_push($allArticles, $row);
-                }
-                foreach (array_values($allArticles) as $key => $value) {
-                    if ($key === $indexDel) {
-                        $delArticle = (int)$value['ID'];
-                        break;
-                    }
-                }
-                $this->connect->query("DELETE FROM homestead.Articles WHERE ID = {$delArticle}");
+            case TypeConnect::OBJECT_CONNECT:
+                $this->connect->query("DELETE FROM homestead.Articles WHERE id = {$id}");
                 break;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $this->delete(__DIR__ . $this->connect['file']['articles'], $indexDel);
         }
     }
@@ -109,24 +107,20 @@ class ArticleModel extends Model
     /**
      * Открытие окна редактирования для статьи
      */
-    public function openEditWindowArticle(int $indexEdit): array
+    public function openEditWindowArticle(int $indexEdit, int $id): array
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.Articles");
-                $allArticles = [];
-                $editID = null;
-                while ($article = $result->fetch_assoc()) {
-                    array_push($allArticles, $article);
-                }
-                foreach ($allArticles as $key => $value) {
-                    if ($key === $indexEdit) {
-                        $editID = (int)$value['ID'];
-                        break;
-                    }
-                }
-                return $this->connect->query("SELECT * FROM homestead.Articles WHERE ID = '{$editID}'")->fetch_assoc();
-            case "array":
+            case TypeConnect::OBJECT_CONNECT:
+                return $this->connect->query("select homestead.Articles.id,
+                                                              homestead.Users.login as `user`,
+                                                              homestead.Articles.title,
+                                                              homestead.Articles.text,
+                                                              homestead.Articles.date
+                                                      from Articles
+                                                      join Users
+                                                      on Articles.user_id = Users.id 
+                                                      where homestead.Articles.id = {$id}")->fetch_assoc();
+            case TypeConnect::ARRAY_CONNECT:
                 return $this->openEdit(__DIR__ . $this->connect['file']['articles'], $indexEdit);
         }
         return [];
@@ -138,23 +132,14 @@ class ArticleModel extends Model
     public function edit(Publish $publish)
     {
         switch (gettype($this->connect)) {
-            case "object":
-                $result = $this->connect->query("SELECT * FROM homestead.Articles");
-                $allArticles = [];
-                $editID = null;
-                while ($row = $result->fetch_assoc()) {
-                    array_push($allArticles, $row);
-                }
-                foreach (array_values($allArticles) as $key => $value) {
-                    if ($key === $publish->getIndex()) {
-                        $editID += (int)$value['ID'];
-                        break;
-                    }
-                }
-                $this->connect->query("UPDATE homestead.Articles SET `title` = '{$publish->getTitle()}', `text` = '{$publish->getText()}' WHERE ID = {$editID}");
+            case TypeConnect::OBJECT_CONNECT:
+                $this->connect->query("UPDATE homestead.Articles 
+                                             SET `title` = '{$publish->getTitle()}', `text` = '{$publish->getText()}' 
+                                             WHERE id = {$publish->getId()}");
                 break;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $this->editForArticlesAndNews($publish, __DIR__ . $this->connect['file']['articles']);
+                break;
         }
     }
 
@@ -164,7 +149,7 @@ class ArticleModel extends Model
     public function newArticleBlock(Publish $publish): array
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
                 $newArticle = [
                     'title' => $publish->getTitle(),
                     'text' => $publish->getText(),
@@ -180,7 +165,7 @@ class ArticleModel extends Model
                                     '{$publish->getDate()}')";
                 $this->connect->query($query);
                 return $newArticle;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 $arrayFiles = $this->helper->myscandir(__DIR__ . $this->connect['file']['articles']);
                 asort($arrayFiles);
 
@@ -206,15 +191,24 @@ class ArticleModel extends Model
     public function pagination(int $page): array
     {
         switch (gettype($this->connect)) {
-            case "object":
+            case TypeConnect::OBJECT_CONNECT:
                 $articles = [];
-                $numberStart = $page * 6 - 6;
-                $result = $this->connect->query("SELECT * FROM homestead.Articles LIMIT {$numberStart} ,6");
+                $numberStart = $page * $this->countPublishing - $this->countPublishing;
+                $query = "select homestead.Articles.id,
+                                  homestead.Users.login as `user`,
+                                  homestead.Articles.title,
+                                  homestead.Articles.text,
+                                  homestead.Articles.date
+                          from Articles
+                          join Users
+                          on Articles.user_id = Users.id
+                          limit {$numberStart} ,{$this->countPublishing}";
+                $result = $this->connect->query($query);
                 while ($article = $result->fetch_assoc()) {
                     array_push($articles, $article);
                 }
                 return $articles;
-            case "array":
+            case TypeConnect::ARRAY_CONNECT:
                 return $this->generalPagination(__DIR__ . $this->connect['file']['articles'], $page);
         }
         return [];

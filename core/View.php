@@ -9,7 +9,7 @@ class View
         include __DIR__ . "/../views/editWindow.php";
     }
 
-    public function editWindowArticlesAndNews(string $name, string $email, string $desc)
+    public function editWindowArticlesAndNews(string $email, string $desc)
     {
         include __DIR__ . "/../views/editWindowArticlesAndNews.php";
     }
@@ -40,7 +40,7 @@ class View
         include __DIR__ . "/../views/Admin/adminPage.php";
     }
 
-    public function article(string $title, string $text, string $user, string $date)
+    public function article(string $title, string $text, string $user, string $date, int $id = null)
     {
         include __DIR__ . "/../views/article.php";
     }
@@ -50,17 +50,17 @@ class View
         include __DIR__ . "/../views/cardArticle.php";
     }
 
-    public function articleAdmin(string $title, string $text, string $user, string $date)
+    public function articleAdmin(string $title, string $text, string $user, string $date, int $id = null)
     {
         include __DIR__ . "/../views/articleAdmin.php";
     }
 
-    public function newAdmin(string $title, string $text, string $user, string $date)
+    public function newAdmin(string $title, string $text, string $user, string $date, int $id = null)
     {
         include __DIR__ . "/../views/newsAdmin.php";
     }
 
-    public function news(string $title, string $text, string $user, string $date)
+    public function news(string $title, string $text, string $user, string $date, int $id = null)
     {
         include __DIR__ . "/../views/news.php";
     }

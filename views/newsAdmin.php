@@ -18,6 +18,7 @@
 
 <div class="news__wrapper _container">
     <div class="news__title"><?= $title ?></div>
+    <span class="id__news"><?=$id?></span>
     <div class="news__text"><?= $text ?></div>
     <div class="news__read">Читать</div>
     <div>

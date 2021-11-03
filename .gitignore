@@ -1,2 +1,2 @@
 /database/*
-/public/config/mysql_config/config_database.php
+/config/mysql_config/config_database.php

@@ -4,18 +4,25 @@ namespace core;
 
 use entites\Publish;
 use core\mysql\Variability;
+use enums\General;
 
 class Model
 {
     protected $connect = null;
     protected Variability $variability;
     protected Helper $helper;
+    public int $seconds;
+    public int $countPublishing;
+    public int $date;
 
     public function __construct()
     {
         $this->helper = new Helper();
-        $this->variability = new Variability();
+        $this->variability = Variability::getInstance();
         $this->connect = $this->variability->chooseVariant();
+        $this->seconds = General::TIME_INTERVAL_FOR_NEWS;
+        $this->countPublishing = General::NUMBER_OF_OUTPUT_PUBLICATION;
+        $this->date = getdate()[0];
     }
 
     /**
@@ -119,7 +126,6 @@ class Model
         $file = $dir . $fileEdit;
         $el = $this->readFile($file);
 
-        $el['user'] = $publish->getUser();
         $el['title'] = $publish->getTitle();
         $el['text'] = $publish->getText();
 
@@ -132,13 +138,17 @@ class Model
      */
     protected function generalPagination(string $dir, int $page)
     {
-        $countPage = ceil(count($this->publishing($dir)) / 6);
+        $countPage = ceil(count($this->publishing($dir)) / $this->countPublishing);
         if (empty($this->publishing($dir))) {
             return [];
         }
         $subarray = [];
         for ($i = 0; $i <= $countPage; $i++) {
-            $subarray[$i] = array_slice($this->publishing($dir), $i * 6, 6);
+            $subarray[$i] = array_slice(
+                $this->publishing($dir),
+                $i * $this->countPublishing,
+                $this->countPublishing
+            );
         }
         return $subarray[$page - 1];
     }

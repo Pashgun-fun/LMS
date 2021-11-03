@@ -12,12 +12,14 @@ class UserController extends Controller
 {
     protected UserModel $model;
     protected Helper $helper;
+    protected array $config;
 
     function __construct()
     {
         parent::__construct();
         $this->helper = new Helper();
         $this->model = UserModel::getInstance();
+        $this->config = require_once __DIR__ . "/../config/validation_check.php";
     }
 
     /**
@@ -43,8 +45,7 @@ class UserController extends Controller
      **/
     public function deleteUser()
     {
-        $arr = $this->helper->resetAPI();
-        $this->model->deleteUser($arr['indexDel']);
+        $this->model->deleteUser($_POST['indexDel'], $_POST['id']);
     }
 
     /**
@@ -81,7 +82,12 @@ class UserController extends Controller
     public function authorization()
     {
         $user = new User($_POST['arr']);
-        $this->model->getAuthorization($user);
+        $arr = $this->model->getAuthorization($user);
+        foreach ($arr as $key => $value) {
+            if (in_array($key, $this->config['checkSession'])) {
+                $_SESSION[$key] = $value;
+            }
+        }
     }
 
     /**

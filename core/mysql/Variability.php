@@ -2,13 +2,28 @@
 
 namespace core\mysql;
 
+use enums\Connection;
+use enums\TypeConnect;
+
 class Variability
 {
     public $variant = null;
 
+    protected static ?Variability $instance = null;
+    public Connection $connection;
+
+    public static function getInstance(): Variability
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
     function __construct()
     {
-        $this->variant = require_once __DIR__ . "/../../public/config/mysql_config/variability.php";
+        $this->variant = require_once __DIR__ . "/../../config/mysql_config/variability.php";
+        $this->connection = Connection::getInstance();
     }
 
     /**
@@ -19,13 +34,17 @@ class Variability
      */
     public function chooseVariant()
     {
-        switch ($this->variant) {
-            case "file":
-                return require_once __DIR__ . "/../../public/config/directories.php";
-            case "base":
+        switch ($this->variant['typeToConnect']) {
+            case TypeConnect::FILE:
+                return require_once __DIR__ . "/../../config/directories.php";
+            case TypeConnect::MYSQL:
             default:
-                $dataConnectToBase = require_once __DIR__ . "/../../public/config/mysql_config/config_database.php";
-                return new \mysqli($dataConnectToBase['base']['hostname'], $dataConnectToBase['base']['username'], $dataConnectToBase['base']['password'], $dataConnectToBase['base']['database']);
+                return new \mysqli(
+                    $this->connection->getHostname(),
+                    $this->connection->getUsername(),
+                    $this->connection->getPassword(),
+                    $this->connection->getDatabase()
+                );
         }
     }
 }

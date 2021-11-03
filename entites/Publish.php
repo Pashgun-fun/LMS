@@ -11,6 +11,7 @@ class Publish
     private string $date;
     private int $index;
     private int $seconds;
+    private int $id;
 
     function __construct(array $data)
     {
@@ -19,6 +20,11 @@ class Publish
                 $this->$key = stripslashes(strip_tags(htmlspecialchars(trim($val))));
             }
         }
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function getTitle(): string

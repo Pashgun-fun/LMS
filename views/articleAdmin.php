@@ -7,6 +7,7 @@
         margin: 0 auto 0 auto;
         width: 90%;
     }
+
     .article__title {
         font-size: 1.5rem;
         margin-bottom: 15px;
@@ -22,11 +23,13 @@
     .article__name {
         font-size: 1.1rem;
     }
-    .article__date{
+
+    .article__date {
         color: #afaeae;
         float: right;
     }
-    .article__read{
+
+    .article__read {
         width: 100px;
         height: 40px;
         line-height: 40px;
@@ -37,13 +40,15 @@
         margin-bottom: 15px;
         background: red;
     }
-    .article__read:hover{
+
+    .article__read:hover {
         cursor: pointer;
     }
 </style>
 
 <div class="article__wrapper _container">
     <div class="article__title"><?= $title ?></div>
+    <span class="id__article"><?= $id ?></span>
     <div class="article__text"><?= $text ?></div>
     <div class="article__read">Читать</div>
     <div class="article__info">

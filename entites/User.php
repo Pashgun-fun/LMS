@@ -12,6 +12,7 @@ class User
     private string $data;
     private int $index;
     private string $admin;
+    private int $indexEdit;
 
     function __construct(array $data)
     {
@@ -20,6 +21,11 @@ class User
                 $this->$key = stripslashes(strip_tags(htmlspecialchars(trim($val))));
             }
         }
+    }
+
+    public function getIndexEdit(): int
+    {
+        return $this->indexEdit;
     }
 
     public function getAdmin(): ?string

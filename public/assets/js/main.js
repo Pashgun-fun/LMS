@@ -64,9 +64,10 @@ document.addEventListener('click', e => {
     if (e.target.classList.contains('user__del')) {
         let elDel = e.target;
         elDel.closest('.user').classList.add('none');
+        let id = elDel.closest('.user').querySelector('.id__user').innerHTML;
         for (let j = 0; j < document.querySelectorAll('.user').length; j++) {
             if (document.querySelectorAll('.user')[j].classList.contains('none')) {
-                deleteUser(j, document.querySelectorAll('.user'));
+                deleteUser(j, document.querySelectorAll('.user'), +id);
             }
         }
     }
@@ -225,9 +226,10 @@ document.addEventListener('click', e => {
         invisible();
         let el = e.target;
         el.closest('.user').classList.add('none');
+        let id = el.closest('.user').querySelector('.id__user').innerHTML;
         for (let j = 0; j < document.querySelectorAll('.user').length; j++) {
             if (document.querySelectorAll('.user')[j].classList.contains('none')) {
-                openWindowEdit(j, document.querySelectorAll('.user'));
+                openWindowEdit(j, document.querySelectorAll('.user'), +id);
                 el.closest('.user').classList.remove('none');
                 break;
             }
@@ -243,6 +245,7 @@ document.addEventListener('click', e => {
         invisible();
         let el = e.target;
         el.closest('.article__wrapper').classList.add('none');
+        let id = el.closest('.article__wrapper').querySelector('.id__article').innerHTML;
         for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
             if (document.querySelectorAll('.article__wrapper')[j].classList.contains('none')) {
                 let arr = document.querySelectorAll('.article__wrapper');
@@ -260,21 +263,18 @@ document.addEventListener('click', e => {
                         dataType: 'html',
                         data: {
                             'indexEdit': j,
+                            'id': +id
                         },
                         success(response) {
                             $('.edit').html(response);
                             $('.edit__button').on('click', e => {
                                 e.preventDefault();
                                 let objEdit = {
-                                    user: $('.edit-login').val().trim(),
                                     title: $('.edit-email').val().trim(),
                                     text: $('.edit-desc').val().trim(),
                                     index: j,
+                                    id: id
                                 }
-
-                                if (checkLogin(objEdit.user, '.error-login-edit')) return;
-
-                                if (checkLogin(objEdit.title, '.error-email-edit')) return;
 
                                 $.ajax({
                                     url: '/api/article/edit',
@@ -282,6 +282,7 @@ document.addEventListener('click', e => {
                                     cache: false,
                                     data: {
                                         'arr': objEdit,
+                                        'id': +id
                                     },
                                     dataType: 'html',
                                     beforeSend: function () {
@@ -289,7 +290,6 @@ document.addEventListener('click', e => {
                                     },
                                     success: function () {
                                         $('.edit__button').prop("disabled", false);
-                                        document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__name').innerHTML = objEdit.user;
                                         document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__title').innerHTML = objEdit.title;
                                         document.querySelectorAll('.article__wrapper')[objEdit.index].querySelector('.article__text').innerHTML = checkLength(objEdit.text);
                                     }
@@ -312,6 +312,7 @@ document.addEventListener('click', e => {
                         dataType: 'html',
                         data: {
                             'indexEdit': 6 * koeficient - (6 - j),
+                            'id': +id
                         },
                         success(response) {
                             $('.edit').html(response);
@@ -322,6 +323,7 @@ document.addEventListener('click', e => {
                                     title: $('.edit-email').val().trim(),
                                     text: $('.edit-desc').val().trim(),
                                     index: 6 * koeficient - (6 - j),
+                                    id: id
                                 }
 
                                 if (checkLogin(objEdit.user, '.error-login-edit')) return;
@@ -334,6 +336,7 @@ document.addEventListener('click', e => {
                                     cache: false,
                                     data: {
                                         'arr': objEdit,
+                                        'id': +id
                                     },
                                     dataType: 'html',
                                     beforeSend: function () {
@@ -370,6 +373,7 @@ document.addEventListener('click', e => {
         invisible();
         let el = e.target;
         el.closest('.news__wrapper').classList.add('none');
+        let id = el.closest('.news__wrapper').querySelector('.id__news').innerHTML;
         for (let j = 0; j < document.querySelectorAll('.news__wrapper').length; j++) {
             if (document.querySelectorAll('.news__wrapper')[j].classList.contains('none')) {
                 let arr = document.querySelectorAll('.news__wrapper');
@@ -387,21 +391,18 @@ document.addEventListener('click', e => {
                         dataType: 'html',
                         data: {
                             'indexEdit': j,
+                            'id': +id
                         },
                         success(response) {
                             $('.edit').html(response);
                             $('.edit__button').on('click', e => {
                                 e.preventDefault();
                                 let objEdit = {
-                                    user: $('.edit-login').val().trim(),
                                     title: $('.edit-email').val().trim(),
                                     text: $('.edit-desc').val().trim(),
                                     index: j,
+                                    id: +id
                                 }
-
-                                if (checkLogin(objEdit.user, '.error-login-edit')) return;
-
-                                if (checkLogin(objEdit.title, '.error-email-edit')) return;
 
                                 $.ajax({
                                     url: '/api/news/edit',
@@ -409,6 +410,7 @@ document.addEventListener('click', e => {
                                     cache: false,
                                     data: {
                                         'arr': objEdit,
+                                        'id': +id
                                     },
                                     dataType: 'html',
                                     beforeSend: function () {
@@ -416,7 +418,6 @@ document.addEventListener('click', e => {
                                     },
                                     success: function () {
                                         $('.edit__button').prop("disabled", false);
-                                        document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__user').innerHTML = objEdit.user;
                                         document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__title').innerHTML = objEdit.title;
                                         document.querySelectorAll('.news__wrapper')[objEdit.index].querySelector('.news__text').innerHTML = checkLength(objEdit.text);
                                     }
@@ -438,6 +439,7 @@ document.addEventListener('click', e => {
                         dataType: 'html',
                         data: {
                             'indexEdit': 6 * koeficient - (6 - j),
+                            'id': +id
                         },
                         success(response) {
                             $('.edit').html(response);
@@ -448,6 +450,7 @@ document.addEventListener('click', e => {
                                     title: $('.edit-email').val().trim(),
                                     text: $('.edit-desc').val().trim(),
                                     index: 6 * koeficient - (6 - j),
+                                    id: id
                                 }
 
                                 if (checkLogin(objEdit.user, '.error-login-edit')) return;
@@ -587,6 +590,7 @@ document.addEventListener('click', e => {
     if (e.target.classList.contains('articleFull__delete')) {
         let el = e.target;
         el.closest('.article__wrapper').classList.add('none');
+        let id = el.closest('.article__wrapper').querySelector('.id__article').innerHTML;
         for (let j = 0; j < document.querySelectorAll('.article__wrapper').length; j++) {
             if (document.querySelectorAll('.article__wrapper')[j].classList.contains('none')) {
                 let koeficient;
@@ -598,9 +602,10 @@ document.addEventListener('click', e => {
                 if (+koeficient === 1) {
                     $.ajax({
                         url: '/api/article/delete',
-                        method: 'DELETE',
+                        method: 'POST',
                         data: {
-                            'indexDel': j
+                            'indexDel': j,
+                            'id': +id,
                         },
                         success: function () {
                             $('.article__wrapper')[j].remove();
@@ -611,9 +616,10 @@ document.addEventListener('click', e => {
                 if (+koeficient !== 1) {
                     $.ajax({
                         url: '/api/article/delete',
-                        method: 'DELETE',
+                        method: 'POST',
                         data: {
-                            'indexDel': 6 * koeficient - (6 - j)
+                            'indexDel': 6 * koeficient - (6 - j),
+                            'id': +id,
                         },
                         success: function () {
                             $('.article__wrapper')[j].remove();
@@ -630,6 +636,7 @@ document.addEventListener('click', e => {
     if (e.target.classList.contains('newsFull__delete')) {
         let el = e.target;
         el.closest('.news__wrapper').classList.add('none');
+        let id = el.closest('.news__wrapper').querySelector('.id__news').innerHTML;
         for (let j = 0; j < document.querySelectorAll('.news__wrapper').length; j++) {
             if (document.querySelectorAll('.news__wrapper')[j].classList.contains('none')) {
                 let koeficient;
@@ -641,9 +648,10 @@ document.addEventListener('click', e => {
                 if (+koeficient !== 1) {
                     $.ajax({
                         url: '/api/news/delete',
-                        method: 'DELETE',
+                        method: 'POST',
                         data: {
-                            'indexDel': 6 * koeficient - (6 - j)
+                            'indexDel': 6 * koeficient - (6 - j),
+                            'id': +id
                         },
                         success: function () {
                             $('.news__wrapper')[j].remove();
@@ -653,9 +661,10 @@ document.addEventListener('click', e => {
                 }
                 $.ajax({
                     url: '/api/news/delete',
-                    method: 'DELETE',
+                    method: 'POST',
                     data: {
-                        'indexDel': j
+                        'indexDel': j,
+                        'id': +id
                     },
                     success: function () {
                         $('.news__wrapper')[j].remove();

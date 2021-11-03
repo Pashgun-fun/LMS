@@ -1,12 +1,13 @@
 import {checkLogin, checkPass, checkEmail} from "./validation.js";
 
-let deleteUser = (indexDel, userArr) => {
+let deleteUser = (indexDel, userArr, id) => {
     $.ajax({
         url: '/api/user/delete',
-        type: 'DELETE',
+        type: 'POST',
         cache: false,
         data: {
             'indexDel': indexDel,
+            'id': id
         },
         success: function () {
             userArr[indexDel].remove();
@@ -42,7 +43,7 @@ let newUser = (obj) => {
     })
 }
 
-let editUser = (objEdit, userArr) => {
+let editUser = (objEdit, userArr, indexEdit) => {
     $.ajax({
         url: '/api/user/edit',
         type: 'POST',
@@ -56,12 +57,12 @@ let editUser = (objEdit, userArr) => {
         },
         success: function () {
             $('.edit__button').prop("disabled", false);
-            userArr[objEdit.index].querySelector('.user__name').innerHTML = objEdit.login;
+            userArr[indexEdit].querySelector('.user__name').innerHTML = objEdit.login;
         }
     })
 }
 
-let openWindowEdit = (indexEdit, userArr) => {
+let openWindowEdit = (indexEdit, userArr, id) => {
     let arr = userArr;
     $.ajax({
         url: '/api/window/edit',
@@ -70,6 +71,7 @@ let openWindowEdit = (indexEdit, userArr) => {
         dataType: 'html',
         data: {
             'indexEdit': indexEdit,
+            'id': id,
         },
         success(response) {
             $('.edit').html(response);
@@ -83,7 +85,8 @@ let openWindowEdit = (indexEdit, userArr) => {
                     pass: $('.edit-pass').val().trim(),
                     confirm: $('.edit-confirm').val().trim(),
                     descr: $('.edit-desc').val().trim(),
-                    index: indexEdit,
+                    indexEdit: indexEdit,
+                    index: id,
                 }
 
                 if (checkLogin(objEdit.login, '.error-login-edit')) return;
@@ -92,7 +95,7 @@ let openWindowEdit = (indexEdit, userArr) => {
 
                 if (checkPass(objEdit.pass, '.error-pass-edit', objEdit.confirm)) return;
 
-                editUser(objEdit, arr)
+                editUser(objEdit, arr, indexEdit)
 
                 $('.edit').hide();
             })

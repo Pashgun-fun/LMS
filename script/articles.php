@@ -29,7 +29,7 @@ function publishRandom()
     /**
      * Данные для скелетона статьи берутся из config`a
      */
-    $config = require_once __DIR__ . "/../public/config/random_articles_and_news.php";
+    $config = require_once __DIR__ . "/../config/random_articles_and_news.php";
     /**
      * Далее сканируется дирректория, где будут размещаться новые статьи
      * Сортируется, чтобы наибольший индекс файла был послденим в списке
