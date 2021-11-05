@@ -54,7 +54,7 @@ class UserModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $query = "INSERT INTO homestead.Users VALUES (
+                $query = "INSERT INTO homestead.users VALUES (
                                     null, 
                                     '{$user->getLogin()}', 
                                     '{$user->getEmail()}', 
@@ -100,7 +100,7 @@ class UserModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $this->connect->query("DELETE FROM homestead.Users WHERE id = $id");
+                $this->connect->query("DELETE FROM homestead.users WHERE id = $id");
                 break;
             case TypeConnect::ARRAY_CONNECT:
                 $this->delete(__DIR__ . $this->connect['file']['users'], $indexDel);
@@ -117,7 +117,7 @@ class UserModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $this->connect->query("UPDATE homestead.Users SET `login` = '{$user->getLogin()}', `email` = '{$user->getEmail()}', `descr` = '{$user->getDesc()}' WHERE id = {$user->getIndex()}");
+                $this->connect->query("UPDATE homestead.users SET `login` = '{$user->getLogin()}', `email` = '{$user->getEmail()}', `descr` = '{$user->getDesc()}' WHERE id = {$user->getIndex()}");
                 break;
             case TypeConnect::ARRAY_CONNECT:
                 $arr = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
@@ -175,12 +175,15 @@ class UserModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $query = "SELECT * FROM homestead.Users WHERE email = '{$user->getLogin()}' AND pass = '{$user->getPass()}'";
+                $query = "SELECT * FROM homestead.users WHERE email = '{$user->getLogin()}' AND pass = '{$user->getPass()}'";
                 $result = $this->connect->query($query)->fetch_assoc();
-                if ($result['role'] === Roles::ADMIN_ROLE) {
-                    return ['ROLE' => Roles::ADMIN_ROLE, 'NAME' => $result['login'], 'id' => (int)$result['id']];
+                if (!empty($result)) {
+                    if ($result['role'] === Roles::ADMIN_ROLE) {
+                        return ['ROLE' => Roles::ADMIN_ROLE, 'NAME' => $result['login'], 'id' => (int)$result['id']];
+                    }
+                    return ['ROLE' => Roles::USER_ROLE, 'NAME' => $result['login'], 'id' => (int)$result['id']];
                 }
-                return ['ROLE' => Roles::USER_ROLE, 'NAME' => $result['login'], 'id' => (int)$result['id']];
+                return [];
             case TypeConnect::ARRAY_CONNECT:
                 $arr = array_values($this->helper->myscandir(__DIR__ . $this->connect['file']['users']));
                 foreach ($arr as $file) {

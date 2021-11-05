@@ -1,2 +1,5 @@
-/database/*
+/database/Users
+/database/News
+/database/OldNews
+/database/Articles
 /config/mysql_config/config_database.php

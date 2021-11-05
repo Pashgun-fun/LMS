@@ -82,16 +82,6 @@
                                 </div>
                             </div>
                         </div>');
-                } else {
-                    echo('<div class="user">
-                            <div class="user__wrapper">
-                                <div class="user__name">' . $login . '</div>
-                                <div class="user__buttons">
-                                    <div class="user__edit _button"></div>
-                                    <div class="user__del _button"></div>
-                                </div>
-                            </div>
-                        </div>');
                 }
             }
             ?>

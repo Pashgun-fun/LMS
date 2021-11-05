@@ -37,7 +37,8 @@ class PageModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                return $this->connect->query("SELECT * FROM homestead.Users WHERE id = $id")->fetch_assoc();
+                var_dump("1");
+                return $this->connect->query("SELECT * FROM homestead.users WHERE id = $id")->fetch_assoc();
             case TypeConnect::ARRAY_CONNECT:
                 return $this->openEdit(__DIR__ . $this->connect['file']['users'], $indexEdit);
         }

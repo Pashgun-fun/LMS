@@ -70,14 +70,14 @@ class ArticleModel extends Model
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
                 $articles = [];
-                $query = "select homestead.Articles.id,
-                                  homestead.Users.login as `user`,
-                                  homestead.Articles.title,
-                                  homestead.Articles.text,
-                                  homestead.Articles.date
-                          from Articles
-                          join Users
-                          on Articles.user_id = Users.id";
+                $query = "select homestead.articles.id,
+                                  homestead.users.login as `user`,
+                                  homestead.articles.title,
+                                  homestead.articles.text,
+                                  homestead.articles.date
+                          from articles
+                          join users
+                          on articles.user_id = users.id";
                 $result = $this->connect->query($query);
                 while ($article = $result->fetch_assoc()) {
                     array_push($articles, $article);
@@ -97,7 +97,7 @@ class ArticleModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $this->connect->query("DELETE FROM homestead.Articles WHERE id = {$id}");
+                $this->connect->query("DELETE FROM homestead.articles WHERE id = {$id}");
                 break;
             case TypeConnect::ARRAY_CONNECT:
                 $this->delete(__DIR__ . $this->connect['file']['articles'], $indexDel);
@@ -111,15 +111,15 @@ class ArticleModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                return $this->connect->query("select homestead.Articles.id,
-                                                              homestead.Users.login as `user`,
-                                                              homestead.Articles.title,
-                                                              homestead.Articles.text,
-                                                              homestead.Articles.date
-                                                      from Articles
-                                                      join Users
-                                                      on Articles.user_id = Users.id 
-                                                      where homestead.Articles.id = {$id}")->fetch_assoc();
+                return $this->connect->query("select homestead.articles.id,
+                                                              homestead.users.login as `user`,
+                                                              homestead.articles.title,
+                                                              homestead.articles.text,
+                                                              homestead.articles.date
+                                                      from articles
+                                                      join users
+                                                      on articles.user_id = users.id 
+                                                      where homestead.articles.id = {$id}")->fetch_assoc();
             case TypeConnect::ARRAY_CONNECT:
                 return $this->openEdit(__DIR__ . $this->connect['file']['articles'], $indexEdit);
         }
@@ -133,7 +133,7 @@ class ArticleModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $this->connect->query("UPDATE homestead.Articles 
+                $this->connect->query("UPDATE homestead.articles 
                                              SET `title` = '{$publish->getTitle()}', `text` = '{$publish->getText()}' 
                                              WHERE id = {$publish->getId()}");
                 break;
@@ -157,7 +157,7 @@ class ArticleModel extends Model
                     'date' => $publish->getDate(),
 
                 ];
-                $query = "INSERT INTO homestead.Articles VALUES (
+                $query = "INSERT INTO homestead.articles VALUES (
                                     null, 
                                      {$_SESSION['id']}, 
                                     '{$publish->getTitle()}', 
@@ -194,14 +194,14 @@ class ArticleModel extends Model
             case TypeConnect::OBJECT_CONNECT:
                 $articles = [];
                 $numberStart = $page * $this->countPublishing - $this->countPublishing;
-                $query = "select homestead.Articles.id,
-                                  homestead.Users.login as `user`,
-                                  homestead.Articles.title,
-                                  homestead.Articles.text,
-                                  homestead.Articles.date
-                          from Articles
-                          join Users
-                          on Articles.user_id = Users.id
+                $query = "select homestead.articles.id,
+                                  homestead.users.login as `user`,
+                                  homestead.articles.title,
+                                  homestead.articles.text,
+                                  homestead.articles.date
+                          from articles
+                          join users
+                          on articles.user_id = users.id
                           limit {$numberStart} ,{$this->countPublishing}";
                 $result = $this->connect->query($query);
                 while ($article = $result->fetch_assoc()) {

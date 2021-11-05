@@ -29,7 +29,7 @@ class View
         include __DIR__ . "/../views/user.php";
     }
 
-    public function userPage(array $usersNameArr, string $name = "")
+    public function userPage(array $usersNameArr, ?string $name = "")
     {
         include __DIR__ . "/../views/User/userPage.php";
 

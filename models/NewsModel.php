@@ -49,15 +49,15 @@ class NewsModel extends Model
         $arrOfNews = [];
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $result = $this->connect->query("select homestead.News.id,
-                                                               homestead.Users.login as `user`,
-                                                               homestead.News.title,
-                                                               homestead.News.text,
-                                                               homestead.News.date
-                                                        from News
-                                                        join Users
-                                                        on News.user_id = Users.id
-                                                        where ({$this->date} - homestead.News.seconds) < {$this->seconds}");
+                $result = $this->connect->query("select homestead.news.id,
+                                                               homestead.users.login as `user`,
+                                                               homestead.news.title,
+                                                               homestead.news.text,
+                                                               homestead.news.date
+                                                        from news
+                                                        join users
+                                                        on news.user_id = users.id
+                                                        where ({$this->date} - homestead.news.seconds) < {$this->seconds}");
                 while ($row = $result->fetch_assoc()) {
                     array_push($arrOfNews, $row);
                 }
@@ -101,7 +101,7 @@ class NewsModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $this->connect->query("DELETE FROM homestead.News WHERE id = {$id}");
+                $this->connect->query("DELETE FROM homestead.news WHERE id = {$id}");
                 break;
             case TypeConnect::ARRAY_CONNECT:
                 $this->delete(__DIR__ . $this->connect['file']['news'], $indexDel);
@@ -115,15 +115,15 @@ class NewsModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                return $this->connect->query("select homestead.News.id,
-                                                               homestead.Users.login as `user`,
-                                                               homestead.News.title,
-                                                               homestead.News.text,
-                                                               homestead.News.date
-                                                        from News
-                                                        join Users
-                                                        on News.user_id = Users.id
-                                                    where homestead.News.id = {$id}")->fetch_assoc();
+                return $this->connect->query("select homestead.news.id,
+                                                               homestead.users.login as `user`,
+                                                               homestead.news.title,
+                                                               homestead.news.text,
+                                                               homestead.news.date
+                                                        from news
+                                                        join users
+                                                        on news.user_id = users.id
+                                                    where homestead.news.id = {$id}")->fetch_assoc();
             case TypeConnect::ARRAY_CONNECT:
                 return $this->openEdit(__DIR__ . $this->connect['file']['news'], $indexEdit);
 
@@ -138,7 +138,7 @@ class NewsModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $this->connect->query("UPDATE homestead.News 
+                $this->connect->query("UPDATE homestead.news 
                                              SET `title` = '{$publish->getTitle()}', `text` = '{$publish->getText()}'
                                              WHERE id = {$publish->getId()}");
                 break;
@@ -161,7 +161,7 @@ class NewsModel extends Model
                     'user' => $_SESSION['NAME'],
                     'date' => $publish->getDate(),
                 ];
-                $query = "INSERT INTO homestead.News VALUES (
+                $query = "INSERT INTO homestead.news VALUES (
                                     null, 
                                      {$_SESSION['id']}, 
                                     '{$publish->getTitle()}', 
@@ -199,16 +199,16 @@ class NewsModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $result = $this->connect->query("select homestead.News.id,
-                                                               homestead.Users.login as `user`,
-                                                               homestead.News.title,
-                                                               homestead.News.text,
-                                                               homestead.News.date
-                                                        from News
-                                                        join Users
-                                                        on News.user_id = Users.id
-                                                         where ({$this->date} - homestead.News.seconds) >= {$this->seconds} 
-                                                           and homestead.News.id = {$index}")->fetch_assoc();
+                $result = $this->connect->query("select homestead.news.id,
+                                                               homestead.users.login as `user`,
+                                                               homestead.news.title,
+                                                               homestead.news.text,
+                                                               homestead.news.date
+                                                        from news
+                                                        join users
+                                                        on news.user_id = users.id
+                                                         where ({$this->date} - homestead.news.seconds) >= {$this->seconds} 
+                                                           and homestead.news.id = {$index}")->fetch_assoc();
                 if (!empty($result)) {
                     return $result;
                 }
@@ -234,15 +234,15 @@ class NewsModel extends Model
             case TypeConnect::OBJECT_CONNECT:
                 $news = [];
                 $numberStart = $page * $this->countPublishing - $this->countPublishing;
-                $result = $this->connect->query("select homestead.News.id,
-                                                               homestead.Users.login as `user`,
-                                                               homestead.News.title,
-                                                               homestead.News.text,
-                                                               homestead.News.date
-                                                        from News
-                                                        join Users
-                                                        on News.user_id = Users.id
-                                                        where ({$this->date} - homestead.News.seconds) < {$this->seconds} 
+                $result = $this->connect->query("select homestead.news.id,
+                                                               homestead.users.login as `user`,
+                                                               homestead.news.title,
+                                                               homestead.news.text,
+                                                               homestead.news.date
+                                                        from news
+                                                        join users
+                                                        on news.user_id = users.id
+                                                        where ({$this->date} - homestead.news.seconds) < {$this->seconds} 
                                                         limit {$numberStart} ,{$this->countPublishing}");
                 while ($new = $result->fetch_assoc()) {
                     array_push($news, $new);

@@ -319,16 +319,11 @@ document.addEventListener('click', e => {
                             $('.edit__button').on('click', e => {
                                 e.preventDefault();
                                 let objEdit = {
-                                    user: $('.edit-login').val().trim(),
                                     title: $('.edit-email').val().trim(),
                                     text: $('.edit-desc').val().trim(),
                                     index: 6 * koeficient - (6 - j),
                                     id: id
                                 }
-
-                                if (checkLogin(objEdit.user, '.error-login-edit')) return;
-
-                                if (checkLogin(objEdit.title, '.error-email-edit')) return;
 
                                 $.ajax({
                                     url: '/api/article/edit',
@@ -446,16 +441,11 @@ document.addEventListener('click', e => {
                             $('.edit__button').on('click', e => {
                                 e.preventDefault();
                                 let objEdit = {
-                                    user: $('.edit-login').val().trim(),
                                     title: $('.edit-email').val().trim(),
                                     text: $('.edit-desc').val().trim(),
                                     index: 6 * koeficient - (6 - j),
                                     id: id
                                 }
-
-                                if (checkLogin(objEdit.user, '.error-login-edit')) return;
-
-                                if (checkLogin(objEdit.title, '.error-email-edit')) return;
 
                                 $.ajax({
                                     url: '/api/news/edit',

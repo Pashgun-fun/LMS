@@ -25,8 +25,8 @@ return [
         'id'
     ],
     'checkDatabaseTables' => [
-        'Articles',
-        'News',
-        'Users',
+        'articles',
+        'news',
+        'users',
     ]
 ];
