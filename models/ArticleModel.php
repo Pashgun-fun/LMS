@@ -204,8 +204,10 @@ class ArticleModel extends Model
                           on articles.user_id = users.id
                           limit {$numberStart} ,{$this->countPublishing}";
                 $result = $this->connect->query($query);
-                while ($article = $result->fetch_assoc()) {
-                    array_push($articles, $article);
+                if ($result) {
+                    while ($article = $result->fetch_assoc()) {
+                        array_push($articles, $article);
+                    }
                 }
                 return $articles;
             case TypeConnect::ARRAY_CONNECT:

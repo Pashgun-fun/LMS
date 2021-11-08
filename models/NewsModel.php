@@ -244,8 +244,10 @@ class NewsModel extends Model
                                                         on news.user_id = users.id
                                                         where ({$this->date} - homestead.news.seconds) < {$this->seconds} 
                                                         limit {$numberStart} ,{$this->countPublishing}");
-                while ($new = $result->fetch_assoc()) {
-                    array_push($news, $new);
+                if ($result) {
+                    while ($new = $result->fetch_assoc()) {
+                        array_push($news, $new);
+                    }
                 }
                 return $news;
             case TypeConnect::ARRAY_CONNECT:
