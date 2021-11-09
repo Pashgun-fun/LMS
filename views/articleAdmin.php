@@ -48,7 +48,7 @@
 
 <div class="article__wrapper _container">
     <div class="article__title"><?= $title ?></div>
-    <span class="id__article"><?= $id ?></span>
+    <span class="id__article" style="opacity: 0"><?= $id ?></span>
     <div class="article__text"><?= $text ?></div>
     <div class="article__read">Читать</div>
     <div class="article__info">

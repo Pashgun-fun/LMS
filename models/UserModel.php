@@ -54,14 +54,40 @@ class UserModel extends Model
     {
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
-                $query = "INSERT INTO homestead.users VALUES (
-                                    null, 
-                                    '{$user->getLogin()}', 
-                                    '{$user->getEmail()}', 
-                                    '{$user->getPass()}', 
-                                    '{$user->getData()}',
-                                    '{$user->getDesc()}',
-                                    'user')";
+                $userData = array(
+                    'login' => $user->getLogin(),
+                    'email' => $user->getEmail(),
+                    'pass' => $user->getPass(),
+                    'data' => $user->getData(),
+                    'descr' => $user->getDesc(),
+                    'role' => 'user',
+                    'id' => 1,
+                );
+
+                $arrOfColumns = [];
+
+                $query = "INSERT INTO homestead.users 
+                          SET `id` = null,";
+
+                $result = $this->connect->query(file_get_contents(__DIR__ . "/../config/sql/Users/columnsUsers.sql"));
+
+                while ($columnName = $result->fetch_assoc()) {
+                    array_push($arrOfColumns, $columnName);
+                }
+
+                $arrOfColumns = array_column($arrOfColumns, "COLUMN_NAME");
+
+                $arr = array_intersect(array_keys($userData), $arrOfColumns);
+
+                foreach ($arr as $el) {
+                    if ($el === 'id') {
+                        continue;
+                    }
+                    $query .= "`{$el}` = " . "'{$userData[$el]}'" . "," . "\n";
+                }
+
+                $query = substr($query, 0, -2);
+
                 $this->connect->query($query);
                 return $user->getLogin();
             case TypeConnect::ARRAY_CONNECT:
@@ -74,8 +100,6 @@ class UserModel extends Model
                         return '';
                     }
                 }
-
-
                 $userData = array(
                     'login' => $user->getLogin(),
                     'email' => $user->getEmail(),
@@ -149,8 +173,10 @@ class UserModel extends Model
         switch (gettype($this->connect)) {
             case TypeConnect::OBJECT_CONNECT:
                 $result = $this->connect->query(file_get_contents(__DIR__ . "/../config/sql/allUsers.sql"));
-                while ($row = $result->fetch_assoc()) {
-                    array_push($usersNameArr, $row);
+                if ($result) {
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($usersNameArr, $row);
+                    }
                 }
                 return $usersNameArr;
             case TypeConnect::ARRAY_CONNECT:

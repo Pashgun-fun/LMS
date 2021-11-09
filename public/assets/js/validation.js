@@ -19,7 +19,7 @@ let checkEmail = (email, el) => {
 }
 
 let checkPass = (pass, el, confirm) => {
-    if (pass.length < 8) {//Строчные и прописные латинские буквы, цифры, спецсимволы. Минимум 8 символов
+    if (pass.length < 8) {
         $(el).html("Слишком короткий пароль");
         return true;
     }

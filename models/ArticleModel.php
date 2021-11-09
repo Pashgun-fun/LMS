@@ -157,12 +157,29 @@ class ArticleModel extends Model
                     'date' => $publish->getDate(),
 
                 ];
-                $query = "INSERT INTO homestead.articles VALUES (
-                                    null, 
-                                     {$_SESSION['id']}, 
-                                    '{$publish->getTitle()}', 
-                                    '{$publish->getText()}', 
-                                    '{$publish->getDate()}')";
+
+                $arrOfColumns = [];
+
+                $query = "INSERT INTO homestead.articles 
+                          SET `id` = null,
+                              `user_id` = {$_SESSION['id']},";
+
+                $result = $this->connect->query(file_get_contents(__DIR__ . "/../config/sql/Articles/columnsArticles.sql"));
+
+                while ($columnName = $result->fetch_assoc()) {
+                    array_push($arrOfColumns, $columnName);
+                }
+
+                $arrOfColumns = array_column($arrOfColumns, "COLUMN_NAME");
+
+                $arr = array_intersect(array_keys($newArticle), $arrOfColumns);
+
+                foreach ($arr as $el) {
+                    $query .= "`{$el}` = " . "'{$newArticle[$el]}'" . "," . "\n";
+                }
+
+                $query = substr($query, 0, -2);
+
                 $this->connect->query($query);
                 return $newArticle;
             case TypeConnect::ARRAY_CONNECT:

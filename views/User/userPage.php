@@ -68,12 +68,8 @@
                 echo('<div class="user">
                             <div class="user__wrapper">
                                 <div class="user__name">' . $login['login'] . '</div>
-                                <span class="id__user">' . $login['id'] . '</span>
+                                <span class="id__user" style="opacity: 0">' . $login['id'] . '</span>
                             </div>
-                                <div class="user__buttons">
-                                    <div class="user__edit _button"></div>
-                                    <div class="user__del _button"></div>
-                                </div>
                         </div>');
             }
         }

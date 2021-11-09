@@ -24,9 +24,4 @@ return [
         'NAME',
         'id'
     ],
-    'checkDatabaseTables' => [
-        'articles',
-        'news',
-        'users',
-    ]
 ];

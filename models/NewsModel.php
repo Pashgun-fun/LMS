@@ -120,10 +120,10 @@ class NewsModel extends Model
                                                                homestead.news.title,
                                                                homestead.news.text,
                                                                homestead.news.date
-                                                        from news
-                                                        join users
-                                                        on news.user_id = users.id
-                                                    where homestead.news.id = {$id}")->fetch_assoc();
+                                                     from news
+                                                     join users
+                                                     on news.user_id = users.id
+                                                     where homestead.news.id = {$id}")->fetch_assoc();
             case TypeConnect::ARRAY_CONNECT:
                 return $this->openEdit(__DIR__ . $this->connect['file']['news'], $indexEdit);
 
@@ -160,14 +160,31 @@ class NewsModel extends Model
                     'text' => $publish->getText(),
                     'user' => $_SESSION['NAME'],
                     'date' => $publish->getDate(),
+                    'seconds' => $publish->getTime(),
                 ];
-                $query = "INSERT INTO homestead.news VALUES (
-                                    null, 
-                                     {$_SESSION['id']}, 
-                                    '{$publish->getTitle()}', 
-                                    '{$publish->getText()}', 
-                                    '{$publish->getDate()}',
-                                   {$publish->getTime()})";
+
+                $arrOfColumns = [];
+
+                $query = "INSERT INTO homestead.news 
+                          SET `id` = null,
+                              `user_id` = {$_SESSION['id']},";
+
+                $result = $this->connect->query(file_get_contents(__DIR__ . "/../config/sql/News/columnsNews.sql"));
+
+                while ($columnName = $result->fetch_assoc()) {
+                    array_push($arrOfColumns, $columnName);
+                }
+
+                $arrOfColumns = array_column($arrOfColumns, "COLUMN_NAME");
+
+                $arr = array_intersect(array_keys($newNews), $arrOfColumns);
+
+                foreach ($arr as $el) {
+                    $query .= "`{$el}` = " . "'{$newNews[$el]}'" . "," . "\n";
+                }
+
+                $query = substr($query, 0, -2);
+
                 $this->connect->query($query);
                 return $newNews;
             case TypeConnect::ARRAY_CONNECT:
@@ -207,8 +224,8 @@ class NewsModel extends Model
                                                         from news
                                                         join users
                                                         on news.user_id = users.id
-                                                         where ({$this->date} - homestead.news.seconds) >= {$this->seconds} 
-                                                           and homestead.news.id = {$index}")->fetch_assoc();
+                                                        where ({$this->date} - homestead.news.seconds) >= {$this->seconds} 
+                                                        and homestead.news.id = {$index}")->fetch_assoc();
                 if (!empty($result)) {
                     return $result;
                 }

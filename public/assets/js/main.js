@@ -149,6 +149,11 @@ document.addEventListener('click', (e) => {
             text: $('.publish_text').val().trim(),
             date: `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
         }
+        if (/^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u.test(obj.title) === false ||
+            obj.title.length < 3 ||
+            obj.text.length < 50) {
+            return;
+        }
         try {
             $.ajax({
                 url: '/api/article/add',
@@ -188,6 +193,11 @@ document.addEventListener('click', (e) => {
             text: $('.news_text').val().trim(),
             date: `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
             seconds: new Date().getTime() / 1000,
+        }
+        if (/^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u.test(obj.title) === false ||
+            obj.title.length < 3 ||
+            obj.text.length < 50) {
+            return;
         }
         try {
             $.ajax({
