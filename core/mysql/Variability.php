@@ -36,7 +36,7 @@ class Variability
     {
         switch ($this->variant['typeToConnect']) {
             case TypeConnect::FILE:
-                return require_once __DIR__ . "/../../config/directories.php";
+                return require __DIR__ . "/../../config/directories.php";
             case TypeConnect::MYSQL:
             default:
                 return new \mysqli(

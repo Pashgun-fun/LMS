@@ -7,10 +7,11 @@ use core\Helper;
 use core\Validation;
 use entites\User;
 use models\UserModel;
+use models\sqlModels\SqlUserModel;
 
 class UserController extends Controller
 {
-    protected UserModel $model;
+    protected $model;
     protected Helper $helper;
     protected array $config;
 
@@ -18,8 +19,15 @@ class UserController extends Controller
     {
         parent::__construct();
         $this->helper = new Helper();
-        $this->model = UserModel::getInstance();
         $this->config = require_once __DIR__ . "/../config/validation_check.php";
+        switch (gettype($this->connect)) {
+            case "array":
+                $this->model = UserModel::getInstance();
+                break;
+            case "object":
+                $this->model = SqlUserModel::getInstance();
+                break;
+        }
     }
 
     /**

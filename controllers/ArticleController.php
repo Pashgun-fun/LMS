@@ -7,17 +7,25 @@ use core\Helper;
 use entites\Publish;
 use models\ArticleModel;
 use core\Validation;
+use models\sqlModels\SqlArticleModel;
 
 class ArticleController extends Controller
 {
-    protected ArticleModel $articleModel;
+    protected $articleModel;
     protected Helper $helper;
 
     function __construct()
     {
         parent::__construct();
-        $this->articleModel = ArticleModel::getInstance();
         $this->helper = new Helper();
+        switch (gettype($this->connect)) {
+            case "array":
+                $this->articleModel = ArticleModel::getInstance();
+                break;
+            case "object":
+                $this->articleModel = SqlArticleModel::getInstance();
+                break;
+        }
     }
 
     /**
@@ -107,7 +115,7 @@ class ArticleController extends Controller
             return;
         }
         $article = new Publish($_POST['arr']);
-        $this->articleModel->edit($article);
+        $this->articleModel->editArticle($article);
     }
 
     /**

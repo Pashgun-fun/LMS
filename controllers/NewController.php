@@ -7,17 +7,26 @@ use core\Validation;
 use core\Helper;
 use models\NewsModel;
 use entites\Publish;
+use core\mysql\Variability;
+use models\sqlModels\SqlNewsModel;
 
 class NewController extends Controller
 {
     protected Helper $helper;
-    protected NewsModel $newModel;
+    protected $newModel;
 
     function __construct()
     {
         parent::__construct();
-        $this->newModel = NewsModel::getInstance();
         $this->helper = new Helper();
+        switch (gettype($this->connect)) {
+            case "array":
+                $this->newModel = NewsModel::getInstance();
+                break;
+            case "object":
+                $this->newModel = SqlNewsModel::getInstance();
+                break;
+        }
     }
 
     /**
