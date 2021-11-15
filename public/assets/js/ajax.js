@@ -121,11 +121,9 @@ let login = () => {
         url: '/api/user/login',
         method: 'GET',
         success: function (response) {
-            $('.articles').remove();
-            $('.news').remove();
-            $('._title').remove();
-            $('.article_pages').remove();
-            $('.news_pages').remove();
+            $('.products_body').remove();
+            $('.product_menu').remove();
+            $('.product_search').remove();
             $('.header').after(response);
         }
     })

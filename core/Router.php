@@ -6,6 +6,7 @@ use controllers\NewController;
 use controllers\UserController;
 use controllers\PageController;
 use controllers\ArticleController;
+use controllers\ParserController;
 use enums\Roles;
 use core\Middleware;
 
@@ -108,6 +109,42 @@ class Router
             case "/api/news/old":
                 $controllerNews = new NewController();
                 $controllerNews->getOldNews();
+                break;
+            case "/api/product/get":
+                $parserController = new ParserController();
+                $parserController->getProducts();
+                break;
+            case "/api/products/search":
+                $parserController = new ParserController();
+                $parserController->searchProduct();
+                break;
+            case "/api/products/search/subchapter":
+                $parserController = new ParserController();
+                $parserController->searchSubchapterProduct();
+                break;
+            case "/api/products/search/brend":
+                $parserController = new ParserController();
+                $parserController->searchBrendProduct();
+                break;
+            case "/api/products/search/model":
+                $parserController = new ParserController();
+                $parserController->searchModelProduct();
+                break;
+            case "/api/products/search/color":
+                $parserController = new ParserController();
+                $parserController->searchColorProduct();
+                break;
+            case "/api/products/filter/chapter/straight":
+                $parserController = new ParserController();
+                $parserController->filterByChapterStraight();
+                break;
+            case "/api/products/filter/chapter/back":
+                $parserController = new ParserController();
+                $parserController->filterByChapterBack();
+                break;
+            case "/api/products/search/all":
+                $parserController = new ParserController();
+                $parserController->searchAllProducts();
                 break;
             case "/":
                 $controllerUsers = new UserController();

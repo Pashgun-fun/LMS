@@ -3,5 +3,5 @@
 use enums\TypeConnect;
 
 return [
-    "typeToConnect" => TypeConnect::FILE
+    "typeToConnect" => TypeConnect::MYSQL
 ];

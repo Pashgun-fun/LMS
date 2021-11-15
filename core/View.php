@@ -65,4 +65,9 @@ class View
         include __DIR__ . "/../views/news.php";
     }
 
+    public function products(string $str, array $arr = null)
+    {
+        include __DIR__ . "/../views/products.php";
+    }
+
 }

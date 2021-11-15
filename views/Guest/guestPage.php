@@ -38,6 +38,49 @@
         opacity: 0.7;
     }
 
+    .product_menu {
+        font-size: 14px;
+        display: none;
+        grid-template-columns: repeat(9, 1fr);
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-top: 50px;
+        margin-bottom: 30px;
+        align-items: center;
+    }
+
+    .product_search {
+        display: none;
+        margin-bottom: 10px;
+    }
+
+    .product_search div {
+        margin-bottom: 10px;
+    }
+
+    .product_search span {
+        display: inline-block;
+        padding: 0 20px;
+        height: 40px;
+        text-align: center;
+        background: red;
+        vertical-align: middle;
+        line-height: 40px;
+        font-weight: bold;
+    }
+
+    .product_filterByChapter {
+        width: 20px;
+        height: 15px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .product_filterByChapter img {
+        object-fit: cover;
+        width: 100%;
+    }
 </style>
 
 <body class="body">
@@ -46,6 +89,11 @@
         <a>
             <div class="header__logo"></div>
         </a>
+
+        <a class="products">
+            Продукты
+        </a>
+
         <div class="header__buttons">
             <a class="header__login">Login</a>
             <a class="header__register">Register</a>
@@ -53,14 +101,53 @@
     </div>
 </header>
 
-<div class="_title _container _article">Статьи<span class="count_articles"></span></div>
-<div class="article_pages _container"></div>
-<section class="articles">
-</section>
+<div class="product_search _container">
+    <div>
+        <label>Поиск по разделу <input type="text" class="search_product"></label> <span class="product_search_button">Найти</span><br>
+    </div>
+    <div>
+        <label>Поиск по подразделу <input type="text" class="search_product_subchapter"></label> <span
+                class="product_search_subchapter">Найти</span><br>
+    </div>
+    <div>
+        <label>Поиск по бренду <input type="text" class="search_product_brend"></label> <span
+                class="product_search_brend">Найти</span><br>
+    </div>
+    <div>
+        <label>Поиск по модели <input type="text" class="search_product_model"></label> <span
+                class="product_search_model">Найти</span><br>
+    </div>
+    <div>
+        <label>Поиск по цвету <input type="text" class="search_product_color"></label> <span
+                class="product_search_color">Найти</span><br>
+        <span class="product_search_allCategories">Найти всё</span>
+        <span class="product_search_all">Вывести всё</span>
+    </div>
+</div>
 
-<div class="_title _container _news" style="margin-top: 100px">Новости <span class="count_news"></span></div>
-<div class="news_pages _container"></div>
-<section class="news _container">
+<div class="product_menu _container">
+    <div class="product_menu_chapter">Раздел <span class="product_filterByChapter"><img
+                    src="assets/img/ascending-sort.png" alt=""></span></div>
+    <div class="product_menu_subchapter">Подраздел</div>
+    <div class="product_menu_articul">Артикул</div>
+    <div class="product_menu_brend">Бренд</div>
+    <div class="product_menu_model">Модель</div>
+    <div class="product_menu_namespace">Наименование товара</div>
+    <div class="product_menu_size">Размер</div>
+    <div class="product_menu_color">Цвет</div>
+    <div class="product_menu_orientation">Ориентация (для клюшки)</div>
+</div>
+
+<section class="products_body _container">
+    <div class="_title _container _article">Статьи<span class="count_articles"></span></div>
+    <div class="article_pages _container"></div>
+    <section class="articles">
+    </section>
+
+    <div class="_title _container _news" style="margin-top: 100px">Новости <span class="count_news"></span></div>
+    <div class="news_pages _container"></div>
+    <section class="news _container">
+    </section>
 </section>
 
 <div class="add">

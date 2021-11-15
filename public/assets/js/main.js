@@ -749,3 +749,164 @@ $(window).bind('hashchange', function () {
     }
     return;
 })
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('products') || e.target.classList.contains('product_search_all')) {
+        $.ajax({
+            url: '/api/product/get',
+            method: 'GET',
+            success: function (response) {
+                document.querySelector('.product_menu').style.display = "grid";
+                document.querySelector('.product_search').style.display = "block";
+                $('.products_body').html(response);
+            }
+        })
+    }
+})
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('product_search_button')) {
+        let value = $('.search_product').val();
+        console.log(typeof value)
+        if (value.length !== 0) {
+            $.ajax({
+                url: '/api/products/search',
+                method: 'POST',
+                data: {
+                    'value': value
+                },
+                success: function (response) {
+                    $('.products_body').html(response);
+                }
+            })
+        }
+    }
+})
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('product_search_subchapter')) {
+        let value = $('.search_product_subchapter').val();
+        console.log(typeof value)
+        if (value.length !== 0) {
+            $.ajax({
+                url: '/api/products/search/subchapter',
+                method: 'POST',
+                data: {
+                    'value': value
+                },
+                success: function (response) {
+                    // $('.products_body').html(response);
+                }
+            })
+        }
+    }
+})
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('product_search_brend')) {
+        let value = $('.search_product_brend').val();
+        if (value.length !== 0) {
+            $.ajax({
+                url: '/api/products/search/brend',
+                method: 'POST',
+                data: {
+                    'value': value
+                },
+                success: function (response) {
+                    $('.products_body').html(response);
+                }
+            })
+        }
+    }
+})
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('product_search_model')) {
+        let value = $('.search_product_model').val();
+        console.log(typeof value)
+        if (value.length !== 0) {
+            $.ajax({
+                url: '/api/products/search/model',
+                method: 'POST',
+                data: {
+                    'value': value
+                },
+                success: function (response) {
+                    $('.products_body').html(response);
+                }
+            })
+        }
+    }
+})
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('product_search_color')) {
+        let value = $('.search_product_color').val();
+        console.log(typeof value)
+        if (value.length !== 0) {
+            $.ajax({
+                url: '/api/products/search/color',
+                method: 'POST',
+                data: {
+                    'value': value
+                },
+                success: function (response) {
+                    $('.products_body').html(response);
+                }
+            })
+        }
+    }
+})
+
+let filterByChapter = $('.product_filterByChapter')
+
+filterByChapter.on('click', (e) => {
+    let value = $('.search_product_brend').val();
+    if (!e.target.classList.contains('filtered')) {
+        $.ajax({
+            url: '/api/products/filter/chapter/straight',
+            method: 'POST',
+            data: {
+                'value': value
+            },
+            success: function (response) {
+                e.target.classList.add('filtered');
+                $('.products_body').html(response);
+            }
+        })
+        return;
+    }
+    $.ajax({
+        url: '/api/products/filter/chapter/back',
+        method: 'POST',
+        data: {
+            'value': value
+        },
+        success: function (response) {
+            e.target.classList.remove('filtered');
+            $('.products_body').html(response);
+        }
+    })
+})
+
+let searchAll = $('.product_search_allCategories');
+
+searchAll.on('click', e => {
+    let arr = {
+        'chapter': $('.search_product').val().trim(),
+        'subchapter': $('.search_product_subchapter').val().trim(),
+        'brend': $('.search_product_brend').val().trim(),
+        'model': $('.search_product_model').val().trim(),
+        'color': $('.search_product_color').val().trim()
+    }
+    $.ajax({
+        url: '/api/products/search/all',
+        method: 'POST',
+        data: {
+            'arr': JSON.stringify(arr),
+        },
+        success: function (response) {
+            $('.products_body').html(response);
+        }
+    })
+})
