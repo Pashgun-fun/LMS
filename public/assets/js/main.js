@@ -795,7 +795,7 @@ document.addEventListener('click', e => {
                     'value': value
                 },
                 success: function (response) {
-                    // $('.products_body').html(response);
+                    $('.products_body').html(response);
                 }
             })
         }
