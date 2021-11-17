@@ -35,6 +35,7 @@ class Middleware
             case "/api/article/edit":
             case "/api/window/edit/news":
             case "/api/news/edit":
+            case "/api/user/get":
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] === Roles::USER_ROLE) {
                     header("Location: /");
                 }
@@ -42,7 +43,6 @@ class Middleware
                     header("Location: /");
                 }
                 break;
-            case "/api/user/get":
             case "/api/user/exit":
                 if (!isset($_SESSION['ROLE'])) {
                     header("Location: /");

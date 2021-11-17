@@ -121,10 +121,9 @@ let login = () => {
         url: '/api/user/login',
         method: 'GET',
         success: function (response) {
-            $('.products_body').remove();
-            $('.product_menu').remove();
-            $('.product_search').remove();
-            $('.header').after(response);
+            $('.product_menu').hide();
+            $('.product_search').hide();
+            $('.products_body').html(response);
         }
     })
 }
@@ -144,6 +143,9 @@ let enterUser = (obj) => {
         success: function (response) {
             location.reload();
             return response;
+        },
+        error: function () {
+            alert("Неверный логин или пароль, попробуйте еще раз");
         }
     })
 }

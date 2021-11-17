@@ -133,6 +133,8 @@
     </div>
 </div>
 
+<section class="error_search" style="color: red"></section>
+
 <div class="product_menu _container">
     <div class="product_menu_chapter">Раздел <span class="product_filterByChapter"><img
                     src="assets/img/ascending-sort.png" alt=""></span></div>
@@ -183,5 +185,48 @@
         Footer
     </div>
 </footer>
+
+<div class="add__news">
+    <div class="add__wrapper">
+        <div class="add__container">
+            <div class="add__title _title">Добавление новости</div>
+            <form class="add__form">
+                <label class="add__email _field">
+                    Название<br>
+                    <input type="text" placeholder="Введите email" name="email" class="news_title _check"><br>
+                    <span class="_error error-email"></span>
+                </label>
+                <label class="add__desc _field">
+                    Текст<br>
+                    <textarea placeholder="Краткое описание" name="desc" class="news_text"></textarea>
+                </label>
+                <button type="button" class="add__button__news">Добавить</button>
+                <div class="add__close">Закрыть</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="add__article">
+    <div class="add__wrapper">
+        <div class="add__container">
+            <div class="add__title _title">Добавление новой статьи</div>
+            <form class="add__form">
+                <label class="add__email _field">
+                    Название<br>
+                    <input type="text" placeholder="Введите email" name="email" class="publish_title _check"><br>
+                    <span class="_error error-email"></span>
+                </label>
+                <label class="add__desc _field">
+                    Текст<br>
+                    <textarea placeholder="Краткое описание" name="desc" class="publish_text"></textarea>
+                </label>
+                <button type="button" class="add__button__article">Добавить</button>
+                <div class="add__close">Закрыть</div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript" src="/assets/js/jquery-3.6.0.min.js"></script>
 <script type="module" src="/assets/js/main.js"></script>

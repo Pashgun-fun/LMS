@@ -6,8 +6,9 @@ use core\Model;
 use entites\User;
 use enums\Roles;
 use enums\TypeConnect;
+use interfaces\Users;
 
-class UserModel extends Model
+class UserModel extends Model implements Users
 {
 
     protected static ?UserModel $instance = null;

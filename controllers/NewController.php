@@ -176,7 +176,7 @@ class NewController extends Controller
     {
         $data = $this->newModel->oldNews($_POST['index']);
         if (empty($data)) {
-            return;
+            header("HTTP/1.0 404 Not Found");
         }
         $news = new Publish($data);
         $this->view->cardArticle($news->getTitle(), $news->getText(), $news->getUser(), $news->getDate());

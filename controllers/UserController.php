@@ -6,6 +6,7 @@ use core\Controller;
 use core\Helper;
 use core\Validation;
 use entites\User;
+
 use models\UserModel;
 use models\sqlModels\SqlUserModel;
 
@@ -91,11 +92,15 @@ class UserController extends Controller
     {
         $user = new User($_POST['arr']);
         $arr = $this->model->getAuthorization($user);
-        foreach ($arr as $key => $value) {
-            if (in_array($key, $this->config['checkSession'])) {
-                $_SESSION[$key] = $value;
+        if (!empty($arr)) {
+            foreach ($arr as $key => $value) {
+                if (in_array($key, $this->config['checkSession'])) {
+                    $_SESSION[$key] = $value;
+                }
             }
+            return;
         }
+        header("HTTP/1.0 404 Not Found");
     }
 
     /**

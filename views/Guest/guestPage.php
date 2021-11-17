@@ -125,6 +125,8 @@
     </div>
 </div>
 
+<section class="error_search" style="color: red"></section>
+
 <div class="product_menu _container">
     <div class="product_menu_chapter">Раздел <span class="product_filterByChapter"><img
                     src="assets/img/ascending-sort.png" alt=""></span></div>

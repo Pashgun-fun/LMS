@@ -4,8 +4,9 @@ namespace models;
 
 use core\Model;
 use entites\Publish;
+use interfaces\News;
 
-class NewsModel extends Model
+class NewsModel extends Model implements News
 {
     protected static ?NewsModel $instance = null;
 

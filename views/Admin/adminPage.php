@@ -134,6 +134,7 @@
     </div>
 </div>
 
+<section class="error_search" style="color: red"></section>
 
 <div class="product_menu _container">
     <div class="product_menu_chapter">Раздел <span class="product_filterByChapter"><img
@@ -266,11 +267,6 @@
         <div class="add__container">
             <div class="add__title _title">Добавление новой статьи</div>
             <form class="add__form">
-                <label class="add__login _field">
-                    Логин <br>
-                    <input type="text" placeholder="Введите логин" name="login" class="publish_login _check"><br>
-                    <span class="_error error-login"></span>
-                </label>
                 <label class="add__email _field">
                     Название<br>
                     <input type="text" placeholder="Введите email" name="email" class="publish_title _check"><br>
@@ -292,11 +288,6 @@
         <div class="add__container">
             <div class="add__title _title">Добавление новости</div>
             <form class="add__form">
-                <label class="add__login _field">
-                    Логин <br>
-                    <input type="text" placeholder="Введите логин" name="login" class="news_login _check"><br>
-                    <span class="_error error-login"></span>
-                </label>
                 <label class="add__email _field">
                     Название<br>
                     <input type="text" placeholder="Введите email" name="email" class="news_title _check"><br>

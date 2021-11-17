@@ -145,7 +145,6 @@ document.addEventListener('click', (e) => {
         let date = new Date();
         let obj = {
             title: $('.publish_title').val().trim(),
-            user: $('.publish_login').val().trim(),
             text: $('.publish_text').val().trim(),
             date: `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
         }
@@ -154,6 +153,11 @@ document.addEventListener('click', (e) => {
             obj.text.length < 50) {
             return;
         }
+
+        if (/["']/.test(obj.title) === true || /["']/.test(obj.text) === true) {
+            return;
+        }
+
         try {
             $.ajax({
                 url: '/api/article/add',
@@ -189,7 +193,6 @@ document.addEventListener('click', (e) => {
         let date = new Date();
         let obj = {
             title: $('.news_title').val().trim(),
-            user: $('.news_login').val().trim(),
             text: $('.news_text').val().trim(),
             date: `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
             seconds: new Date().getTime() / 1000,
@@ -199,6 +202,11 @@ document.addEventListener('click', (e) => {
             obj.text.length < 50) {
             return;
         }
+
+        if (/["']/.test(obj.title) === true || /["']/.test(obj.text) === true) {
+            return;
+        }
+
         try {
             $.ajax({
                 url: '/api/news/add',
@@ -286,6 +294,10 @@ document.addEventListener('click', e => {
                                     id: id
                                 }
 
+                                if (/["']/.test(objEdit.title) === true || /["']/.test(objEdit.text) === true) {
+                                    return;
+                                }
+
                                 $.ajax({
                                     url: '/api/article/edit',
                                     type: 'POST',
@@ -333,6 +345,10 @@ document.addEventListener('click', e => {
                                     text: $('.edit-desc').val().trim(),
                                     index: 6 * koeficient - (6 - j),
                                     id: id
+                                }
+
+                                if (/["']/.test(objEdit.title) === true || /["']/.test(objEdit.text) === true) {
+                                    return;
                                 }
 
                                 $.ajax({
@@ -409,6 +425,10 @@ document.addEventListener('click', e => {
                                     id: +id
                                 }
 
+                                if (/["']/.test(objEdit.title) === true || /["']/.test(objEdit.text) === true) {
+                                    return;
+                                }
+
                                 $.ajax({
                                     url: '/api/news/edit',
                                     type: 'POST',
@@ -455,6 +475,10 @@ document.addEventListener('click', e => {
                                     text: $('.edit-desc').val().trim(),
                                     index: 6 * koeficient - (6 - j),
                                     id: id
+                                }
+
+                                if (/["']/.test(objEdit.title) === true || /["']/.test(objEdit.text) === true) {
+                                    return;
                                 }
 
                                 $.ajax({
@@ -744,6 +768,10 @@ $(window).bind('hashchange', function () {
                 $('.body').css({
                     "overflow": "hidden"
                 })
+            },
+            error: function () {
+                history.replaceState(null, null, ' ');
+                alert("Данной новости не существует");
             }
         })
     }
@@ -755,7 +783,11 @@ document.addEventListener('click', e => {
         $.ajax({
             url: '/api/product/get',
             method: 'GET',
+            beforeSend: function () {
+                $('.products_body').html('');
+            },
             success: function (response) {
+                $('.error_search').html('');
                 document.querySelector('.product_menu').style.display = "grid";
                 document.querySelector('.product_search').style.display = "block";
                 $('.products_body').html(response);
@@ -766,8 +798,13 @@ document.addEventListener('click', e => {
 
 document.addEventListener('click', e => {
     if (e.target.classList.contains('product_search_button')) {
-        let value = $('.search_product').val();
-        console.log(typeof value)
+        let value = $('.search_product').val().trim();
+
+        if (/["']/.test(value) === true || /[^0-9a-zA-Zа-яёА-ЯЁ ]/u.test(value) === true) {
+            $('.products_body').html('');
+            return;
+        }
+
         if (value.length !== 0) {
             $.ajax({
                 url: '/api/products/search',
@@ -775,8 +812,18 @@ document.addEventListener('click', e => {
                 data: {
                     'value': value
                 },
+                beforeSend: function () {
+                    $('.products_body').html('Данные загружаются');
+                },
                 success: function (response) {
-                    $('.products_body').html(response);
+                    setTimeout(() => {
+                        $('.error_search').html('');
+                        $('.products_body').html(response);
+                    }, 1000)
+                },
+                error: function () {
+                    $('.error_search').html("Товар по данной категории не найден");
+                    $('.products_body').html('');
                 }
             })
         }
@@ -785,8 +832,13 @@ document.addEventListener('click', e => {
 
 document.addEventListener('click', e => {
     if (e.target.classList.contains('product_search_subchapter')) {
-        let value = $('.search_product_subchapter').val();
-        console.log(typeof value)
+        let value = $('.search_product_subchapter').val().trim();
+
+        if (/["']/.test(value) === true || /[^0-9a-zA-Zа-яёА-ЯЁ ]/u.test(value) === true) {
+            $('.products_body').html('');
+            return;
+        }
+
         if (value.length !== 0) {
             $.ajax({
                 url: '/api/products/search/subchapter',
@@ -794,8 +846,18 @@ document.addEventListener('click', e => {
                 data: {
                     'value': value
                 },
+                beforeSend: function () {
+                    $('.products_body').html('Данные загружаются');
+                },
                 success: function (response) {
-                    $('.products_body').html(response);
+                    setTimeout(() => {
+                        $('.error_search').html('');
+                        $('.products_body').html(response);
+                    }, 1000)
+                },
+                error: function () {
+                    $('.error_search').html("Товар по данной категории не найден");
+                    $('.products_body').html('');
                 }
             })
         }
@@ -804,7 +866,13 @@ document.addEventListener('click', e => {
 
 document.addEventListener('click', e => {
     if (e.target.classList.contains('product_search_brend')) {
-        let value = $('.search_product_brend').val();
+        let value = $('.search_product_brend').val().trim();
+
+        if (/["']/.test(value) === true || /[^0-9a-zA-Zа-яёА-ЯЁ ]/u.test(value) === true) {
+            $('.products_body').html('');
+            return;
+        }
+
         if (value.length !== 0) {
             $.ajax({
                 url: '/api/products/search/brend',
@@ -812,8 +880,18 @@ document.addEventListener('click', e => {
                 data: {
                     'value': value
                 },
+                beforeSend: function () {
+                    $('.products_body').html('Данные загружаются');
+                },
                 success: function (response) {
-                    $('.products_body').html(response);
+                    setTimeout(() => {
+                        $('.error_search').html('');
+                        $('.products_body').html(response);
+                    }, 1000)
+                },
+                error: function () {
+                    $('.error_search').html("Товар по данной категории не найден");
+                    $('.products_body').html('');
                 }
             })
         }
@@ -822,8 +900,13 @@ document.addEventListener('click', e => {
 
 document.addEventListener('click', e => {
     if (e.target.classList.contains('product_search_model')) {
-        let value = $('.search_product_model').val();
-        console.log(typeof value)
+        let value = $('.search_product_model').val().trim();
+
+        if (/["']/.test(value) === true || /[^0-9a-zA-Zа-яёА-ЯЁ ]/u.test(value) === true) {
+            $('.products_body').html('');
+            return;
+        }
+
         if (value.length !== 0) {
             $.ajax({
                 url: '/api/products/search/model',
@@ -831,8 +914,18 @@ document.addEventListener('click', e => {
                 data: {
                     'value': value
                 },
+                beforeSend: function () {
+                    $('.products_body').html('Данные загружаются');
+                },
                 success: function (response) {
-                    $('.products_body').html(response);
+                    setTimeout(() => {
+                        $('.error_search').html('');
+                        $('.products_body').html(response);
+                    }, 1000)
+                },
+                error: function () {
+                    $('.error_search').html("Товар по данной категории не найден");
+                    $('.products_body').html('');
                 }
             })
         }
@@ -841,8 +934,13 @@ document.addEventListener('click', e => {
 
 document.addEventListener('click', e => {
     if (e.target.classList.contains('product_search_color')) {
-        let value = $('.search_product_color').val();
-        console.log(typeof value)
+        let value = $('.search_product_color').val().trim();
+
+        if (/["']/.test(value) === true || /[^0-9a-zA-Zа-яёА-ЯЁ ]/u.test(value) === true) {
+            $('.products_body').html('');
+            return;
+        }
+
         if (value.length !== 0) {
             $.ajax({
                 url: '/api/products/search/color',
@@ -850,8 +948,18 @@ document.addEventListener('click', e => {
                 data: {
                     'value': value
                 },
+                beforeSend: function () {
+                    $('.products_body').html('Данные загружаются');
+                },
                 success: function (response) {
-                    $('.products_body').html(response);
+                    setTimeout(() => {
+                        $('.error_search').html('');
+                        $('.products_body').html(response);
+                    }, 1000)
+                },
+                error: function () {
+                    $('.error_search').html("Товар по данной категории не найден");
+                    $('.products_body').html('');
                 }
             })
         }
@@ -861,13 +969,20 @@ document.addEventListener('click', e => {
 let filterByChapter = $('.product_filterByChapter')
 
 filterByChapter.on('click', (e) => {
-    let value = $('.search_product_brend').val();
+    let arr = {
+        'chapter': $('.search_product').val().trim(),
+        'subchapter': $('.search_product_subchapter').val().trim(),
+        'brend': $('.search_product_brend').val().trim(),
+        'model': $('.search_product_model').val().trim(),
+        'color': $('.search_product_color').val().trim()
+    };
+
     if (!e.target.classList.contains('filtered')) {
         $.ajax({
             url: '/api/products/filter/chapter/straight',
             method: 'POST',
             data: {
-                'value': value
+                'arr': JSON.stringify(arr),
             },
             success: function (response) {
                 e.target.classList.add('filtered');
@@ -876,11 +991,12 @@ filterByChapter.on('click', (e) => {
         })
         return;
     }
+
     $.ajax({
         url: '/api/products/filter/chapter/back',
         method: 'POST',
         data: {
-            'value': value
+            'arr': JSON.stringify(arr),
         },
         success: function (response) {
             e.target.classList.remove('filtered');
@@ -899,14 +1015,32 @@ searchAll.on('click', e => {
         'model': $('.search_product_model').val().trim(),
         'color': $('.search_product_color').val().trim()
     }
+
+    for (let key in arr) {
+        if (/["']/.test(arr[key]) === true || /[^0-9a-zA-Zа-яёА-ЯЁ ]/u.test(arr[key]) === true) {
+            $('.products_body').html('');
+            return;
+        }
+    }
+
     $.ajax({
         url: '/api/products/search/all',
         method: 'POST',
         data: {
             'arr': JSON.stringify(arr),
         },
+        beforeSend: function () {
+            $('.products_body').html('Данные загружаются');
+        },
         success: function (response) {
-            $('.products_body').html(response);
+            setTimeout(() => {
+                $('.error_search').html('');
+                $('.products_body').html(response);
+            }, 1000)
+        },
+        error: function () {
+            $('.error_search').html("Товар по данной категории не найден");
+            $('.products_body').html('');
         }
     })
 })
