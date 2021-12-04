@@ -91,6 +91,10 @@
         object-fit: cover;
         width: 100%;
     }
+
+    .products_body {
+        margin-bottom: 70px;
+    }
 </style>
 
 <body class="body">
@@ -111,6 +115,10 @@
     </div>
 </header>
 <div class="product_search _container">
+    <div class="products_body_pages"><label class="pages_for_products"></label>
+        <input type="text" class="value_page_product">
+        <span class="go_product_page">Перейти</span>
+    </div>
     <div>
         <label>Поиск по разделу <input type="text" class="search_product"></label> <span class="product_search_button">Найти</span><br>
     </div>

@@ -81,6 +81,14 @@
         object-fit: cover;
         width: 100%;
     }
+
+    .products_body_pages span {
+        background: initial;
+    }
+
+    .products_body {
+        margin-bottom: 70px;
+    }
 </style>
 
 <body class="body">
@@ -92,6 +100,7 @@
 
         <a class="products">
             Продукты
+            <div class="count_products"></div>
         </a>
 
         <div class="header__buttons">
@@ -102,6 +111,10 @@
 </header>
 
 <div class="product_search _container">
+    <div class="products_body_pages"><label class="pages_for_products"></label>
+        <input type="text" class="value_page_product">
+        <span class="go_product_page">Перейти</span>
+    </div>
     <div>
         <label>Поиск по разделу <input type="text" class="search_product"></label> <span class="product_search_button">Найти</span><br>
     </div>
@@ -118,6 +131,11 @@
                 class="product_search_model">Найти</span><br>
     </div>
     <div>
+        <label>Поиск по размеру <input type="text" class="search_product_size"></label> <span
+                class="product_search_size">Найти</span><br>
+    </div>
+
+    <div>
         <label>Поиск по цвету <input type="text" class="search_product_color"></label> <span
                 class="product_search_color">Найти</span><br>
         <span class="product_search_allCategories">Найти всё</span>
@@ -126,7 +144,6 @@
 </div>
 
 <section class="error_search" style="color: red"></section>
-
 <div class="product_menu _container">
     <div class="product_menu_chapter">Раздел <span class="product_filterByChapter"><img
                     src="assets/img/ascending-sort.png" alt=""></span></div>

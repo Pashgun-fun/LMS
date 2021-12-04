@@ -146,6 +146,14 @@ class Router
                 $parserController = new ParserController();
                 $parserController->searchAllProducts();
                 break;
+            case "/api/products/pagination":
+                $parserController = new ParserController();
+                $parserController->pagination();
+                break;
+            case "/api/products/search/size":
+                $parserController = new ParserController();
+                $parserController->searchSizeProduct();
+                break;
             case "/":
                 $controllerUsers = new UserController();
                 $controllerUsers->checkRole();

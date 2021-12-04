@@ -8,7 +8,7 @@ import {
     enterUser,
     exitUser, moveByPage,
     news,
-    moveByPageNews,
+    moveByPageNews, moveByPageProducts,
 } from "./ajax.js";
 import {checkLogin, checkEmail, checkPass, checkDateTime, checkLength} from "./validation.js";
 
@@ -56,6 +56,13 @@ document.addEventListener('click', e => {
         e.target.classList.add('active');
         $('.news').html('');
         moveByPageNews(e.target.getAttribute('data-page'))
+    }
+})
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('go_product_page')) {
+        $('.products_body').html('');
+        moveByPageProducts($('.value_page_product').val());
     }
 })
 
@@ -784,13 +791,20 @@ document.addEventListener('click', e => {
             url: '/api/product/get',
             method: 'GET',
             beforeSend: function () {
-                $('.products_body').html('');
+                $('.products_body_pages').show();
+                $('.products_body').html('Подождите, данные загружаются');
             },
             success: function (response) {
                 $('.error_search').html('');
                 document.querySelector('.product_menu').style.display = "grid";
                 document.querySelector('.product_search').style.display = "block";
                 $('.products_body').html(response);
+                let productsArr = $('.product_container').length + 1;
+                $('.count_products').html(productsArr + 1);
+                let countPerPage = Math.ceil(productsArr / 15);
+                $('.pages_for_products').html(`Введите номер страницы от 1 до ${countPerPage}`);
+                $('.products_body').html('');
+                moveByPageProducts();
             }
         })
     }
@@ -813,6 +827,7 @@ document.addEventListener('click', e => {
                     'value': value
                 },
                 beforeSend: function () {
+                    $('.products_body_pages').hide();
                     $('.products_body').html('Данные загружаются');
                 },
                 success: function (response) {
@@ -847,6 +862,7 @@ document.addEventListener('click', e => {
                     'value': value
                 },
                 beforeSend: function () {
+                    $('.products_body_pages').hide();
                     $('.products_body').html('Данные загружаются');
                 },
                 success: function (response) {
@@ -881,6 +897,7 @@ document.addEventListener('click', e => {
                     'value': value
                 },
                 beforeSend: function () {
+                    $('.products_body_pages').hide();
                     $('.products_body').html('Данные загружаются');
                 },
                 success: function (response) {
@@ -915,6 +932,7 @@ document.addEventListener('click', e => {
                     'value': value
                 },
                 beforeSend: function () {
+                    $('.products_body_pages').hide();
                     $('.products_body').html('Данные загружаются');
                 },
                 success: function (response) {
@@ -949,6 +967,7 @@ document.addEventListener('click', e => {
                     'value': value
                 },
                 beforeSend: function () {
+                    $('.products_body_pages').hide();
                     $('.products_body').html('Данные загружаются');
                 },
                 success: function (response) {
@@ -965,6 +984,43 @@ document.addEventListener('click', e => {
         }
     }
 })
+
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('product_search_size')) {
+        let value = $('.search_product_size').val().trim();
+
+        if (/["']/.test(value) === true) {
+            $('.products_body').html('');
+            return;
+        }
+
+        if (value.length !== 0) {
+            $.ajax({
+                url: '/api/products/search/size',
+                method: 'POST',
+                data: {
+                    'value': value
+                },
+                beforeSend: function () {
+                    $('.products_body_pages').hide();
+                    $('.products_body').html('Данные загружаются');
+                },
+                success: function (response) {
+                    setTimeout(() => {
+                        $('.error_search').html('');
+                        $('.products_body').html(response);
+                    }, 1000)
+                },
+                error: function () {
+                    $('.error_search').html("Товар по данной категории не найден");
+                    $('.products_body').html('');
+                }
+            })
+        }
+    }
+})
+
 
 let filterByChapter = $('.product_filterByChapter')
 
@@ -1030,6 +1086,7 @@ searchAll.on('click', e => {
             'arr': JSON.stringify(arr),
         },
         beforeSend: function () {
+            $('.products_body_pages').hide();
             $('.products_body').html('Данные загружаются');
         },
         success: function (response) {

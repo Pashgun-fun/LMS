@@ -233,6 +233,20 @@ let moveByPageNews = (page = 1) => {
     })
 }
 
+let moveByPageProducts = (page = 1) => {
+    $.ajax({
+        url: '/api/products/pagination',
+        method: 'POST',
+        dataType: 'html',
+        data: {
+            'page': page,
+        },
+        success: function (response) {
+            $('.products_body').html(response);
+        }
+    })
+}
+
 export {
     moveByPageNews,
     news,
@@ -244,5 +258,6 @@ export {
     getMaket,
     login,
     enterUser,
-    exitUser
+    exitUser,
+    moveByPageProducts
 }
